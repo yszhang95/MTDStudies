@@ -160,6 +160,9 @@ void invBetaPlot()
       TGraph* gPion = new TGraph(50);
       TGraph* gKaon = new TGraph(50);
 
+      TLatex *latex = new TLatex();
+      latex->SetTextSize(0.03);
+
       for(int i=0; i<50; i++){
          gPion->SetPoint(i, hdInvBetaPionstd->GetBinCenter(i+1), hdInvBetaPionstd->GetBinError(i+1));
          gKaon->SetPoint(i, hdInvBetaKaonstd->GetBinCenter(i+1), hdInvBetaKaonstd->GetBinError(i+1));
@@ -168,7 +171,7 @@ void invBetaPlot()
       TF1* fExpPion = new TF1("fExpPion_dInvBetaRMS", "[0]+[1]*exp(-[2]*x)", 0.8, 10);
       TF1* fPoly2Pion = new TF1("fPoly2Pion_dInvBetaRMS", "[0]+[1]*x +[2]*x*x", 0.8, 10);
 
-      fExpPion->SetParameters(0.005, 0.017, 0.36);
+      fExpPion->SetParameters(0.005, 0.016, 0.36);
       fPoly2Pion->SetParameters(0.0185, -0.003, 0.00017);
       fPoly2Pion->SetLineColor(kBlue);
       gPion->Fit(fExpPion, "Q", "", 0.8, 10);
@@ -181,25 +184,36 @@ void invBetaPlot()
       gPion->Fit(fPoly2Pion, "", "", 0.8, 10);
 
       c[0]->cd();
+      gStyle->SetOptStat(0);
+      //gStyle->SetOptFit(1);
       gPion->SetMarkerColor(kBlack);
       gPion->SetMarkerSize(0.8);
       gPion->SetMarkerStyle(kOpenCircle);
-      gPion->GetYaxis()->SetLimits(0, 0.022);
+      gPion->GetHistogram()->SetMaximum(0.045);
+      gPion->GetHistogram()->SetMinimum(0.0);
       gPion->GetYaxis()->SetTitle("RMS");
       gPion->GetXaxis()->SetTitle("p (GeV)");
       gPion->SetTitle("RMS of diff_1/beta_Pion");
       gPion->Draw("pa");
       fExpPion->Draw("same");
       fPoly2Pion->Draw("same");
-      TLegend *l1 = new TLegend(0.7, 0.7, 0.95, 0.95);
+      TLegend *l1 = new TLegend(0.85, 0.85, 0.95, 0.95);
       l1->AddEntry(fExpPion, "exp", "l");
       l1->AddEntry(fPoly2Pion, "poly2", "l");
       l1->Draw();
+      latex->DrawLatexNDC(0.5, 0.85,"p0 + p1 * exp(-p3*x)");
+      latex->DrawLatexNDC(0.2, 0.69, Form("exp: p0=%.3e", fExpPion->GetParameter(0)));
+      latex->DrawLatexNDC(0.2, 0.62, Form("exp: p1=%.3e", fExpPion->GetParameter(1)));
+      latex->DrawLatexNDC(0.2, 0.55, Form("exp: p2=%.3e", fExpPion->GetParameter(2)));
+      latex->DrawLatexNDC(0.5, 0.78,"p0 + p1*x + p3*x*x)");
+      latex->DrawLatexNDC(0.55, 0.69, Form("poly2: p0=%.3e", fPoly2Pion->GetParameter(0)));
+      latex->DrawLatexNDC(0.55, 0.62, Form("poly2: p1=%.3e", fPoly2Pion->GetParameter(1)));
+      latex->DrawLatexNDC(0.55, 0.55, Form("poly2: p2=%.3e", fPoly2Pion->GetParameter(2)));
 
       TF1* fExpKaon = new TF1("fExpKaon_dInvBetaRMS", "[0]+[1]*exp(-[2]*x)", 0.8, 10);
       TF1* fPoly2Kaon = new TF1("fPoly2Kaon_dInvBetaRMS", "[0]+[1]*x + [2]*x*x", 0.8, 10);
 
-      fExpKaon->SetParameters(0.005, 0.017, 0.36);
+      fExpKaon->SetParameters(0.005, 0.016, 0.36);
       fPoly2Kaon->SetParameters(0.0185, -0.003, 0.00017);
       fPoly2Kaon->SetLineColor(kBlue);
       gKaon->Fit(fExpKaon, "Q", "", 0.8, 10);
@@ -211,20 +225,31 @@ void invBetaPlot()
       gKaon->Fit(fPoly2Kaon, "Q", "", 0.8, 10);
       gKaon->Fit(fPoly2Kaon, "", "", 0.8, 10);
       c[2]->cd();
+      gStyle->SetOptStat(0);
+      //gStyle->SetOptFit(1);
       gKaon->SetMarkerColor(kBlack);
       gKaon->SetMarkerSize(0.8);
       gKaon->SetMarkerStyle(kOpenCircle);
-      gKaon->GetYaxis()->SetLimits(0, 0.022);
+      gKaon->GetHistogram()->SetMaximum(0.045);
+      gKaon->GetHistogram()->SetMinimum(0.0);
       gKaon->GetYaxis()->SetTitle("RMS");
       gKaon->GetXaxis()->SetTitle("p (GeV)");
       gKaon->SetTitle("RMS of diff_1/beta_Kaon");
       gKaon->Draw("pa");
       fExpKaon->Draw("same");
       fPoly2Kaon->Draw("same");
-      TLegend *l2 = new TLegend(0.7, 0.7, 0.95, 0.95);
+      TLegend *l2 = new TLegend(0.85, 0.85, 0.95, 0.95);
       l2->AddEntry(fExpKaon, "exp", "l");
       l2->AddEntry(fPoly2Kaon, "poly2", "l");
       l2->Draw();
+      latex->DrawLatexNDC(0.5, 0.85,"p0 + p1 * exp(-p3*x)");
+      latex->DrawLatexNDC(0.2, 0.69, Form("exp: p0=%.3e", fExpKaon->GetParameter(0)));
+      latex->DrawLatexNDC(0.2, 0.62, Form("exp: p1=%.3e", fExpKaon->GetParameter(1)));
+      latex->DrawLatexNDC(0.2, 0.55, Form("exp: p2=%.3e", fExpKaon->GetParameter(2)));
+      latex->DrawLatexNDC(0.5, 0.78,"p0 + p1*x + p3*x*x)");
+      latex->DrawLatexNDC(0.55, 0.69, Form("poly2: p0=%.3e", fPoly2Kaon->GetParameter(0)));
+      latex->DrawLatexNDC(0.55, 0.62, Form("poly2: p1=%.3e", fPoly2Kaon->GetParameter(1)));
+      latex->DrawLatexNDC(0.55, 0.55, Form("poly2: p2=%.3e", fPoly2Kaon->GetParameter(2)));
 
       TFile fFunc("fFuncDInvBeta.root", "recreate");
 
