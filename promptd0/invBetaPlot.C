@@ -201,11 +201,11 @@ void invBetaPlot()
       l1->AddEntry(fExpPion, "exp", "l");
       l1->AddEntry(fPoly2Pion, "poly2", "l");
       l1->Draw();
-      latex->DrawLatexNDC(0.5, 0.85,"p0 + p1 * exp(-p3*x)");
+      latex->DrawLatexNDC(0.5, 0.85,"p0 + p1 * exp(-p2*x)");
       latex->DrawLatexNDC(0.2, 0.69, Form("exp: p0=%.3e", fExpPion->GetParameter(0)));
       latex->DrawLatexNDC(0.2, 0.62, Form("exp: p1=%.3e", fExpPion->GetParameter(1)));
       latex->DrawLatexNDC(0.2, 0.55, Form("exp: p2=%.3e", fExpPion->GetParameter(2)));
-      latex->DrawLatexNDC(0.5, 0.78,"p0 + p1*x + p3*x*x)");
+      latex->DrawLatexNDC(0.5, 0.78,"p0 + p1*x + p2*x*x");
       latex->DrawLatexNDC(0.55, 0.69, Form("poly2: p0=%.3e", fPoly2Pion->GetParameter(0)));
       latex->DrawLatexNDC(0.55, 0.62, Form("poly2: p1=%.3e", fPoly2Pion->GetParameter(1)));
       latex->DrawLatexNDC(0.55, 0.55, Form("poly2: p2=%.3e", fPoly2Pion->GetParameter(2)));
@@ -242,11 +242,11 @@ void invBetaPlot()
       l2->AddEntry(fExpKaon, "exp", "l");
       l2->AddEntry(fPoly2Kaon, "poly2", "l");
       l2->Draw();
-      latex->DrawLatexNDC(0.5, 0.85,"p0 + p1 * exp(-p3*x)");
+      latex->DrawLatexNDC(0.5, 0.85,"p0 + p1 * exp(-p2*x)");
       latex->DrawLatexNDC(0.2, 0.69, Form("exp: p0=%.3e", fExpKaon->GetParameter(0)));
       latex->DrawLatexNDC(0.2, 0.62, Form("exp: p1=%.3e", fExpKaon->GetParameter(1)));
       latex->DrawLatexNDC(0.2, 0.55, Form("exp: p2=%.3e", fExpKaon->GetParameter(2)));
-      latex->DrawLatexNDC(0.5, 0.78,"p0 + p1*x + p3*x*x)");
+      latex->DrawLatexNDC(0.5, 0.78,"p0 + p1*x + p2*x*x");
       latex->DrawLatexNDC(0.55, 0.69, Form("poly2: p0=%.3e", fPoly2Kaon->GetParameter(0)));
       latex->DrawLatexNDC(0.55, 0.62, Form("poly2: p1=%.3e", fPoly2Kaon->GetParameter(1)));
       latex->DrawLatexNDC(0.55, 0.55, Form("poly2: p2=%.3e", fPoly2Kaon->GetParameter(2)));
@@ -276,7 +276,7 @@ void invBetaPlot()
 	   hdInvBetaKaonVsP->SetMinimum(1.0);
 	   hdInvBetaKaonVsP->Draw("COLZ");
 
-      std::cout << hdInvBetaPionVsP->ProjectionY("pion", 0, 12)->Integral(400, 600)/ hdInvBetaPionVsP->ProjectionY("pion", 0, 12)->Integral(0, 100000)<< std::endl;
-      std::cout << hdInvBetaKaonVsP->ProjectionY("kaon", 0, 12)->Integral(400, 600)/ hdInvBetaKaonVsP->ProjectionY("kaon", 0, 12)->Integral(0, 100000)<< std::endl;
+      std::cout << hdInvBetaPionVsP->ProjectionY("pion", 0, 12)->Integral(420, 580)/ hdInvBetaPionVsP->ProjectionY("pion", 0, 12)->Integral(0, 100000)<< std::endl;
+      std::cout << hdInvBetaKaonVsP->ProjectionY("kaon", 0, 12)->Integral(420, 580)/ hdInvBetaKaonVsP->ProjectionY("kaon", 0, 12)->Integral(0, 100000)<< std::endl;
    }
 }
