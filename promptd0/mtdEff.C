@@ -73,17 +73,17 @@ void mtdEff()
 
          if(t->flavor == 1){
             if(t->isMtdDau1) hPionEff->Fill(t->y);
-            if(t->isMtdDau1) is3sigmaPion = (1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
-            if(t->isMtdDau1) is2sigmaPion = (1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
-            if(t->isMtdDau1) is1sigmaPion = (1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
+            if(t->isMtdDau1) is3sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
+            if(t->isMtdDau1) is2sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
+            if(t->isMtdDau1) is1sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
             if(is3sigmaPion) hPion3sigmaEff->Fill(t->y);
             if(is2sigmaPion) hPion2sigmaEff->Fill(t->y);
             if(is1sigmaPion) hPion1sigmaEff->Fill(t->y);
 
             if(t->isMtdDau2) hKaonEff->Fill(t->y);
-            if(t->isMtdDau2) is3sigmaKaon = (1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 *fExpKaon->Eval(pD2);
-            if(t->isMtdDau2) is2sigmaKaon = (1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 *fExpKaon->Eval(pD2);
-            if(t->isMtdDau2) is1sigmaKaon = (1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 *fExpKaon->Eval(pD2);
+            if(t->isMtdDau2) is3sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 *fExpKaon->Eval(pD2);
+            if(t->isMtdDau2) is2sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 *fExpKaon->Eval(pD2);
+            if(t->isMtdDau2) is1sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 *fExpKaon->Eval(pD2);
             if(is3sigmaKaon) hKaon3sigmaEff->Fill(t->y);
             if(is2sigmaKaon) hKaon2sigmaEff->Fill(t->y);
             if(is1sigmaKaon) hKaon1sigmaEff->Fill(t->y);
@@ -91,17 +91,17 @@ void mtdEff()
 
          if(t->flavor == -1){
             if(t->isMtdDau1) hKaonEff->Fill(t->y);
-            if(t->isMtdDau1) is3sigmaKaon = (1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
-            if(t->isMtdDau1) is2sigmaKaon = (1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
-            if(t->isMtdDau1) is1sigmaKaon = (1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
+            if(t->isMtdDau1) is3sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
+            if(t->isMtdDau1) is2sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
+            if(t->isMtdDau1) is1sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
             if(is3sigmaKaon) hKaon3sigmaEff->Fill(t->y);
             if(is2sigmaKaon) hKaon2sigmaEff->Fill(t->y);
             if(is1sigmaKaon) hKaon1sigmaEff->Fill(t->y);
 
             if(t->isMtdDau2) hPionEff->Fill(t->y);
-            if(t->isMtdDau2) is3sigmaPion = (1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
-            if(t->isMtdDau2) is2sigmaPion = (1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
-            if(t->isMtdDau2) is1sigmaPion = (1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
+            if(t->isMtdDau2) is3sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
+            if(t->isMtdDau2) is2sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
+            if(t->isMtdDau2) is1sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
             if(is3sigmaPion) hPion3sigmaEff->Fill(t->y);
             if(is2sigmaPion) hPion2sigmaEff->Fill(t->y);
             if(is1sigmaPion) hPion1sigmaEff->Fill(t->y);
