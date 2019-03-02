@@ -49,8 +49,8 @@ void fillMatchNtuple()
     Long64_t nD0 = 0;
     for(Long64_t ientry=0; ientry<t->GetEntries(); ++ientry){
         t->GetEntry(ientry);
-        bool trkQuality = t->pTD1 > 0.77 && t->pTD2 > 0.77;
-        if(!trkQuality) continue;
+        //bool trkQuality = t->pTD1 > 0.77 && t->pTD2 > 0.77;
+        //if(!trkQuality) continue;
 
         const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
         const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
@@ -102,7 +102,7 @@ void fillMatchNtuple()
     std::cout << "counts of sigmatmtd >= 0 but fabs(eta)>3: " << isMtdWrong << std::endl;
     std::cout << "number of D0 passing selection: " << nD0 << std::endl;
     TFile* fout;
-    fout = new TFile("matchPromptD0.root", "recreate");
+    fout = new TFile("matchPromptD0_fullSample.root", "recreate");
     ntp->Write();
     hInvBetaVsPDau1->Write();
     hInvBetaVsPDau2->Write();
