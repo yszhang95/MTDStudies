@@ -230,5 +230,26 @@ void invBetaPlot()
       fExpKaon->Write();
       fPoly2Pion->Write();
       fPoly2Kaon->Write();
+
+      TCanvas* c1 = new TCanvas("cPion", "cPion", 450, 500);
+      c1->SetLogz();
+      c1->SetLeftMargin(0.16);
+      gStyle->SetOptStat(0);
+	   hdInvBetaPionVsP->GetXaxis()->SetTitle("p (GeV)");
+	   hdInvBetaPionVsP->GetYaxis()->SetTitle("1/#beta - 1/#beta_{#pi}");
+	   hdInvBetaPionVsP->SetMinimum(1.0);
+	   hdInvBetaPionVsP->Draw("COLZ");
+
+      TCanvas* c2 = new TCanvas("cKaon", "cKaon", 450, 500);
+      c2->SetLogz();
+      c2->SetLeftMargin(0.16);
+      gStyle->SetOptStat(0);
+	   hdInvBetaKaonVsP->GetXaxis()->SetTitle("p (GeV)");
+	   hdInvBetaKaonVsP->GetYaxis()->SetTitle("1/#beta - 1/#beta_{K}");
+	   hdInvBetaKaonVsP->SetMinimum(1.0);
+	   hdInvBetaKaonVsP->Draw("COLZ");
+
+      std::cout << hdInvBetaPionVsP->ProjectionY("pion", 0, 12)->Integral(400, 600)/ hdInvBetaPionVsP->ProjectionY("pion", 0, 12)->Integral(0, 100000)<< std::endl;
+      std::cout << hdInvBetaKaonVsP->ProjectionY("kaon", 0, 12)->Integral(400, 600)/ hdInvBetaKaonVsP->ProjectionY("kaon", 0, 12)->Integral(0, 100000)<< std::endl;
    }
 }
