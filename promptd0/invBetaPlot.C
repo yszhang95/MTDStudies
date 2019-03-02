@@ -58,10 +58,12 @@ void invBetaPlot()
       //if(t->pT>0.5) continue;
 
       // require eta<1.4 ? pT > 0.8 : pT > 0.5
-      if(t->pTD1<0.8 && t->EtaD1<1.4) continue;
-      if(t->pTD2<0.8 && t->EtaD2<1.4) continue;
-      if(t->pTD1<0.5 && t->EtaD1>1.4) continue;
-      if(t->pTD2<0.5 && t->EtaD2>1.4) continue;
+      //if(std::fabs(t->pTD1<0.8) && t->EtaD1<1.4) continue;
+      //if(std::fabs(t->pTD2<0.8) && t->EtaD2<1.4) continue;
+      //if(std::fabs(t->pTD1<0.5) && t->EtaD1>1.4) continue;
+      //if(std::fabs(t->pTD2<0.5) && t->EtaD2>1.4) continue;
+      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
+      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
 
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
