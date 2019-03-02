@@ -36,12 +36,12 @@ void invBetaPlot()
    bool draw2D = false;
    bool projection = false;
    bool profile= true;
+
    TCanvas *c[4];
-   TFile* f1 = new TFile("matchPromptD0.root");
+   TFile* f1 = new TFile("matchPromptD0_fullSample.root");
    TNtuple* tp = (TNtuple*) f1->Get("PromptD");
    matchD* t = new matchD(tp);
    std::cout << t->GetEntries() << std::endl;
-
 
    TH2F* hdInvBetaPionVsPDau1D = new TH2F("hdInvBetaPionVsPDau1D", "hdInvBetaPionVsPDau1D" , 100, 0, 10, 1000, -0.1, 0.1);
    TH2F* hdInvBetaKaonVsPDau2D = new TH2F("hdInvBetaKaonVsPDau2D", "hdInvBetaKaonVsPDau2D", 100, 0, 10, 1000, -0.1, 0.1);
@@ -56,6 +56,13 @@ void invBetaPlot()
       t->GetEntry(ientry);
       if(t->y<-3 || t->y>3) continue;
       //if(t->pT>0.5) continue;
+
+      // require eta<1.4 ? pT > 0.8 : pT > 0.5
+      if(t->pTD1<0.8 && t->EtaD1<1.4) continue;
+      if(t->pTD2<0.8 && t->EtaD2<1.4) continue;
+      if(t->pTD1<0.5 && t->EtaD1>1.4) continue;
+      if(t->pTD2<0.5 && t->EtaD2>1.4) continue;
+
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
       if(t->flavor == 1 && t->isMtdDau1) hdInvBetaPionVsPDau1D->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
@@ -123,49 +130,105 @@ void invBetaPlot()
       c[0]->cd();
       TProfile* hdInvBetaPion = hdInvBetaPionVsP->ProfileX("Pion", 1, -1, "i");
       hdInvBetaPion->GetYaxis()->SetRangeUser(-0.001, 0.001);
-      hdInvBetaPion->GetYaxis()->SetTitle("#sigma/#sqrt{N}");
+      hdInvBetaPion->GetYaxis()->SetTitle("Mean of 1/beta - 1/beta_{#pi}");
       hdInvBetaPion->GetXaxis()->SetTitle("p (GeV)");
       hdInvBetaPion->Draw();
 
       c[1]->cd();
       TProfile* hdInvBetaPionstd = hdInvBetaPionVsP->ProfileX("Pionstd", 1, -1, "s");
       hdInvBetaPionstd->GetYaxis()->SetRangeUser(-0.03, 0.03);
-      hdInvBetaPionstd->GetYaxis()->SetTitle("#sigma");
+      hdInvBetaPionstd->GetYaxis()->SetTitle("Mean of 1/beta - 1/beta_{#pi}");
       hdInvBetaPionstd->GetXaxis()->SetTitle("p (GeV)");
       hdInvBetaPionstd->Draw();
 
       c[2]->cd();
       TProfile* hdInvBetaKaon = hdInvBetaKaonVsP->ProfileX("Kion", 1, -1, "i");
       hdInvBetaKaon->GetYaxis()->SetRangeUser(-0.001, 0.001);
-      hdInvBetaKaon->GetYaxis()->SetTitle("#sigma/#sqrt{N}");
+      hdInvBetaKaon->GetYaxis()->SetTitle("Mean of 1/beta - 1/beta_{K}");
       hdInvBetaKaon->GetXaxis()->SetTitle("p (GeV)");
       hdInvBetaKaon->Draw();
 
       c[3]->cd();
       TProfile* hdInvBetaKaonstd = hdInvBetaKaonVsP->ProfileX("Kionstd", 1, -1, "s");
       hdInvBetaKaonstd->GetYaxis()->SetRangeUser(-0.03, 0.03);
-      hdInvBetaKaonstd->GetYaxis()->SetTitle("#sigma");
+      hdInvBetaKaonstd->GetYaxis()->SetTitle("Mean of 1/beta - 1/beta_{K}");
       hdInvBetaKaonstd->GetXaxis()->SetTitle("p (GeV)");
       hdInvBetaKaonstd->Draw();
-//      diffBetaRms[7] = {0}:
-//      for(int i=0; i<7; i++){
-         //std::cout << hdInvBetaPion->GetBinContent(i+1) << std::endl;;
-         //std::cout << hdInvBetaPionstd->GetBinContent(i+1) << std::endl;;
-         //std::cout << hdInvBetaKaon->GetBinContent(i+1) << std::endl;;
-         //std::cout << hdInvBetaKaonstd->GetBinContent(i+1) << std::endl;;
-         //std::cout << hdInvBetaPion->GetBinError(i+1) << std::endl;;
-         //std::cout << hdInvBetaPionstd->GetBinError(i+1) << std::endl;;
-         //std::cout << hdInvBetaKaon->GetBinError(i+1) << std::endl;;
-         //std::cout << hdInvBetaKaonstd->GetBinError(i+1) << std::endl;;
- //        diffBetaRms[i] = {hdInvBetaPionstd->GetBinError(i+1) + hdInvBetaKaonstd->GetBinError(i+1) }/ 2.;
-  //    }
-      //TH1F* hPionFrac3Sigma = new TH1F("hPionFrac3Sigma", "hPionFrac3Sigma", 1000, 0, 10)
-      //TH2F* hPion = hdInvBetaPionVsPDau1D->Clone();
-      //hPion->Add(hdInvBetaPionVsPDau2Dbar);
-      //for(int ip=0; ip<1000; ip++){
-      //   float frac = 
-         
-      //}
 
+      TGraph* gPion = new TGraph(50);
+      TGraph* gKaon = new TGraph(50);
+
+      for(int i=0; i<50; i++){
+         gPion->SetPoint(i, hdInvBetaPionstd->GetBinCenter(i+1), hdInvBetaPionstd->GetBinError(i+1));
+         gKaon->SetPoint(i, hdInvBetaKaonstd->GetBinCenter(i+1), hdInvBetaKaonstd->GetBinError(i+1));
+      }
+
+      TF1* fExpPion = new TF1("fExpPion_dInvBetaRMS", "[0]+[1]*exp(-[2]*x)", 0.8, 10);
+      TF1* fPoly2Pion = new TF1("fPoly2Pion_dInvBetaRMS", "[0]+[1]*x +[2]*x*x", 0.8, 10);
+
+      fExpPion->SetParameters(0.005, 0.017, 0.36);
+      fPoly2Pion->SetParameters(0.0185, -0.003, 0.00017);
+      fPoly2Pion->SetLineColor(kBlue);
+      gPion->Fit(fExpPion, "Q", "", 0.8, 10);
+      gPion->Fit(fExpPion, "Q", "", 0.8, 10);
+      gPion->Fit(fExpPion, "Q", "", 0.8, 10);
+      gPion->Fit(fExpPion, "", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "Q", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "Q", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "Q", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "", "", 0.8, 10);
+
+      c[0]->cd();
+      gPion->SetMarkerColor(kBlack);
+      gPion->SetMarkerSize(0.8);
+      gPion->SetMarkerStyle(kOpenCircle);
+      gPion->GetYaxis()->SetLimits(0, 0.022);
+      gPion->GetYaxis()->SetTitle("RMS");
+      gPion->GetXaxis()->SetTitle("p (GeV)");
+      gPion->SetTitle("RMS of diff_1/beta_Pion");
+      gPion->Draw("pa");
+      fExpPion->Draw("same");
+      fPoly2Pion->Draw("same");
+      TLegend *l1 = new TLegend(0.7, 0.7, 0.95, 0.95);
+      l1->AddEntry(fExpPion, "exp", "l");
+      l1->AddEntry(fPoly2Pion, "poly2", "l");
+      l1->Draw();
+
+      TF1* fExpKaon = new TF1("fExpKaon_dInvBetaRMS", "[0]+[1]*exp(-[2]*x)", 0.8, 10);
+      TF1* fPoly2Kaon = new TF1("fPoly2Kaon_dInvBetaRMS", "[0]+[1]*x + [2]*x*x", 0.8, 10);
+
+      fExpKaon->SetParameters(0.005, 0.017, 0.36);
+      fPoly2Kaon->SetParameters(0.0185, -0.003, 0.00017);
+      fPoly2Kaon->SetLineColor(kBlue);
+      gKaon->Fit(fExpKaon, "Q", "", 0.8, 10);
+      gKaon->Fit(fExpKaon, "Q", "", 0.8, 10);
+      gKaon->Fit(fExpKaon, "Q", "", 0.8, 10);
+      gKaon->Fit(fExpKaon, "", "", 0.8, 10);
+      gKaon->Fit(fPoly2Kaon, "Q", "", 0.8, 10);
+      gKaon->Fit(fPoly2Kaon, "Q", "", 0.8, 10);
+      gKaon->Fit(fPoly2Kaon, "Q", "", 0.8, 10);
+      gKaon->Fit(fPoly2Kaon, "", "", 0.8, 10);
+      c[2]->cd();
+      gKaon->SetMarkerColor(kBlack);
+      gKaon->SetMarkerSize(0.8);
+      gKaon->SetMarkerStyle(kOpenCircle);
+      gKaon->GetYaxis()->SetLimits(0, 0.022);
+      gKaon->GetYaxis()->SetTitle("RMS");
+      gKaon->GetXaxis()->SetTitle("p (GeV)");
+      gKaon->SetTitle("RMS of diff_1/beta_Kaon");
+      gKaon->Draw("pa");
+      fExpKaon->Draw("same");
+      fPoly2Kaon->Draw("same");
+      TLegend *l2 = new TLegend(0.7, 0.7, 0.95, 0.95);
+      l2->AddEntry(fExpKaon, "exp", "l");
+      l2->AddEntry(fPoly2Kaon, "poly2", "l");
+      l2->Draw();
+
+      TFile fFunc("fFuncDInvBeta.root", "recreate");
+
+      fExpPion->Write();
+      fExpKaon->Write();
+      fPoly2Pion->Write();
+      fPoly2Kaon->Write();
    }
 }
