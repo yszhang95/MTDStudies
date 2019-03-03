@@ -172,6 +172,6 @@ void mtdAcceptance()
    //std::cout << (double)nDau1Mtd[5]/nTotal[5] << std::endl;
    //std::cout << hDau2MtdY->GetBinContent(5+1) << std::endl;
    //std::cout << (double)nDau2Mtd[5]/nTotal[5] << std::endl;
-   std::cout << hBothMtdY->GetBinContent(5+1) << std::endl;
-   std::cout << (double)nBothMtd[5]/nTotal[5] << std::endl;
+   //std::cout << hBothMtdY->GetBinContent(5+1) << std::endl;
+   //std::cout << (double)nBothMtd[5]/nTotal[5] << std::endl;
 }
