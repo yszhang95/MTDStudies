@@ -353,14 +353,14 @@ void mtdEff()
       lKaon->Draw();
    }
    if(isD0MtdEff){
-      TCanvas* c1 = new TCanvas("hD0mass", "", 450, 450);
+      TCanvas* c1 = new TCanvas("hD0pT", "", 450, 450);
       c1->SetLeftMargin(0.16);
       gStyle->SetOptStat(0);
 
-      TH1F* hDraw = new TH1F("hDrawD0", "hDrawD0", 100, 0, 10);
+      TH1F* hDraw = new TH1F("hDrawD0", "", 100, 0, 10);
       hDraw->GetYaxis()->SetRangeUser(0, 1.3);
       hDraw->GetYaxis()->SetTitle("D0 yield eff");
-      hDraw->GetXaxis()->SetTitle("mass (GeV)");
+      hDraw->GetXaxis()->SetTitle("pT (GeV)");
       hDraw->Draw();
 
       hD0Pt->Sumw2();
@@ -381,7 +381,8 @@ void mtdEff()
       hD0Pt1sigma->Draw("same");
 
       TLatex* latex = new TLatex();
-      latex->DrawLatexNDC(0.75, 0.7, "-3 < D^{0} Rapidity < 3");
+      latex->SetTextSize(0.036);
+      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
 
       TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
       legend->AddEntry(hD0Pt3sigma, "3 RMS", "l");
@@ -393,5 +394,12 @@ void mtdEff()
       std::cout << "only one have mtd: " << nOneMTD << std::endl;
       std::cout << "No one have mtd: " << nNoMTD << std::endl;
       std::cout << "Total: " << hD0Pt->GetEntries() << std::endl;
+
+      std::string effFunc = Form("(x*x*%f + x*%f + %f)/%f", (float)nBothMTD, (float)nOneMTD, (float)nNoMTD, hD0Pt->GetEntries());
+      TF1* effCal = new TF1("effCal", effFunc.c_str(), 0, 1);
+
+      std::cout << "1 RMS, using eff_pi/k = 0.85, eff_D0 = " << effCal->Eval(0.85) << std::endl;
+      std::cout << "2 RMS, using eff_pi/k = 0.95, eff_D0 = " << effCal->Eval(0.95) << std::endl;
+      std::cout << "2 RMS, using eff_pi/k = 0.99, eff_D0 = " << effCal->Eval(0.99) << std::endl;
    }
 }

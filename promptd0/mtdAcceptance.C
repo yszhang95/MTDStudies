@@ -104,6 +104,9 @@ void mtdAcceptance()
 //   l1->Draw();
 
    // full range of pT, with |y|<3 
+   TLatex* latex = new TLatex();
+   latex->SetTextSize(0.036);
+
    TCanvas* c2 = new TCanvas("cD0pT", "", 450, 500);
 
    gStyle->SetOptStat(0);
@@ -127,6 +130,8 @@ void mtdAcceptance()
    hDau2MtdPt->Draw("same");
    hBothMtdPt->Draw("same");
    hNoMtdPt->Draw("same");
+
+   latex->DrawLatexNDC(0.6, 0.68, "-3 < D^{0} Rapidity < 3");
 
    TLegend *l2 = new TLegend(0.5, 0.75, 0.97, 0.95);
    l2->AddEntry(hNoMtdPt, "no daughter has mtd hits", "pl");
@@ -158,6 +163,8 @@ void mtdAcceptance()
    hDau2MtdY->Draw("same");
    hBothMtdY->Draw("same");
    hNoMtdY->Draw("same");
+
+   latex->DrawLatexNDC(0.6, 0.68, "D^{0} p_{T} < 0.5 GeV");
 
    TLegend *l3 = new TLegend(0.5, 0.75, 0.97, 0.95);
    l3->AddEntry(hNoMtdY, "no daughter has mtd hits", "pl");
