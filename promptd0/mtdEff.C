@@ -34,18 +34,24 @@ void mtdEff()
    std::cout << t->GetEntries() << std::endl;
 
    const bool daughterEff_Y_zeroPt = false;
-   const bool daughterEff_P = true;
+   const bool daughterEff_P = false;
+   const bool isD0MtdEff = true;
 
+   TH1F* hPionEff;
+   TH1F* hPion3sigmaEff;
+   TH1F* hPion2sigmaEff;
+   TH1F* hPion1sigmaEff;
 
-	TH1F* hPionEff;
-	TH1F* hPion3sigmaEff;
-	TH1F* hPion2sigmaEff;
-	TH1F* hPion1sigmaEff;
-	                    ;
-	TH1F* hKaonEff;
-	TH1F* hKaon3sigmaEff;
-	TH1F* hKaon2sigmaEff;
-	TH1F* hKaon1sigmaEff;
+   TH1F* hKaonEff;
+   TH1F* hKaon3sigmaEff;
+   TH1F* hKaon2sigmaEff;
+   TH1F* hKaon1sigmaEff;
+
+   TH1F* hD0Pt;
+   TH1F* hD0Pt3sigma;
+   TH1F* hD0Pt2sigma;
+   TH1F* hD0Pt1sigma;
+
    if(daughterEff_Y_zeroPt){
       hPionEff = new TH1F("hPionEff", "hPionEff", ana::nuOfY, -3, 3);
       hPion3sigmaEff = new TH1F("hPion3sigmaEff", "hPion3sigmaEff", ana::nuOfY, -3, 3);
@@ -70,18 +76,29 @@ void mtdEff()
       hKaon1sigmaEff = new TH1F("hKaon1sigmaEff", "hKaon1sigmaEff", 100, 0, 10);
    }
 
+   if(isD0MtdEff){
+      hD0Pt = new TH1F("hD0Pt", "hD0Pt", 100, 0, 10);
+      hD0Pt3sigma = new TH1F("hD0Pt3sigma", "hD0Pt3sigma", 100, 0, 10);
+      hD0Pt2sigma = new TH1F("hD0Pt2sigma", "hD0Pt2sigma", 100, 0, 10);
+      hD0Pt1sigma = new TH1F("hD0Pt1sigma", "hD0Pt1sigma", 100, 0, 10);
+   }
+
+   Long64_t nBothMTD = 0;
+   Long64_t nOneMTD = 0;
+   Long64_t nNoMTD = 0;
+   
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
       t->GetEntry(ientry);
 
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
 
-
       // require eta<1.4 ? pT > 0.8 : pT > 0.5
       //if(std::fabs(t->pTD1<0.8) && t->EtaD1<1.4) continue;
       //if(std::fabs(t->pTD2<0.8) && t->EtaD2<1.4) continue;
       //if(std::fabs(t->pTD1<0.5) && t->EtaD1>1.4) continue;
       //if(std::fabs(t->pTD2<0.5) && t->EtaD2>1.4) continue;
+
       if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
       if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
 
@@ -199,6 +216,51 @@ void mtdEff()
             if(is1sigmaPion && t->isMtdDau2) hPion1sigmaEff->Fill(pD2);
          }
       }
+
+      if(isD0MtdEff && t->matchGEN && !t->isSwap){
+         hD0Pt->Fill(t->pT);
+
+         bool is3sigmaPionDau1 = true;
+         bool is3sigmaKaonDau1 = true;
+         bool is3sigmaPionDau2 = true;
+         bool is3sigmaKaonDau2 = true;
+         
+         if(t->isMtdDau1) is3sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
+         if(t->isMtdDau1) is3sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
+         if(t->isMtdDau2) is3sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
+         if(t->isMtdDau2) is3sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 * fExpKaon->Eval(pD2);
+
+         if((is3sigmaPionDau1 && is3sigmaKaonDau2) || (is3sigmaKaonDau1 && is3sigmaPionDau2)) hD0Pt3sigma->Fill(t->pT);
+
+         bool is2sigmaPionDau1 = true;
+         bool is2sigmaKaonDau1 = true;
+         bool is2sigmaPionDau2 = true;
+         bool is2sigmaKaonDau2 = true;
+
+         if(t->isMtdDau1) is2sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
+         if(t->isMtdDau1) is2sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
+         if(t->isMtdDau2) is2sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
+         if(t->isMtdDau2) is2sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 * fExpKaon->Eval(pD2);
+
+         if((is2sigmaPionDau1 && is2sigmaKaonDau2) || (is2sigmaKaonDau1 && is2sigmaPionDau2)) hD0Pt2sigma->Fill(t->pT);
+
+         bool is1sigmaPionDau1 = true;
+         bool is1sigmaKaonDau1 = true;
+         bool is1sigmaPionDau2 = true;
+         bool is1sigmaKaonDau2 = true;
+
+         if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
+         if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
+         if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
+         if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
+
+         if((is1sigmaPionDau1 && is1sigmaKaonDau2) || (is1sigmaKaonDau1 && is1sigmaPionDau2)) hD0Pt1sigma->Fill(t->pT);
+
+         if(t->isMtdDau1 && t->isMtdDau2) nBothMTD++;
+         if(t->isMtdDau1 && !t->isMtdDau2) nOneMTD++;
+         if(!t->isMtdDau1 && t->isMtdDau2) nOneMTD++;
+         if(!t->isMtdDau1 && !t->isMtdDau2) nNoMTD++;
+      }
    }
    if(daughterEff_Y_zeroPt){
       TCanvas* c1 = new TCanvas("c1", "PionEff", 500, 550);
@@ -289,5 +351,47 @@ void mtdEff()
       lKaon->AddEntry(hKaon2sigmaEff, "2 RMS", "l");
       lKaon->AddEntry(hKaon1sigmaEff, "1 RMS", "l");
       lKaon->Draw();
+   }
+   if(isD0MtdEff){
+      TCanvas* c1 = new TCanvas("hD0mass", "", 450, 450);
+      c1->SetLeftMargin(0.16);
+      gStyle->SetOptStat(0);
+
+      TH1F* hDraw = new TH1F("hDrawD0", "hDrawD0", 100, 0, 10);
+      hDraw->GetYaxis()->SetRangeUser(0, 1.3);
+      hDraw->GetYaxis()->SetTitle("D0 yield eff");
+      hDraw->GetXaxis()->SetTitle("mass (GeV)");
+      hDraw->Draw();
+
+      hD0Pt->Sumw2();
+      hD0Pt3sigma->Sumw2();
+      hD0Pt2sigma->Sumw2();
+      hD0Pt1sigma->Sumw2();
+
+      hD0Pt3sigma->Divide(hD0Pt);
+      hD0Pt2sigma->Divide(hD0Pt);
+      hD0Pt1sigma->Divide(hD0Pt);
+
+      hD0Pt3sigma->SetLineColor(kGreen-6);
+      hD0Pt2sigma->SetLineColor(kBlue);
+      hD0Pt1sigma->SetLineColor(kRed);
+
+      hD0Pt3sigma->Draw("same");
+      hD0Pt2sigma->Draw("same");
+      hD0Pt1sigma->Draw("same");
+
+      TLatex* latex = new TLatex();
+      latex->DrawLatexNDC(0.75, 0.7, "-3 < D^{0} Rapidity < 3");
+
+      TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
+      legend->AddEntry(hD0Pt3sigma, "3 RMS", "l");
+      legend->AddEntry(hD0Pt2sigma, "2 RMS", "l");
+      legend->AddEntry(hD0Pt1sigma, "1 RMS", "l");
+      legend->Draw();
+      
+      std::cout << "both have mtd: " << nBothMTD << std::endl;
+      std::cout << "only one have mtd: " << nOneMTD << std::endl;
+      std::cout << "No one have mtd: " << nNoMTD << std::endl;
+      std::cout << "Total: " << hD0Pt->GetEntries() << std::endl;
    }
 }
