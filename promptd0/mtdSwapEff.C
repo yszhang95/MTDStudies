@@ -30,7 +30,7 @@ void mtdSwapEff()
 
    const bool daughterEff_Y_zeroPt = false;
    const bool daughterEff_P = true;
-   const bool isD0MtdEff = true;
+   const bool isD0MtdEff = false;
 
    TH1F* hPionEff;
    TH1F* hPion3sigmaEff;
@@ -96,6 +96,8 @@ void mtdSwapEff()
 
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
+      //if(pD1>1.2) continue;
+      //if(pD2>1.2) continue;
 
       if(daughterEff_Y_zeroPt){
          if(t->pT > 0.5) continue;
@@ -384,17 +386,5 @@ void mtdSwapEff()
       legend->AddEntry(hD0Pt2sigma, "2 RMS", "l");
       legend->AddEntry(hD0Pt1sigma, "1 RMS", "l");
       legend->Draw();
-      
-      std::cout << "both have mtd: " << nBothMTD << std::endl;
-      std::cout << "only one have mtd: " << nOneMTD << std::endl;
-      std::cout << "No one have mtd: " << nNoMTD << std::endl;
-      std::cout << "Total: " << hD0Pt->GetEntries() << std::endl;
-
-      std::string effFunc = Form("(x*x*%f + x*%f + %f)/%f", (float)nBothMTD, (float)nOneMTD, (float)nNoMTD, hD0Pt->GetEntries());
-      TF1* effCal = new TF1("effCal", effFunc.c_str(), 0, 1);
-
-      std::cout << "1 RMS, using eff_pi/k = 0.85, eff_D0 = " << effCal->Eval(0.85) << std::endl;
-      std::cout << "2 RMS, using eff_pi/k = 0.95, eff_D0 = " << effCal->Eval(0.95) << std::endl;
-      std::cout << "2 RMS, using eff_pi/k = 0.99, eff_D0 = " << effCal->Eval(0.99) << std::endl;
    }
 }
