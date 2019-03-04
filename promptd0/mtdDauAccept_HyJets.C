@@ -1,5 +1,4 @@
-#include "PromptD.h"
-#include "PromptD.h"
+#include "HyJets.h"
 #include "TMath.h"
 #include <iostream>
 #include "TH1.h"
@@ -24,13 +23,12 @@ int whichY(const float& y)
    return -1;
 }
 
-void mtdDauAccept_AllCand()
+void mtdDauAccept_HyJets()
 {
-   TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
-   //chain->Add("/eos/cms/store/group/phys_heavyions/MTD/yousen/VertexCompositeAnalysis/PromptD0/D0_PiK_prompt_pt0_y4_5p5TeV_TuneCP5_Pythia8/crab_prompt_d0_ntp_mc_mtd_full_v2/190228_033917/0000/promptd0_mc_mtd_1.root");
-   TFileCollection* fc = new TFileCollection("dum", "", "d0signal.list");
+   TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
+   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
    chain->AddFileInfoList(fc->GetList()); 
-   PromptD* t = new PromptD(chain);
+   HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
 
    // here is related to full pT
@@ -69,7 +67,7 @@ void mtdDauAccept_AllCand()
 
       if(fabs(t->EtaD1) < 3 && fabs(t->EtaD1) < 1.4 ? t->pTD1 > 0.8 : t->pTD1 > 0.5){
          hPtVsEtaDau1All->Fill(t->EtaD1, t->pTD1);
-         if(t->isMtdDau1) hPtVsEtaDau1Mtd->Fill(t->EtaD1, t->pTD1);
+         if(t->beta1_PV!=-99) hPtVsEtaDau1Mtd->Fill(t->EtaD1, t->pTD1);
       }
 
       if(fabs(t->EtaD1) > 3) continue;
@@ -81,20 +79,20 @@ void mtdDauAccept_AllCand()
       if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
 
       hAllDau1Pt->Fill(t->pTD1);
-      if(!t->isMtdDau1)hNoMtdDau1Pt->Fill(t->pTD1);
-      if(t->isMtdDau1)hMtdDau1Pt->Fill(t->pTD1);
+      if(!(t->beta1_PV!=-99))hNoMtdDau1Pt->Fill(t->pTD1);
+      if(t->beta1_PV!=-99)hMtdDau1Pt->Fill(t->pTD1);
 
       hAllDau2Pt->Fill(t->pTD2);
-      if(!t->isMtdDau2)hNoMtdDau2Pt->Fill(t->pTD2);
-      if(t->isMtdDau2)hMtdDau2Pt->Fill(t->pTD2);
+      if(!(t->beta2_PV!=-99))hNoMtdDau2Pt->Fill(t->pTD2);
+      if(t->beta2_PV!=-99)hMtdDau2Pt->Fill(t->pTD2);
 
       hAllDau1Eta->Fill(t->EtaD1);
-      if(!t->isMtdDau1)hNoMtdDau1Eta->Fill(t->EtaD1);
-      if(t->isMtdDau1)hMtdDau1Eta->Fill(t->EtaD1);
+      if(!(t->beta1_PV!=-99))hNoMtdDau1Eta->Fill(t->EtaD1);
+      if(t->beta1_PV!=-99)hMtdDau1Eta->Fill(t->EtaD1);
 
       hAllDau2Eta->Fill(t->EtaD2);
-      if(!t->isMtdDau2)hNoMtdDau2Eta->Fill(t->EtaD2);
-      if(t->isMtdDau2)hMtdDau2Eta->Fill(t->EtaD2);
+      if(!(t->beta2_PV!=-99))hNoMtdDau2Eta->Fill(t->EtaD2);
+      if(t->beta2_PV!=-99)hMtdDau2Eta->Fill(t->EtaD2);
    }
    
 
@@ -214,7 +212,7 @@ void mtdDauAccept_AllCand()
    l4->Draw();
    c4->SaveAs("dau2Eta.gif");
 
-   TFile fout("dauFrac.root", "recreate");
+   TFile fout("dauFrac_hyjets.root", "recreate");
    hMtdDau1Pt->Write();
    hMtdDau2Pt->Write();
    hMtdDau1Eta->Write();
@@ -225,4 +223,8 @@ void mtdDauAccept_AllCand()
    hNoMtdDau2Eta->Write();
    hPtVsEtaDau1All->Write();
    hPtVsEtaDau1Mtd->Write();
+   hAllDau1Pt->Write();
+   hAllDau2Pt->Write();
+   hAllDau1Eta->Write();
+   hAllDau2Eta->Write();
 }
