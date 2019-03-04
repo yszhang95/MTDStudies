@@ -55,8 +55,8 @@ void mtdDauAccept()
 
       if(fabs(t->EtaD1) > 3) continue;
       if(fabs(t->EtaD2) > 3) continue;
-      if(fabs(t->EtaD1) < 1.6) continue;
-      if(fabs(t->EtaD2) < 1.6) continue;
+      //if(fabs(t->EtaD1) < 1.6) continue;
+      //if(fabs(t->EtaD2) < 1.6) continue;
 
       if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
       if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
