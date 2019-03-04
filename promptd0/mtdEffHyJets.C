@@ -3,8 +3,8 @@
 #include "TMath.h"
 #include <iostream>
 #include "TH1.h"
-//#include "TH2.h"
-//#include "TH2F.h"
+#include "TH2.h"
+#include "TH2F.h"
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TChain.h"
@@ -63,6 +63,9 @@ void mtdEffHyJets()
    TH1F* hD0Pt2sigma;
    TH1F* hD0Pt1sigma;
 
+   TH2F* hD0PtVsDau1PMtd;
+   TH2F* hD0PtVsDau2PMtd;
+
    if(daughterEff_Y_zeroPt){
       hPionEff = new TH1F("hPionEff", "hPionEff", ana::nuOfY, -3, 3);
       hPion3sigmaEff = new TH1F("hPion3sigmaEff", "hPion3sigmaEff", ana::nuOfY, -3, 3);
@@ -92,6 +95,9 @@ void mtdEffHyJets()
       hD0Pt3sigma = new TH1F("hD0Pt3sigma", "hD0Pt3sigma", 100, 0, 10);
       hD0Pt2sigma = new TH1F("hD0Pt2sigma", "hD0Pt2sigma", 100, 0, 10);
       hD0Pt1sigma = new TH1F("hD0Pt1sigma", "hD0Pt1sigma", 100, 0, 10);
+
+      hD0PtVsDau1PMtd = new TH2F("hD0PtVsDau1PMtd", "hD0PtVsDau1PMtd", 1000, 0, 5, 1000, 0, 10);
+      hD0PtVsDau2PMtd = new TH2F("hD0PtVsDau2PMtd", "hD0PtVsDau2PMtd", 1000, 0, 5, 1000, 0, 10);
    }
 
    Long64_t nBothMTD = 0;
@@ -228,6 +234,9 @@ void mtdEffHyJets()
 
       if(isD0MtdEff){
          hD0Pt->Fill(t->pT);
+
+         if(t->beta1_PV!=-99) hD0PtVsDau1PMtd->Fill(t->pT, pD1);
+         if(t->beta2_PV!=-99) hD0PtVsDau2PMtd->Fill(t->pT, pD2);
 
          bool is3sigmaPionDau1 = true;
          bool is3sigmaKaonDau1 = true;
@@ -411,11 +420,14 @@ void mtdEffHyJets()
 //      //std::cout << "2 RMS, using eff_pi/k = 0.95, eff_D0 = " << effCal->Eval(0.95) << std::endl;
 //      //std::cout << "2 RMS, using eff_pi/k = 0.99, eff_D0 = " << effCal->Eval(0.99) << std::endl;
 //   }
+
    TFile fout("hists.root", "recreate");
    hD0Pt->Write();
    hD0Pt3sigma->Write();
    hD0Pt2sigma->Write();
    hD0Pt1sigma->Write();
+   hD0PtVsDau1PMtd->Write();
+   hD0PtVsDau2PMtd->Write();
    hPionEff->Write();
    hPion3sigmaEff->Write();
    hPion2sigmaEff->Write();
