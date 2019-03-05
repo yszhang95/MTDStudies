@@ -87,17 +87,17 @@ void calSig()
 
    TLatex* ltx = new TLatex();
    TCanvas* c[ana::nuOfY];
-   for(int i=0; i<ana::nuOfY; i++){
-      c[i] = new TCanvas(Form("c_%d", i), "", 450, 500);
-      gStyle->SetOptStat(0);
-      float max = hObsMtd[i]->GetMaximum();
-      hObsMtd[i]->GetYaxis()->SetRangeUser(max*0.5, max*1.3);
-      hObsMtd[i]->Draw();
-      ltx->DrawLatexNDC(0.5, 0.6, Form("%.1f < y < %.1f", ana::ybin[i], ana::ybin[i+1]));
-   }
+//   for(int i=0; i<ana::nuOfY; i++){
+//      c[i] = new TCanvas(Form("c_%d", i), "", 450, 500);
+//      gStyle->SetOptStat(0);
+//      float max = hObsMtd[i]->GetMaximum();
+//      hObsMtd[i]->GetYaxis()->SetRangeUser(max*0.5, max*1.3);
+//      hObsMtd[i]->Draw();
+//      ltx->DrawLatexNDC(0.5, 0.6, Form("%.1f < y < %.1f", ana::ybin[i], ana::ybin[i+1]));
+//   }
 
 
-   TCanvas* c1 = new TCanvas("c1", "", 450, 500);
+   TCanvas* c1 = new TCanvas("c1", "", 600, 500);
    gStyle->SetOptStat(0);
    hSigMtd->GetYaxis()->SetTitle("Significance");
    hSigMtd->GetXaxis()->SetTitle("y");
@@ -106,10 +106,13 @@ void calSig()
    hSigMtd->SetLineColor(kRed);
    hSigMtd->Draw();
    hSig->Draw("same");
-   TLegend* lgd = new TLegend(0.7, 0.8, 0.95, 0.95);
+   TLegend* lgd = new TLegend(0.7, 0.8, 0.90, 0.90);
    lgd->AddEntry(hSigMtd, "w/ mtd", "lp");
    lgd->AddEntry(hSig, "w/o mtd", "lp");
    lgd->Draw();
+   ltx->SetTextSize(0.05);
+   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 30 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.5, 0.7, "MB 25B events");
 
    TCanvas* c2 = new TCanvas("c2", "", 450, 500);
    gStyle->SetOptStat(0);
@@ -120,10 +123,11 @@ void calSig()
    hS->GetYaxis()->SetRangeUser(0, maxS*1.3);
    hS->Draw();
    hSMtd->Draw("same");
-   TLegend* lgds = new TLegend(0.7, 0.8, 0.95, 0.95);
+   TLegend* lgds = new TLegend(0.7, 0.8, 0.90, 0.90);
    lgds->AddEntry(hSMtd, "w/ mtd", "lp");
    lgds->AddEntry(hS, "w/o mtd", "lp");
    lgds->Draw();
+   ltx->DrawLatexNDC(0.5, 0.7, "MB 25B events");
 
    TCanvas* c3 = new TCanvas("c3", "", 450, 500);
    gStyle->SetOptStat(0);
@@ -134,8 +138,9 @@ void calSig()
    hB->GetYaxis()->SetRangeUser(0, maxB*1.3);
    hB->Draw();
    hBMtd->Draw("same");
-   TLegend* lgdb = new TLegend(0.7, 0.8, 0.95, 0.95);
+   TLegend* lgdb = new TLegend(0.7, 0.8, 0.90, 0.90);
    lgdb->AddEntry(hBMtd, "w/ mtd", "lp");
    lgdb->AddEntry(hB, "w/o mtd", "lp");
    lgdb->Draw();
+   ltx->DrawLatexNDC(0.5, 0.7, "MB 25B events");
 }
