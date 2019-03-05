@@ -208,7 +208,7 @@ void calSigCent()
       hBCent->SetBinContent(iy+1, b);
    }
 
-   TCanvas* c4 = new TCanvas("c4", "", 450, 500);
+   TCanvas* c4 = new TCanvas("c4", "", 600, 500);
    gStyle->SetOptStat(0);
    hSigCentMtd->GetYaxis()->SetTitle("Significance");
    hSigCentMtd->GetXaxis()->SetTitle("y");
@@ -217,11 +217,12 @@ void calSigCent()
    hSigCentMtd->SetLineColor(kRed);
    hSigCentMtd->Draw();
    hSigCent->Draw("same");
-   TLegend* lgdCent = new TLegend(0.7, 0.8, 0.95, 0.95);
+   TLegend* lgdCent = new TLegend(0.7, 0.8, 0.95, 0.90);
    lgdCent->AddEntry(hSigCentMtd, "w/ mtd", "lp");
    lgdCent->AddEntry(hSigCent, "w/o mtd", "lp");
    lgdCent->Draw();
-   ltx->DrawLatexNDC(0.5, 0.7, "central 2.5B events");
+   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.5, 0.75, "0~10% 25B events");
 
    TCanvas* c5 = new TCanvas("c5", "", 450, 500);
    gStyle->SetOptStat(0);

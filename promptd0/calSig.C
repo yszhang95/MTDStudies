@@ -51,6 +51,13 @@ void calSig()
    TH1F* hBMtd = new TH1F("hBMtd", "", ana::nuOfY, ana::ybin);
    TH1F* hB = new TH1F("hB", "", ana::nuOfY, ana::ybin);
 
+//   hSigMtd->Sumw2(false);
+//   hSig->Sumw2(false);
+//   hSMtd->Sumw2(false);
+//   hS->Sumw2(false);
+//   hBMtd->Sumw2(false);
+//   hB->Sumw2(false);
+
    for(int iy=0; iy<ana::nuOfY; iy++){
       //hGenPt[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
       hGenPt[iy]->Scale(scale_factor_perEvt * ana::evts_sim_MB);
@@ -87,14 +94,16 @@ void calSig()
 
    TLatex* ltx = new TLatex();
    TCanvas* c[ana::nuOfY];
-//   for(int i=0; i<ana::nuOfY; i++){
-//      c[i] = new TCanvas(Form("c_%d", i), "", 450, 500);
-//      gStyle->SetOptStat(0);
-//      float max = hObsMtd[i]->GetMaximum();
-//      hObsMtd[i]->GetYaxis()->SetRangeUser(max*0.5, max*1.3);
-//      hObsMtd[i]->Draw();
-//      ltx->DrawLatexNDC(0.5, 0.6, Form("%.1f < y < %.1f", ana::ybin[i], ana::ybin[i+1]));
-//   }
+   for(int i=0; i<ana::nuOfY; i++){
+      //c[i] = new TCanvas(Form("c_%d", i), "", 450, 500);
+      //gStyle->SetOptStat(0);
+      //float max = hObsMtd[i]->GetMaximum();
+      //hObsMtd[i]->GetYaxis()->SetRangeUser(max*0.5, max*1.3);
+      //hObsMtd[i]->Draw();
+      //hSignalMassMtd[i]->Draw();
+      //hBkgMassMtd[i]->Draw();
+      //ltx->DrawLatexNDC(0.5, 0.6, Form("%.1f < y < %.1f", ana::ybin[i], ana::ybin[i+1]));
+   }
 
 
    TCanvas* c1 = new TCanvas("c1", "", 600, 500);
@@ -111,8 +120,8 @@ void calSig()
    lgd->AddEntry(hSig, "w/o mtd", "lp");
    lgd->Draw();
    ltx->SetTextSize(0.05);
-   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 30 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.5, 0.7, "MB 25B events");
+   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.5, 0.75, "MB 25B events");
 
    TCanvas* c2 = new TCanvas("c2", "", 450, 500);
    gStyle->SetOptStat(0);
@@ -121,8 +130,8 @@ void calSig()
    hS->GetXaxis()->SetTitle("y");
    float maxS = hS->GetMaximum();
    hS->GetYaxis()->SetRangeUser(0, maxS*1.3);
-   hS->Draw();
-   hSMtd->Draw("same");
+   hS->Draw("e");
+   hSMtd->Draw("esame");
    TLegend* lgds = new TLegend(0.7, 0.8, 0.90, 0.90);
    lgds->AddEntry(hSMtd, "w/ mtd", "lp");
    lgds->AddEntry(hS, "w/o mtd", "lp");
@@ -136,8 +145,8 @@ void calSig()
    hBMtd->SetLineColor(kRed);
    float maxB = hB->GetMaximum();
    hB->GetYaxis()->SetRangeUser(0, maxB*1.3);
-   hB->Draw();
-   hBMtd->Draw("same");
+   hB->Draw("e");
+   hBMtd->Draw("esame");
    TLegend* lgdb = new TLegend(0.7, 0.8, 0.90, 0.90);
    lgdb->AddEntry(hBMtd, "w/ mtd", "lp");
    lgdb->AddEntry(hB, "w/o mtd", "lp");
