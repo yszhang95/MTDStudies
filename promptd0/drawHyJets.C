@@ -37,14 +37,37 @@ void drawHyJets()
 
 	f1->GetObject("hD0PtVsDau1PMtd", hD0PtVsDau1PMtd);
 	f1->GetObject("hD0PtVsDau2PMtd", hD0PtVsDau2PMtd);
-	
+
+   TH1F* hD0PtCent, * hD0PtCent3sigma, *hD0PtCent2sigma, *hD0PtCent1sigma;
+   TH1F* hPionEffCent, * hPion3sigmaEffCent, *hPion2sigmaEffCent, *hPion1sigmaEffCent;
+   TH1F* hKaonEffCent, * hKaon3sigmaEffCent, *hKaon2sigmaEffCent, *hKaon1sigmaEffCent;
+
+   f1->GetObject("hD0PtCent", hD0PtCent);
+   f1->GetObject("hD0PtCent3sigma", hD0PtCent3sigma);
+   f1->GetObject("hD0PtCent2sigma", hD0PtCent2sigma);
+   f1->GetObject("hD0PtCent1sigma", hD0PtCent1sigma);
+
+	f1->GetObject("hPionEffCent",hPionEffCent);
+	f1->GetObject("hPion3sigmaEffCent",hPion3sigmaEffCent);
+	f1->GetObject("hPion2sigmaEffCent",hPion2sigmaEffCent);
+	f1->GetObject("hPion1sigmaEffCent",hPion1sigmaEffCent);
+
+	f1->GetObject("hKaonEffCent",hKaonEffCent);
+	f1->GetObject("hKaon3sigmaEffCent",hKaon3sigmaEffCent);
+	f1->GetObject("hKaon2sigmaEffCent",hKaon2sigmaEffCent);
+	f1->GetObject("hKaon1sigmaEffCent",hKaon1sigmaEffCent);
+
    bool drawDau = true;
    bool drawD0 = true;
+   bool drawDauCent = true;
+   bool drawD0Cent = true;
 
    setPalette();
 
    if(drawDau){
-      TCanvas* c1 = new TCanvas("c1", "PionEff", 500, 550);
+      TLatex* latex = new TLatex();
+      latex->SetTextSize(0.036);
+      TCanvas* c1 = new TCanvas("cPionEff", "PionEff", 500, 550);
       gStyle->SetOptStat(0);
       TH1F* hDrawPion = new TH1F("hDrawPion", "", 100, 0, 10);
       hDrawPion->GetYaxis()->SetTitle("Pion Yield Ratio");
@@ -65,8 +88,10 @@ void drawHyJets()
       lPion->AddEntry(hPion2sigmaEff, "2 RMS", "l");
       lPion->AddEntry(hPion1sigmaEff, "1 RMS", "l");
       lPion->Draw();
+      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.5, "MB events");
 
-      TCanvas* c2 = new TCanvas("c2", "KaonEff", 500, 550);
+      TCanvas* c2 = new TCanvas("KaonEff", "KaonEff", 500, 550);
       gStyle->SetOptStat(0);
       TH1F* hDrawKaon = new TH1F("hDrawKaon", "", 100, 0, 10);
       hDrawKaon->GetYaxis()->SetTitle("Kaon Yield Ratio");
@@ -87,6 +112,8 @@ void drawHyJets()
       lKaon->AddEntry(hKaon2sigmaEff, "2 RMS", "l");
       lKaon->AddEntry(hKaon1sigmaEff, "1 RMS", "l");
 		lKaon->Draw();
+      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.5, "MB events");
    }
    if(drawD0){
    	TCanvas* c1 = new TCanvas("hD0pT", "", 450, 450);
@@ -119,6 +146,7 @@ void drawHyJets()
       TLatex* latex = new TLatex();
       latex->SetTextSize(0.036);
       latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.5, "MB events");
 
       TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
       legend->AddEntry(hD0Pt3sigma, "3 RMS", "l");
@@ -143,6 +171,97 @@ void drawHyJets()
       hD0PtVsDau2PMtd->Draw("COLZ");
    }
 
+   if(drawDauCent){
+      TLatex* latex = new TLatex();
+      latex->SetTextSize(0.036);
+      TCanvas* c1 = new TCanvas("PionEffCent", "PionEffCent", 500, 550);
+      gStyle->SetOptStat(0);
+      TH1F* hDrawPion = new TH1F("hDrawPionCent", "", 100, 0, 10);
+      hDrawPion->GetYaxis()->SetTitle("Pion Yield Ratio");
+      hDrawPion->GetYaxis()->SetRangeUser(0, 1.3);
+      hDrawPion->GetXaxis()->SetTitle("p (GeV)");
+      hDrawPion->Draw();
+      hPion3sigmaEffCent->Divide(hPionEffCent);
+      hPion2sigmaEffCent->Divide(hPionEffCent);
+      hPion1sigmaEffCent->Divide(hPionEffCent);
+      hPion3sigmaEffCent->SetLineColor(kGreen-6);
+      hPion2sigmaEffCent->SetLineColor(kBlue);
+      hPion1sigmaEffCent->SetLineColor(kRed);
+      hPion3sigmaEffCent->Draw("same");
+      hPion2sigmaEffCent->Draw("same");
+      hPion1sigmaEffCent->Draw("same");
+      TLegend *lPion = new TLegend(0.7, 0.8, 0.9, 0.9);
+      lPion->AddEntry(hPion3sigmaEffCent, "3 RMS", "l");
+      lPion->AddEntry(hPion2sigmaEffCent, "2 RMS", "l");
+      lPion->AddEntry(hPion1sigmaEffCent, "1 RMS", "l");
+      lPion->Draw();
+      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.5, "central events");
+
+      TCanvas* c2 = new TCanvas("KaonEffCent", "KaonEffCent", 500, 550);
+      gStyle->SetOptStat(0);
+      TH1F* hDrawKaon = new TH1F("hDrawKaonCent", "", 100, 0, 10);
+      hDrawKaon->GetYaxis()->SetTitle("Kaon Yield Ratio");
+      hDrawKaon->GetYaxis()->SetRangeUser(0, 1.3);
+      hDrawKaon->GetXaxis()->SetTitle("p (GeV)");
+      hDrawKaon->Draw();
+      hKaon3sigmaEffCent->Divide(hKaonEffCent);
+      hKaon2sigmaEffCent->Divide(hKaonEffCent);
+      hKaon1sigmaEffCent->Divide(hKaonEffCent);
+      hKaon3sigmaEffCent->SetLineColor(kGreen-6);
+      hKaon2sigmaEffCent->SetLineColor(kBlue);
+      hKaon1sigmaEffCent->SetLineColor(kRed);
+      hKaon3sigmaEffCent->Draw("same");
+      hKaon2sigmaEffCent->Draw("same");
+      hKaon1sigmaEffCent->Draw("same");
+      TLegend *lKaon = new TLegend(0.7, 0.8, 0.9, 0.9);
+      lKaon->AddEntry(hKaon3sigmaEffCent, "3 RMS", "l");
+      lKaon->AddEntry(hKaon2sigmaEffCent, "2 RMS", "l");
+      lKaon->AddEntry(hKaon1sigmaEffCent, "1 RMS", "l");
+		lKaon->Draw();
+      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.5, "central events");
+   }
+   if(drawD0Cent){
+   	TCanvas* c1 = new TCanvas("hD0pTCent", "", 450, 450);
+      c1->SetLeftMargin(0.16);
+      gStyle->SetOptStat(0);
+
+      TH1F* hDraw = new TH1F("hDrawD0Cent", "", 100, 0, 10);
+      hDraw->GetYaxis()->SetRangeUser(0, 1.3);
+      hDraw->GetYaxis()->SetTitle("D0 yield eff");
+      hDraw->GetXaxis()->SetTitle("pT (GeV)");
+      hDraw->Draw();
+
+      hD0PtCent->Sumw2();
+      hD0PtCent3sigma->Sumw2();
+      hD0PtCent2sigma->Sumw2();
+      hD0PtCent1sigma->Sumw2();
+
+      hD0PtCent3sigma->Divide(hD0PtCent);
+      hD0PtCent2sigma->Divide(hD0PtCent);
+      hD0PtCent1sigma->Divide(hD0PtCent);
+
+      hD0PtCent3sigma->SetLineColor(kGreen-6);
+      hD0PtCent2sigma->SetLineColor(kBlue);
+      hD0PtCent1sigma->SetLineColor(kRed);
+
+      hD0PtCent3sigma->Draw("same");
+      hD0PtCent2sigma->Draw("same");
+      hD0PtCent1sigma->Draw("same");
+
+      TLatex* latex = new TLatex();
+      latex->SetTextSize(0.036);
+      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.5, "central events");
+
+      TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
+      legend->AddEntry(hD0PtCent3sigma, "3 RMS", "l");
+      legend->AddEntry(hD0PtCent2sigma, "2 RMS", "l");
+      legend->AddEntry(hD0PtCent1sigma, "1 RMS", "l");
+      legend->Draw();
+   }
+
    TFile *f2 = new TFile("dauFrac_hyjets.root");
    TH1F* hMtdDau1Pt, *hMtdDau2Pt, *hMtdDau1Eta, *hMtdDau2Eta;
    TH1F* hNoMtdDau1Pt, *hNoMtdDau2Pt, *hNoMtdDau1Eta, *hNoMtdDau2Eta;
@@ -159,7 +278,7 @@ void drawHyJets()
    f2->GetObject("hPtVsEtaDau1All", hPtVsEtaDau1All);
 
 
-   bool drawDauFrac = true;
+   bool drawDauFrac = false;
 
    if(drawDauFrac){
    TLatex* latex = new TLatex();
