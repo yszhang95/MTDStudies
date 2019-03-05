@@ -88,7 +88,7 @@ void calSig()
       float max = hObsMtd[i]->GetMaximum();
       hObsMtd[i]->GetYaxis()->SetRangeUser(max*0.5, max*1.3);
       hObsMtd[i]->Draw();
-      ltx->DrawLatexNDC(0.5, 0.6, Form("%.1f < y < %.1f"), ana::ybin[i], ana::ybin[i+1]);
+      ltx->DrawLatexNDC(0.5, 0.6, Form("%.1f < y < %.1f", ana::ybin[i], ana::ybin[i+1]));
    }
 
 
