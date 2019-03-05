@@ -43,6 +43,8 @@ void hyjetsMass()
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
 
+   TH2F* hDau1PvsY = new TH2F("hDau1PvsY", "hDau1PvsY", 100, -3, 3, 1000, 0, 10);
+   TH2F* hDau2PvsY = new TH2F("hDau2PvsY", "hDau2PvsY", 100, -3, 3, 1000, 0, 10);
 
    TH1F* hMass[ana::nuOfY];
    TH1F* hMassMtd[ana::nuOfY];
@@ -89,6 +91,9 @@ void hyjetsMass()
       bool is1sigmaPionDau2 = true;
       bool is1sigmaKaonDau2 = true;
 
+      if(t->beta1_PV!=99) hDau1PvsY->Fill(t->y, pD1);
+      if(t->beta2_PV!=99) hDau2PvsY->Fill(t->y, pD2);
+
       if(t->beta1_PV!=-99) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
       if(t->beta1_PV!=-99) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
       if(t->beta2_PV!=-99) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
@@ -122,4 +127,7 @@ void hyjetsMass()
       hMassCentMtd[iy]->Write();
    }
    hFrac->Write();
+   hFracCent->Write();
+   hDau1PvsY->Write();
+   hDau2PvsY->Write();
 }
