@@ -42,6 +42,13 @@ void calSig()
    TH1F* hObs[ana::nuOfY];
    TH1F* hSigMtd = new TH1F("hSigMtd", "", ana::nuOfY, ana::ybin);
    TH1F* hSig = new TH1F("hSig", "", ana::nuOfY, ana::ybin);
+
+   TH1F* hSMtd = new TH1F("hSMtd", "", ana::nuOfY, ana::ybin);
+   TH1F* hS = new TH1F("hS", "", ana::nuOfY, ana::ybin);
+
+   TH1F* hBMtd = new TH1F("hBMtd", "", ana::nuOfY, ana::ybin);
+   TH1F* hB = new TH1F("hB", "", ana::nuOfY, ana::ybin);
+
    for(int iy=0; iy<ana::nuOfY; iy++){
       hGenPt[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
       hSignalMassMtd[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
@@ -66,13 +73,19 @@ void calSig()
       hSigMtd->SetBinContent(iy+1, sigMtd);
       hSig->SetBinContent(iy+1, sig);
 
+      hSMtd->SetBinContent(iy+1, sMtd);
+      hS->SetBinContent(iy+1, s);
+
+      hBMtd->SetBinContent(iy+1, bMtd);
+      hB->SetBinContent(iy+1, b);
+
       std::cout << "eff" << std::endl;
    }
    TCanvas* c[ana::nuOfY];
    for(int i=0; i<ana::nuOfY; i++){
       c[i] = new TCanvas(Form("c%d", i), "", 450, 500);
       gStyle->SetOptStat(0);
-      hObs[i]->Draw();
+      //hObs[i]->Draw();
    }
 
 
@@ -85,4 +98,24 @@ void calSig()
    lgd->AddEntry(hSigMtd, "w/ mtd", "lp");
    lgd->AddEntry(hSig, "w/o mtd", "lp");
    lgd->Draw();
+
+   TCanvas* c2 = new TCanvas();
+   gStyle->SetOptStat(0);
+   hSMtd->SetLineColor(kRed);
+   hS->Draw();
+   hSMtd->Draw("same");
+   TLegend* lgds = new TLegend(0.7, 0.8, 0.95, 0.95);
+   lgds->AddEntry(hSMtd, "w/ mtd", "lp");
+   lgds->AddEntry(hS, "w/o mtd", "lp");
+   lgds->Draw();
+
+   TCanvas* c3 = new TCanvas();
+   gStyle->SetOptStat(0);
+   hBMtd->SetLineColor(kRed);
+   hB->Draw();
+   hBMtd->Draw("same");
+   TLegend* lgdb = new TLegend(0.7, 0.8, 0.95, 0.95);
+   lgdb->AddEntry(hBMtd, "w/ mtd", "lp");
+   lgdb->AddEntry(hB, "w/o mtd", "lp");
+   lgdb->Draw();
 }
