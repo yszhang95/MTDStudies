@@ -34,9 +34,11 @@ void calSig()
 
    // try to scale gen spectrum
    double yield_mc_Pt2_3GeV = hGenPtMidY->Integral(20, 30);
-   double yield_data_Pt2_3GeV = hData->GetBinContent(1) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::evts_data_MB * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
-   double scale_factor = yield_data_Pt2_3GeV / yield_mc_Pt2_3GeV;
-   std::cout << scale_factor << std::endl;
+   //double yield_data_Pt2_3GeV = hData->GetBinContent(1) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::evts_data_MB * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   double yield_data_Pt2_3GeV_perEvt = hData->GetBinContent(1) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   double scale_factor_perEvt = yield_data_Pt2_3GeV_perEvt / yield_mc_Pt2_3GeV;
+   //std::cout << scale_factor << std::endl;
+   std::cout << scale_factor_perEvt << std::endl;
 
 
    TH1F* hObsMtd[ana::nuOfY];
@@ -50,8 +52,10 @@ void calSig()
    TH1F* hB = new TH1F("hB", "", ana::nuOfY, ana::ybin);
 
    for(int iy=0; iy<ana::nuOfY; iy++){
-      hGenPt[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
-      hSignalMassMtd[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
+      //hGenPt[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
+      hGenPt[iy]->Scale(scale_factor_perEvt * ana::evts_sim_MB);
+      //hSignalMassMtd[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
+      hSignalMassMtd[iy]->Scale(scale_factor_perEvt * ana::evts_sim_MB);
       hBkgMassMtd[iy]->Scale(ana::evts_sim_MB / ana::evts_bkg_MB);
       hObsMtd[iy] = (TH1F*) hSignalMassMtd[iy]->Clone();
       hObsMtd[iy]->Add(hBkgMassMtd[iy]);
@@ -63,7 +67,8 @@ void calSig()
       float bMtd = hBkgMassMtd[iy]->Integral(masslw, massup);
       float sigMtd = sMtd/sqrt(sMtd+bMtd);
 
-      hSignalMass[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
+      //hSignalMass[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
+      hSignalMass[iy]->Scale(scale_factor_perEvt * ana::evts_sim_MB);
       hBkgMass[iy]->Scale(ana::evts_sim_MB / ana::evts_bkg_MB);
       
       float s = hSignalMass[iy]->Integral(masslw, massup);
