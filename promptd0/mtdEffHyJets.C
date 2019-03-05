@@ -44,7 +44,6 @@ void mtdEffHyJets()
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
 
-   const bool daughterEff_Y_zeroPt = false;
    const bool daughterEff_P = true;
    const bool isD0MtdEff = true;
 
@@ -58,47 +57,62 @@ void mtdEffHyJets()
    TH1F* hKaon2sigmaEff;
    TH1F* hKaon1sigmaEff;
 
+   TH1F* hPionEffCent;
+   TH1F* hPion3sigmaEffCent;
+   TH1F* hPion2sigmaEffCent;
+   TH1F* hPion1sigmaEffCent;
+
+   TH1F* hKaonEffCent;
+   TH1F* hKaon3sigmaEffCent;
+   TH1F* hKaon2sigmaEffCent;
+   TH1F* hKaon1sigmaEffCent;
+
    TH1F* hD0Pt;
    TH1F* hD0Pt3sigma;
    TH1F* hD0Pt2sigma;
    TH1F* hD0Pt1sigma;
 
+   TH1F* hD0PtCent;
+   TH1F* hD0PtCent3sigma;
+   TH1F* hD0PtCent2sigma;
+   TH1F* hD0PtCent1sigma;
+
    TH2F* hD0PtVsDau1PMtd;
    TH2F* hD0PtVsDau2PMtd;
 
-   if(daughterEff_Y_zeroPt){
-      hPionEff = new TH1F("hPionEff", "hPionEff", ana::nuOfY, -3, 3);
-      hPion3sigmaEff = new TH1F("hPion3sigmaEff", "hPion3sigmaEff", ana::nuOfY, -3, 3);
-      hPion2sigmaEff = new TH1F("hPion2sigmaEff", "hPion2sigmaEff", ana::nuOfY, -3, 3);
-      hPion1sigmaEff = new TH1F("hPion1sigmaEff", "hPion1sigmaEff", ana::nuOfY, -3, 3);
 
-      hKaonEff = new TH1F("hKaonEff", "hKaonEff", ana::nuOfY, -3, 3);
-      hKaon3sigmaEff = new TH1F("hKaon3sigmaEff", "hKaon3sigmaEff", ana::nuOfY, -3, 3);
-      hKaon2sigmaEff = new TH1F("hKaon2sigmaEff", "hKaon2sigmaEff", ana::nuOfY, -3, 3);
-      hKaon1sigmaEff = new TH1F("hKaon1sigmaEff", "hKaon1sigmaEff", ana::nuOfY, -3, 3);
-   }
+   hPionEff = new TH1F("hPionEff", "hPionEff", 100, 0, 10);
+   hPion3sigmaEff = new TH1F("hPion3sigmaEff", "hPion3sigmaEff", 100, 0, 10);
+   hPion2sigmaEff = new TH1F("hPion2sigmaEff", "hPion2sigmaEff", 100, 0, 10);
+   hPion1sigmaEff = new TH1F("hPion1sigmaEff", "hPion1sigmaEff", 100, 0, 10);
 
-   if(daughterEff_P){
-      hPionEff = new TH1F("hPionEff", "hPionEff", 100, 0, 10);
-      hPion3sigmaEff = new TH1F("hPion3sigmaEff", "hPion3sigmaEff", 100, 0, 10);
-      hPion2sigmaEff = new TH1F("hPion2sigmaEff", "hPion2sigmaEff", 100, 0, 10);
-      hPion1sigmaEff = new TH1F("hPion1sigmaEff", "hPion1sigmaEff", 100, 0, 10);
+   hKaonEff = new TH1F("hKaonEff", "hKaonEff", 100, 0, 10);
+   hKaon3sigmaEff = new TH1F("hKaon3sigmaEff", "hKaon3sigmaEff", 100, 0, 10);
+   hKaon2sigmaEff = new TH1F("hKaon2sigmaEff", "hKaon2sigmaEff", 100, 0, 10);
+   hKaon1sigmaEff = new TH1F("hKaon1sigmaEff", "hKaon1sigmaEff", 100, 0, 10);
 
-      hKaonEff = new TH1F("hKaonEff", "hKaonEff", 100, 0, 10);
-      hKaon3sigmaEff = new TH1F("hKaon3sigmaEff", "hKaon3sigmaEff", 100, 0, 10);
-      hKaon2sigmaEff = new TH1F("hKaon2sigmaEff", "hKaon2sigmaEff", 100, 0, 10);
-      hKaon1sigmaEff = new TH1F("hKaon1sigmaEff", "hKaon1sigmaEff", 100, 0, 10);
-   }
+   hPionEffCent = new TH1F("hPionEffCent", "hPionEffCent", 100, 0, 10);
+   hPion3sigmaEffCent = new TH1F("hPion3sigmaEffCent", "hPion3sigmaEffCent", 100, 0, 10);
+   hPion2sigmaEffCent = new TH1F("hPion2sigmaEffCent", "hPion2sigmaEffCent", 100, 0, 10);
+   hPion1sigmaEffCent = new TH1F("hPion1sigmaEffCent", "hPion1sigmaEffCent", 100, 0, 10);
 
-   if(isD0MtdEff){
-      hD0Pt = new TH1F("hD0Pt", "hD0Pt", 100, 0, 10);
-      hD0Pt3sigma = new TH1F("hD0Pt3sigma", "hD0Pt3sigma", 100, 0, 10);
-      hD0Pt2sigma = new TH1F("hD0Pt2sigma", "hD0Pt2sigma", 100, 0, 10);
-      hD0Pt1sigma = new TH1F("hD0Pt1sigma", "hD0Pt1sigma", 100, 0, 10);
+   hKaonEffCent = new TH1F("hKaonEffCent", "hKaonEffCent", 100, 0, 10);
+   hKaon3sigmaEffCent = new TH1F("hKaon3sigmaEffCent", "hKaon3sigmaEffCent", 100, 0, 10);
+   hKaon2sigmaEffCent = new TH1F("hKaon2sigmaEffCent", "hKaon2sigmaEffCent", 100, 0, 10);
+   hKaon1sigmaEffCent = new TH1F("hKaon1sigmaEffCent", "hKaon1sigmaEffCent", 100, 0, 10);
 
-      hD0PtVsDau1PMtd = new TH2F("hD0PtVsDau1PMtd", "hD0PtVsDau1PMtd", 1000, 0, 5, 1000, 0, 10);
-      hD0PtVsDau2PMtd = new TH2F("hD0PtVsDau2PMtd", "hD0PtVsDau2PMtd", 1000, 0, 5, 1000, 0, 10);
-   }
+   hD0Pt = new TH1F("hD0Pt", "hD0Pt", 100, 0, 10);
+   hD0Pt3sigma = new TH1F("hD0Pt3sigma", "hD0Pt3sigma", 100, 0, 10);
+   hD0Pt2sigma = new TH1F("hD0Pt2sigma", "hD0Pt2sigma", 100, 0, 10);
+   hD0Pt1sigma = new TH1F("hD0Pt1sigma", "hD0Pt1sigma", 100, 0, 10);
+
+   hD0PtCent = new TH1F("hD0PtCent", "hD0PtCent", 100, 0, 10);
+   hD0PtCent3sigma = new TH1F("hD0PtCent3sigma", "hD0PtCent3sigma", 100, 0, 10);
+   hD0PtCent2sigma = new TH1F("hD0PtCent2sigma", "hD0PtCent2sigma", 100, 0, 10);
+   hD0PtCent1sigma = new TH1F("hD0PtCent1sigma", "hD0PtCent1sigma", 100, 0, 10);
+
+   hD0PtVsDau1PMtd = new TH2F("hD0PtVsDau1PMtd", "hD0PtVsDau1PMtd", 1000, 0, 5, 1000, 0, 10);
+   hD0PtVsDau2PMtd = new TH2F("hD0PtVsDau2PMtd", "hD0PtVsDau2PMtd", 1000, 0, 5, 1000, 0, 10);
 
    Long64_t nBothMTD = 0;
    Long64_t nOneMTD = 0;
@@ -106,6 +120,8 @@ void mtdEffHyJets()
    
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
       t->GetEntry(ientry);
+
+      //if((100*ientry/t->GetEntries()) % 5 == 0) std::cout << 100 * ientry/t->GetEntries() << "percents processed" << std::endl;
 
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
@@ -119,63 +135,6 @@ void mtdEffHyJets()
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
 
-      if(daughterEff_Y_zeroPt){
-         if(t->pT > 0.5) continue;
-         if(t->flavor == 1){
-            bool is3sigmaPion = false;
-            bool is3sigmaKaon = false;
-
-            bool is2sigmaPion = false;
-            bool is2sigmaKaon = false;
-
-            bool is1sigmaPion = false;
-            bool is1sigmaKaon = false;
-
-            if(t->beta1_PV!=-99) hPionEff->Fill(t->y);
-            if(t->beta2_PV!=-99) hKaonEff->Fill(t->y);
-
-            if(t->beta1_PV!=-99) is3sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
-            if(t->beta1_PV!=-99) is2sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
-            if(t->beta1_PV!=-99) is1sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
-            if(is3sigmaPion && t->beta1_PV!=-99) hPion3sigmaEff->Fill(t->y);
-            if(is2sigmaPion && t->beta1_PV!=-99) hPion2sigmaEff->Fill(t->y);
-            if(is1sigmaPion && t->beta1_PV!=-99) hPion1sigmaEff->Fill(t->y);
-
-            if(t->beta2_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 *fExpKaon->Eval(pD2);
-            if(t->beta2_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 *fExpKaon->Eval(pD2);
-            if(t->beta2_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 *fExpKaon->Eval(pD2);
-            if(is3sigmaKaon && t->beta2_PV!=-99) hKaon3sigmaEff->Fill(t->y);
-            if(is2sigmaKaon && t->beta2_PV!=-99) hKaon2sigmaEff->Fill(t->y);
-            if(is1sigmaKaon && t->beta2_PV!=-99) hKaon1sigmaEff->Fill(t->y);
-         }
-         if(t->flavor == -1){
-            bool is3sigmaPion = false;
-            bool is3sigmaKaon = false;
-
-            bool is2sigmaPion = false;
-            bool is2sigmaKaon = false;
-
-            bool is1sigmaPion = false;
-            bool is1sigmaKaon = false;
-
-            if(t->beta1_PV!=-99) hKaonEff->Fill(t->y);
-            if(t->beta2_PV!=-99) hPionEff->Fill(t->y);
-
-            if(t->beta1_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
-            if(t->beta1_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
-            if(t->beta1_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
-            if(is3sigmaKaon && t->beta1_PV!=-99) hKaon3sigmaEff->Fill(t->y);
-            if(is2sigmaKaon && t->beta1_PV!=-99) hKaon2sigmaEff->Fill(t->y);
-            if(is1sigmaKaon && t->beta1_PV!=-99) hKaon1sigmaEff->Fill(t->y);
-
-            if(t->beta2_PV!=-99) is3sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
-            if(t->beta2_PV!=-99) is2sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
-            if(t->beta2_PV!=-99) is1sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
-            if(is3sigmaPion && t->beta2_PV!=-99) hPion3sigmaEff->Fill(t->y);
-            if(is2sigmaPion && t->beta2_PV!=-99) hPion2sigmaEff->Fill(t->y);
-            if(is1sigmaPion && t->beta2_PV!=-99) hPion1sigmaEff->Fill(t->y);
-         }
-      }
       if(daughterEff_P){
          if(t->flavor == 1){
             bool is3sigmaPion = false;
@@ -187,21 +146,51 @@ void mtdEffHyJets()
             bool is1sigmaPion = false;
             bool is1sigmaKaon = false;
 
-            if(t->beta1_PV!=-99) hPionEff->Fill(pD1);
+            bool isCentral = t->centrality < 20;
+
+            if(t->beta1_PV!=-99) {
+               hPionEff->Fill(pD1);
+               if(isCentral) hPionEffCent->Fill(pD1);
+            }
+
             if(t->beta1_PV!=-99) is3sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
             if(t->beta1_PV!=-99) is2sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
             if(t->beta1_PV!=-99) is1sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
-            if(is3sigmaPion && t->beta1_PV!=-99) hPion3sigmaEff->Fill(pD1);
-            if(is2sigmaPion && t->beta1_PV!=-99) hPion2sigmaEff->Fill(pD1);
-            if(is1sigmaPion && t->beta1_PV!=-99) hPion1sigmaEff->Fill(pD1);
 
-            if(t->beta2_PV!=-99) hKaonEff->Fill(pD2);
+            if(is3sigmaPion && t->beta1_PV!=-99) {
+               hPion3sigmaEff->Fill(pD1);
+               if(isCentral) hPion3sigmaEffCent->Fill(pD1);
+            }
+            if(is2sigmaPion && t->beta1_PV!=-99) {
+               hPion2sigmaEff->Fill(pD1);
+               if(isCentral) hPion2sigmaEffCent->Fill(pD1);
+            }
+            if(is1sigmaPion && t->beta1_PV!=-99) {
+               hPion1sigmaEff->Fill(pD1);
+               if(isCentral) hPion1sigmaEffCent->Fill(pD1);
+            }
+
+            if(t->beta2_PV!=-99) {
+               hKaonEff->Fill(pD2);
+               if(isCentral) hKaonEffCent->Fill(pD2);
+            }
+
             if(t->beta2_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 *fExpKaon->Eval(pD2);
             if(t->beta2_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 *fExpKaon->Eval(pD2);
             if(t->beta2_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 *fExpKaon->Eval(pD2);
-            if(is3sigmaKaon && t->beta2_PV!=-99) hKaon3sigmaEff->Fill(pD2);
-            if(is2sigmaKaon && t->beta2_PV!=-99) hKaon2sigmaEff->Fill(pD2);
-            if(is1sigmaKaon && t->beta2_PV!=-99) hKaon1sigmaEff->Fill(pD2);
+
+            if(is3sigmaKaon && t->beta2_PV!=-99) {
+               hKaon3sigmaEff->Fill(pD2);
+               if(isCentral) hKaon3sigmaEffCent->Fill(pD2);
+            }
+            if(is2sigmaKaon && t->beta2_PV!=-99) {
+               hKaon2sigmaEff->Fill(pD2);
+               if(isCentral) hKaon2sigmaEffCent->Fill(pD2);
+            }
+            if(is1sigmaKaon && t->beta2_PV!=-99) {
+               hKaon1sigmaEff->Fill(pD2);
+               if(isCentral) hKaon1sigmaEffCent->Fill(pD2);
+            }
          }
 
          if(t->flavor == -1){
@@ -214,26 +203,59 @@ void mtdEffHyJets()
             bool is1sigmaPion = false;
             bool is1sigmaKaon = false;
 
-            if(t->beta1_PV!=-99) hKaonEff->Fill(pD1);
+            bool isCentral = t->centrality < 20;
+
+            if(t->beta1_PV!=-99) {
+               hKaonEff->Fill(pD1);
+               if(isCentral) hKaonEffCent->Fill(pD1);
+            }
+
             if(t->beta1_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
             if(t->beta1_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
             if(t->beta1_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
-            if(is3sigmaKaon && t->beta1_PV!=-99) hKaon3sigmaEff->Fill(pD1);
-            if(is2sigmaKaon && t->beta1_PV!=-99) hKaon2sigmaEff->Fill(pD1);
-            if(is1sigmaKaon && t->beta1_PV!=-99) hKaon1sigmaEff->Fill(pD1);
 
-            if(t->beta2_PV!=-99) hPionEff->Fill(pD2);
+            if(is3sigmaKaon && t->beta1_PV!=-99) {
+               hKaon3sigmaEff->Fill(pD1);
+               if(isCentral) hKaon3sigmaEffCent->Fill(pD1);
+            }
+            if(is2sigmaKaon && t->beta1_PV!=-99) {
+               hKaon2sigmaEff->Fill(pD1);
+               if(isCentral) hKaon2sigmaEffCent->Fill(pD1);
+            }
+            if(is1sigmaKaon && t->beta1_PV!=-99) {
+               hKaon1sigmaEff->Fill(pD1);
+               if(isCentral) hKaon1sigmaEffCent->Fill(pD1);
+            }
+
+            if(t->beta2_PV!=-99) {
+               hPionEff->Fill(pD2);
+               if(isCentral) hPionEffCent->Fill(pD2);
+            }
+
             if(t->beta2_PV!=-99) is3sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
             if(t->beta2_PV!=-99) is2sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
             if(t->beta2_PV!=-99) is1sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
-            if(is3sigmaPion && t->beta2_PV!=-99) hPion3sigmaEff->Fill(pD2);
-            if(is2sigmaPion && t->beta2_PV!=-99) hPion2sigmaEff->Fill(pD2);
-            if(is1sigmaPion && t->beta2_PV!=-99) hPion1sigmaEff->Fill(pD2);
+
+            if(is3sigmaPion && t->beta2_PV!=-99) {
+               hPion3sigmaEff->Fill(pD2);
+               if(isCentral) hPion3sigmaEffCent->Fill(pD2);
+            }
+            if(is2sigmaPion && t->beta2_PV!=-99) {
+               hPion2sigmaEff->Fill(pD2);
+               if(isCentral) hPion2sigmaEffCent->Fill(pD2);
+            }
+            if(is1sigmaPion && t->beta2_PV!=-99) {
+               hPion1sigmaEff->Fill(pD2);
+               if(isCentral) hPion1sigmaEffCent->Fill(pD2);
+            }
          }
       }
 
       if(isD0MtdEff){
+         bool isCentral = t->centrality < 20;
+
          hD0Pt->Fill(t->pT);
+         if(isCentral) hD0PtCent->Fill(t->pT);
 
          if(t->beta1_PV!=-99) hD0PtVsDau1PMtd->Fill(t->pT, pD1);
          if(t->beta2_PV!=-99) hD0PtVsDau2PMtd->Fill(t->pT, pD2);
@@ -248,7 +270,10 @@ void mtdEffHyJets()
          if(t->beta2_PV!=-99) is3sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
          if(t->beta2_PV!=-99) is3sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 * fExpKaon->Eval(pD2);
 
-         if((t->flavor == 1 && is3sigmaPionDau1 && is3sigmaKaonDau2) || (t->flavor == -1 && is3sigmaKaonDau1 && is3sigmaPionDau2)) hD0Pt3sigma->Fill(t->pT);
+         if((t->flavor == 1 && is3sigmaPionDau1 && is3sigmaKaonDau2) || (t->flavor == -1 && is3sigmaKaonDau1 && is3sigmaPionDau2)) {
+            hD0Pt3sigma->Fill(t->pT);
+            if(isCentral) hD0PtCent3sigma->Fill(t->pT);
+         }
 
          bool is2sigmaPionDau1 = true;
          bool is2sigmaKaonDau1 = true;
@@ -260,7 +285,10 @@ void mtdEffHyJets()
          if(t->beta2_PV!=-99) is2sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
          if(t->beta2_PV!=-99) is2sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 * fExpKaon->Eval(pD2);
 
-         if((t->flavor == 1 && is2sigmaPionDau1 && is2sigmaKaonDau2) || (t->flavor == -1 && is2sigmaKaonDau1 && is2sigmaPionDau2)) hD0Pt2sigma->Fill(t->pT);
+         if((t->flavor == 1 && is2sigmaPionDau1 && is2sigmaKaonDau2) || (t->flavor == -1 && is2sigmaKaonDau1 && is2sigmaPionDau2)) {
+            hD0Pt2sigma->Fill(t->pT);
+            if(isCentral) hD0PtCent2sigma->Fill(t->pT);
+         }
 
          bool is1sigmaPionDau1 = true;
          bool is1sigmaKaonDau1 = true;
@@ -272,7 +300,10 @@ void mtdEffHyJets()
          if(t->beta2_PV!=-99) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
          if(t->beta2_PV!=-99) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
 
-         if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) hD0Pt1sigma->Fill(t->pT);
+         if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) {
+            hD0Pt1sigma->Fill(t->pT);
+            if(isCentral) hD0PtCent1sigma->Fill(t->pT);
+         }
 
          if(t->beta1_PV!=-99 && t->beta2_PV!=-99) nBothMTD++;
          if(t->beta1_PV!=-99 && !(t->beta2_PV!=-99)) nOneMTD++;
@@ -280,51 +311,6 @@ void mtdEffHyJets()
          if(!(t->beta1_PV!=-99) && !(t->beta2_PV!=-99)) nNoMTD++;
       }
    }
-//   if(daughterEff_Y_zeroPt){
-//      TCanvas* c1 = new TCanvas("c1", "PionEff", 500, 550);
-//      gStyle->SetOptStat(0);
-//      TH1F* hDrawPion = new TH1F("hDrawPion", "", ana::nuOfY, -3, 3);
-//      hDrawPion->GetYaxis()->SetTitle("Pion Yield Ratio");
-//      hDrawPion->GetYaxis()->SetRangeUser(0, 1.3);
-//      hDrawPion->GetXaxis()->SetTitle("D0 rapidity");
-//      hDrawPion->Draw();
-//      hPion3sigmaEff->Divide(hPionEff);
-//      hPion2sigmaEff->Divide(hPionEff);
-//      hPion1sigmaEff->Divide(hPionEff);
-//      hPion3sigmaEff->SetLineColor(kGreen-6);
-//      hPion2sigmaEff->SetLineColor(kBlue);
-//      hPion1sigmaEff->SetLineColor(kRed);
-//      hPion3sigmaEff->Draw("same");
-//      hPion2sigmaEff->Draw("same");
-//      hPion1sigmaEff->Draw("same");
-//      TLegend *lPion = new TLegend(0.7, 0.8, 0.9, 0.9);
-//      lPion->AddEntry(hPion3sigmaEff, "3 RMS", "l");
-//      lPion->AddEntry(hPion2sigmaEff, "2 RMS", "l");
-//      lPion->AddEntry(hPion1sigmaEff, "1 RMS", "l");
-//      lPion->Draw();
-//
-//      TCanvas* c2 = new TCanvas("c2", "KaonEff", 500, 550);
-//      gStyle->SetOptStat(0);
-//      TH1F* hDrawKaon = new TH1F("hDrawKaon", "", ana::nuOfY, -3, 3);
-//      hDrawKaon->GetYaxis()->SetTitle("Kaon Yield Ratio");
-//      hDrawKaon->GetYaxis()->SetRangeUser(0, 1.3);
-//      hDrawKaon->GetXaxis()->SetTitle("D0 rapidity");
-//      hDrawKaon->Draw();
-//      hKaon3sigmaEff->Divide(hKaonEff);
-//      hKaon2sigmaEff->Divide(hKaonEff);
-//      hKaon1sigmaEff->Divide(hKaonEff);
-//      hKaon3sigmaEff->SetLineColor(kGreen-6);
-//      hKaon2sigmaEff->SetLineColor(kBlue);
-//      hKaon1sigmaEff->SetLineColor(kRed);
-//      hKaon3sigmaEff->Draw("same");
-//      hKaon2sigmaEff->Draw("same");
-//      hKaon1sigmaEff->Draw("same");
-//      TLegend *lKaon = new TLegend(0.7, 0.8, 0.9, 0.9);
-//      lKaon->AddEntry(hKaon3sigmaEff, "3 RMS", "l");
-//      lKaon->AddEntry(hKaon2sigmaEff, "2 RMS", "l");
-//      lKaon->AddEntry(hKaon1sigmaEff, "1 RMS", "l");
-//      lKaon->Draw();
-//   }
 //   if(daughterEff_P){
 //      TCanvas* c1 = new TCanvas("c1", "PionEff", 500, 550);
 //      gStyle->SetOptStat(0);
@@ -426,14 +412,32 @@ void mtdEffHyJets()
    hD0Pt3sigma->Write();
    hD0Pt2sigma->Write();
    hD0Pt1sigma->Write();
+
+   hD0PtCent->Write();
+   hD0PtCent3sigma->Write();
+   hD0PtCent2sigma->Write();
+   hD0PtCent1sigma->Write();
+
    hD0PtVsDau1PMtd->Write();
    hD0PtVsDau2PMtd->Write();
+
    hPionEff->Write();
    hPion3sigmaEff->Write();
    hPion2sigmaEff->Write();
    hPion1sigmaEff->Write();
+
    hKaonEff->Write();
    hKaon3sigmaEff->Write();
    hKaon2sigmaEff->Write();
    hKaon1sigmaEff->Write();
+
+   hPionEffCent->Write();
+   hPion3sigmaEffCent->Write();
+   hPion2sigmaEffCent->Write();
+   hPion1sigmaEffCent->Write();
+
+   hKaonEffCent->Write();
+   hKaon3sigmaEffCent->Write();
+   hKaon2sigmaEffCent->Write();
+   hKaon1sigmaEffCent->Write();
 }
