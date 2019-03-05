@@ -38,6 +38,8 @@ void promptD0mass()
 
    TH1F* hMass[ana::nuOfY];
    TH1F* hMassMtd[ana::nuOfY];
+   TH1F* hPt[ana::nuOfY];
+   TH1F* hPtMtd[ana::nuOfY];
 
    for(int iy=0; iy<ana::nuOfY; iy++){
       hMass[iy] = new TH1F(Form("hMass%d", iy), Form("hMass%d", iy), 60, 1.7, 2.0);
@@ -46,6 +48,13 @@ void promptD0mass()
       hMassMtd[iy]->GetXaxis()->SetTitle("mass (GeV");
       hMass[iy]->SetLineColor(kBlue);
       hMassMtd[iy]->SetLineColor(kRed);
+
+      hPt[iy] = new TH1F(Form("hPt%d", iy), Form("hPt%d", iy), 100, 0, 10);
+      hPtMtd[iy] = new TH1F(Form("hPtMtd%d", iy), Form("hPtMtd%d", iy), 100, 0, 10);
+      hPt[iy]->GetXaxis()->SetTitle("p_{T} (GeV");
+      hPtMtd[iy]->GetXaxis()->SetTitle("p_{T} (GeV");
+      hPt[iy]->SetLineColor(kBlue);
+      hPtMtd[iy]->SetLineColor(kRed);
    }
    
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
@@ -67,6 +76,7 @@ void promptD0mass()
       if(!(t->matchGEN && !t->isSwap)) continue;
 
       hMass[iy]->Fill(t->mass);
+      hPt[iy]->Fill(t->pT);
       bool is1sigmaPionDau1 = true;
       bool is1sigmaKaonDau1 = true;
       bool is1sigmaPionDau2 = true;
@@ -76,7 +86,10 @@ void promptD0mass()
       if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
       if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
       if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
-      if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) hMassMtd[iy]->Fill(t->mass);
+      if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) {
+         hMassMtd[iy]->Fill(t->mass);
+         hPtMtd[iy]->Fill(t->pT);
+      }
    }
    TCanvas* c1[ana::nuOfY];
    if(drawMass){
@@ -197,6 +210,8 @@ void promptD0mass()
       hMassSwap[iy]->Write();
       hMassMtd[iy]->Write();
       hMassSwapMtd[iy]->Write();
+      hPt[iy]->Write();
+      hPtMtd[iy]->Write();
    }
    hFrac->Write();
    hFracSwap->Write();
