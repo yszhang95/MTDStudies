@@ -70,26 +70,34 @@ void calSig()
       int masslw = hSignalMassMtd[iy]->FindBin(ana::mass_lw[iy]);
       int massup = hSignalMassMtd[iy]->FindBin(ana::mass_up[iy]);
 
-      float sMtd = hSignalMassMtd[iy]->Integral(masslw, massup);
-      float bMtd = hBkgMassMtd[iy]->Integral(masslw, massup);
+      double sMtdErr;
+      double bMtdErr;
+      float sMtd = hSignalMassMtd[iy]->IntegralAndError(masslw, massup, sMtdErr);
+      float bMtd = hBkgMassMtd[iy]->IntegralAndError(masslw, massup, bMtdErr);
       float sigMtd = sMtd/sqrt(sMtd+bMtd);
 
       //hSignalMass[iy]->Scale(scale_factor * ana::evts_sim_MB / ana::evts_data_MB);
       hSignalMass[iy]->Scale(scale_factor_perEvt * ana::evts_sim_MB);
       hBkgMass[iy]->Scale(ana::evts_sim_MB / ana::evts_bkg_MB);
       
-      float s = hSignalMass[iy]->Integral(masslw, massup);
-      float b = hBkgMass[iy]->Integral(masslw, massup);
+      double sErr;
+      double bErr;
+      float s = hSignalMass[iy]->IntegralAndError(masslw, massup, sErr);
+      float b = hBkgMass[iy]->IntegralAndError(masslw, massup, bErr);
       float sig = s/sqrt(s+b);
 
       hSigMtd->SetBinContent(iy+1, sigMtd);
       hSig->SetBinContent(iy+1, sig);
 
       hSMtd->SetBinContent(iy+1, sMtd);
+      hSMtd->SetBinError(iy+1, sMtdErr);
       hS->SetBinContent(iy+1, s);
+      hS->SetBinError(iy+1, sErr);
 
       hBMtd->SetBinContent(iy+1, bMtd);
+      hBMtd->SetBinError(iy+1, bMtdErr);
       hB->SetBinContent(iy+1, b);
+      hB->SetBinError(iy+1, bErr);
    }
 
    TLatex* ltx = new TLatex();
@@ -121,9 +129,10 @@ void calSig()
    lgd->Draw();
    ltx->SetTextSize(0.05);
    ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.5, 0.75, "MB 25B events");
+   ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
 
-   TCanvas* c2 = new TCanvas("c2", "", 450, 500);
+   TCanvas* c2 = new TCanvas("c2", "", 600, 500);
+   c2->SetLeftMargin(0.15);
    gStyle->SetOptStat(0);
    hSMtd->SetLineColor(kRed);
    hS->GetYaxis()->SetTitle("S");
@@ -136,9 +145,12 @@ void calSig()
    lgds->AddEntry(hSMtd, "w/ mtd", "lp");
    lgds->AddEntry(hS, "w/o mtd", "lp");
    lgds->Draw();
-   ltx->DrawLatexNDC(0.5, 0.7, "MB 25B events");
+   ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
 
-   TCanvas* c3 = new TCanvas("c3", "", 450, 500);
+   TCanvas* c3 = new TCanvas("c3", "", 600, 500);
+   c3->SetLeftMargin(0.15);
+   TGaxis::SetMaxDigits(4);
    gStyle->SetOptStat(0);
    hB->GetYaxis()->SetTitle("B");
    hB->GetXaxis()->SetTitle("y");
@@ -151,5 +163,6 @@ void calSig()
    lgdb->AddEntry(hBMtd, "w/ mtd", "lp");
    lgdb->AddEntry(hB, "w/o mtd", "lp");
    lgdb->Draw();
-   ltx->DrawLatexNDC(0.5, 0.7, "MB 25B events");
+   ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
 }

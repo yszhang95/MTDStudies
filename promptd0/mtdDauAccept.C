@@ -10,6 +10,7 @@ int whichY(const float& y)
 
 void mtdDauAccept()
 {
+   TH1::SetDefaultSumw2();
    TFile* f1 = new TFile("matchPromptD0_fullSample.root");
    TNtuple* tp = (TNtuple*) f1->Get("PromptD");
    matchD* t = new matchD(tp);
@@ -83,13 +84,14 @@ void mtdDauAccept()
    TLatex* latex = new TLatex();
    latex->SetTextSize(0.036);
 
-   TCanvas* c1 = new TCanvas("cDau1pT", "", 450, 500);
+   TCanvas* c1 = new TCanvas("cDau1pT", "", 600, 500);
 
    c1->SetLeftMargin(0.16);
    c1->SetRightMargin(0.06);
    gStyle->SetOptStat(0);
 
    hDrawDau1Pt->GetYaxis()->SetRangeUser(0, 1.3);
+   hDrawDau1Pt->GetXaxis()->SetRangeUser(0, 5);
    hDrawDau1Pt->GetYaxis()->SetTitle("Dau1 yield fraction");
    hDrawDau1Pt->GetXaxis()->SetTitle("Dau1 pT (GeV)");
    hDrawDau1Pt->Draw();
@@ -100,23 +102,26 @@ void mtdDauAccept()
    hMtdDau1Pt->SetLineColor(kBlue);
    hNoMtdDau1Pt->SetLineColor(kRed);
 
-   hMtdDau1Pt->Draw("same");
-   hNoMtdDau1Pt->Draw("same");
+   hMtdDau1Pt->Draw("esame");
+   hNoMtdDau1Pt->Draw("esame");
 
    latex->DrawLatexNDC(0.6, 0.68, "-3 < D^{0} Rapidity < 3");
+   latex->DrawLatexNDC(0.6, 0.5, "D -> K + #pi");
+   latex->DrawLatexNDC(0.5, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
 
    TLegend *l1 = new TLegend(0.5, 0.78, 0.97, 0.90);
    l1->AddEntry(hNoMtdDau1Pt, "dau1 no mtd hits", "pl");
    l1->AddEntry(hMtdDau1Pt, "dau1 has mtd", "pl");
    l1->Draw();
 
-   TCanvas* c2 = new TCanvas("cDau2pT", "", 450, 500);
+   TCanvas* c2 = new TCanvas("cDau2pT", "", 600, 500);
 
    c2->SetLeftMargin(0.16);
    c2->SetRightMargin(0.06);
    gStyle->SetOptStat(0);
 
    hDrawDau2Pt->GetYaxis()->SetRangeUser(0, 1.3);
+   hDrawDau2Pt->GetXaxis()->SetRangeUser(0, 5);
    hDrawDau2Pt->GetYaxis()->SetTitle("Dau2 yield fraction");
    hDrawDau2Pt->GetXaxis()->SetTitle("Dau2 pT (GeV)");
    hDrawDau2Pt->Draw();
@@ -127,17 +132,19 @@ void mtdDauAccept()
    hMtdDau2Pt->SetLineColor(kBlue);
    hNoMtdDau2Pt->SetLineColor(kRed);
 
-   hMtdDau2Pt->Draw("same");
-   hNoMtdDau2Pt->Draw("same");
+   hMtdDau2Pt->Draw("esame");
+   hNoMtdDau2Pt->Draw("esame");
 
    latex->DrawLatexNDC(0.6, 0.68, "-3 < D^{0} Rapidity < 3");
+   latex->DrawLatexNDC(0.6, 0.5, "D -> K + #pi");
+   latex->DrawLatexNDC(0.5, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
 
    TLegend *l2 = new TLegend(0.5, 0.78, 0.97, 0.90);
    l2->AddEntry(hNoMtdDau2Pt, "dau2 no mtd hits", "pl");
    l2->AddEntry(hMtdDau2Pt, "dau2 has mtd", "pl");
    l2->Draw();
 
-   TCanvas* c3 = new TCanvas("cDau1Eta", "", 450, 500);
+   TCanvas* c3 = new TCanvas("cDau1Eta", "", 600, 500);
 
    c3->SetLeftMargin(0.16);
    c3->SetRightMargin(0.06);
@@ -157,14 +164,16 @@ void mtdDauAccept()
    hMtdDau1Eta->Draw("same");
    hNoMtdDau1Eta->Draw("same");
 
-   latex->DrawLatexNDC(0.6, 0.68, "-3 < D^{0} Rapidity < 3");
+   latex->DrawLatexNDC(0.5, 0.68, "-3 < D^{0} Rapidity < 3");
+   latex->DrawLatexNDC(0.5, 0.5, "D -> K + #pi");
+   latex->DrawLatexNDC(0.5, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
 
    TLegend *l3 = new TLegend(0.5, 0.78, 0.97, 0.90);
    l3->AddEntry(hNoMtdDau1Eta, "dau1 no mtd hits", "pl");
    l3->AddEntry(hMtdDau1Eta, "dau1 has mtd", "pl");
    l3->Draw();
 
-   TCanvas* c4 = new TCanvas("cDau2Eta", "", 450, 500);
+   TCanvas* c4 = new TCanvas("cDau2Eta", "", 600, 500);
 
    c4->SetLeftMargin(0.16);
    c4->SetRightMargin(0.06);
@@ -184,7 +193,9 @@ void mtdDauAccept()
    hMtdDau2Eta->Draw("same");
    hNoMtdDau2Eta->Draw("same");
 
-   latex->DrawLatexNDC(0.6, 0.68, "-3 < D^{0} Rapidity < 3");
+   latex->DrawLatexNDC(0.5, 0.68, "-3 < D^{0} Rapidity < 3");
+   latex->DrawLatexNDC(0.5, 0.5, "D -> K + #pi");
+   latex->DrawLatexNDC(0.5, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
 
    TLegend *l4 = new TLegend(0.5, 0.78, 0.97, 0.90);
    l4->AddEntry(hNoMtdDau2Eta, "dau2 no mtd hits", "pl");

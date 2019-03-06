@@ -116,12 +116,12 @@ void drawHyJets()
       latex->DrawLatexNDC(0.6, 0.5, "MB events");
    }
    if(drawD0){
-   	TCanvas* c1 = new TCanvas("hD0pT", "", 450, 450);
+   	TCanvas* c1 = new TCanvas("hD0pT", "", 550, 450);
       c1->SetLeftMargin(0.16);
       gStyle->SetOptStat(0);
 
       TH1F* hDraw = new TH1F("hDrawD0", "", 100, 0, 10);
-      hDraw->GetYaxis()->SetRangeUser(0, 1.3);
+      hDraw->GetYaxis()->SetRangeUser(0, 1.1);
       hDraw->GetYaxis()->SetTitle("D0 yield eff");
       hDraw->GetXaxis()->SetTitle("pT (GeV)");
       hDraw->Draw();
@@ -144,9 +144,10 @@ void drawHyJets()
       hD0Pt1sigma->Draw("same");
 
       TLatex* latex = new TLatex();
+      latex->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
       latex->SetTextSize(0.036);
-      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
-      latex->DrawLatexNDC(0.6, 0.5, "MB events");
+      latex->DrawLatexNDC(0.6, 0.28, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.2, "MB events");
 
       TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
       legend->AddEntry(hD0Pt3sigma, "3 RMS", "l");
@@ -223,12 +224,12 @@ void drawHyJets()
       latex->DrawLatexNDC(0.6, 0.5, "central events");
    }
    if(drawD0Cent){
-   	TCanvas* c1 = new TCanvas("hD0pTCent", "", 450, 450);
+   	TCanvas* c1 = new TCanvas("hD0pTCent", "", 550, 450);
       c1->SetLeftMargin(0.16);
       gStyle->SetOptStat(0);
 
       TH1F* hDraw = new TH1F("hDrawD0Cent", "", 100, 0, 10);
-      hDraw->GetYaxis()->SetRangeUser(0, 1.3);
+      hDraw->GetYaxis()->SetRangeUser(0, 1.1);
       hDraw->GetYaxis()->SetTitle("D0 yield eff");
       hDraw->GetXaxis()->SetTitle("pT (GeV)");
       hDraw->Draw();
@@ -251,9 +252,10 @@ void drawHyJets()
       hD0PtCent1sigma->Draw("same");
 
       TLatex* latex = new TLatex();
+      latex->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
       latex->SetTextSize(0.036);
-      latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
-      latex->DrawLatexNDC(0.6, 0.5, "central events");
+      latex->DrawLatexNDC(0.6, 0.28, "-3 < D^{0} Rapidity < 3");
+      latex->DrawLatexNDC(0.6, 0.2, "centrality 0 ~ 10%");
 
       TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
       legend->AddEntry(hD0PtCent3sigma, "3 RMS", "l");
@@ -366,7 +368,7 @@ void drawHyJets()
    gStyle->SetOptStat(0);
 
    TH1F* hDrawDau2Eta = new TH1F("hDrawDau2Eta", "", 60, -3, 3);
-   hDrawDau2Eta->GetYaxis()->SetRangeUser(0, 1.3);
+   hDrawDau2Eta->GetYaxis()->SetRangeUser(0, 1.0);
    hDrawDau2Eta->GetYaxis()->SetTitle("Dau2 yield fraction");
    hDrawDau2Eta->GetXaxis()->SetTitle("Dau2 eta");
    hDrawDau2Eta->Draw();

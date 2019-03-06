@@ -350,7 +350,7 @@ void mtdEff()
       lKaon->Draw();
    }
    if(isD0MtdEff){
-      TCanvas* c1 = new TCanvas("hD0pT", "", 450, 450);
+      TCanvas* c1 = new TCanvas("hD0pT", "", 550, 450);
       c1->SetLeftMargin(0.16);
       gStyle->SetOptStat(0);
 
@@ -380,6 +380,8 @@ void mtdEff()
       TLatex* latex = new TLatex();
       latex->SetTextSize(0.036);
       latex->DrawLatexNDC(0.6, 0.4, "-3 < D^{0} Rapidity < 3");
+      latex->SetTextSize(0.05);
+      latex->DrawLatexNDC(0.4, 0.93, "Phase II Simulation #sqrt{s} = 5.5 TeV");
 
       TLegend *legend = new TLegend(0.7, 0.8, 0.9, 0.9);
       legend->AddEntry(hD0Pt3sigma, "3 RMS", "l");

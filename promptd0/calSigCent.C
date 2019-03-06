@@ -186,26 +186,34 @@ void calSigCent()
 
       int masslw = hSignalMassCentMtd[iy]->FindBin(ana::mass_lw[iy]);
       int massup = hSignalMassCentMtd[iy]->FindBin(ana::mass_up[iy]);
-
-      float sMtd = hSignalMassCentMtd[iy]->Integral(masslw, massup);
-      float bMtd = hBkgMassCentMtd[iy]->Integral(masslw, massup);
+      
+      double sMtdErr;
+      double bMtdErr;
+      float sMtd = hSignalMassCentMtd[iy]->IntegralAndError(masslw, massup, sMtdErr);
+      float bMtd = hBkgMassCentMtd[iy]->IntegralAndError(masslw, massup, bMtdErr);
       float sigMtd = sMtd/sqrt(sMtd+bMtd);
 
       hSignalMassCent[iy]->Scale(scale_factor_perEvt_cent * ana::evts_sim_central);
       hBkgMassCent[iy]->Scale(ana::evts_sim_central / ana::evts_bkg_central);
       
-      float s = hSignalMassCent[iy]->Integral(masslw, massup);
-      float b = hBkgMassCent[iy]->Integral(masslw, massup);
+      double sErr;
+      double bErr;
+      float s = hSignalMassCent[iy]->IntegralAndError(masslw, massup, sErr);
+      float b = hBkgMassCent[iy]->IntegralAndError(masslw, massup, bErr);
       float sig = s/sqrt(s+b);
 
       hSigCentMtd->SetBinContent(iy+1, sigMtd);
       hSigCent->SetBinContent(iy+1, sig);
 
       hSCentMtd->SetBinContent(iy+1, sMtd);
+      hSCentMtd->SetBinError(iy+1, sMtdErr);
       hSCent->SetBinContent(iy+1, s);
+      hSCent->SetBinError(iy+1, sErr);
 
       hBCentMtd->SetBinContent(iy+1, bMtd);
+      hBCentMtd->SetBinError(iy+1, bMtdErr);
       hBCent->SetBinContent(iy+1, b);
+      hBCent->SetBinError(iy+1, bErr);
    }
 
    TCanvas* c4 = new TCanvas("c4", "", 600, 500);
@@ -217,14 +225,14 @@ void calSigCent()
    hSigCentMtd->SetLineColor(kRed);
    hSigCentMtd->Draw();
    hSigCent->Draw("same");
-   TLegend* lgdCent = new TLegend(0.7, 0.8, 0.95, 0.90);
+   TLegend* lgdCent = new TLegend(0.7, 0.8, 0.9, 0.90);
    lgdCent->AddEntry(hSigCentMtd, "w/ mtd", "lp");
    lgdCent->AddEntry(hSigCent, "w/o mtd", "lp");
    lgdCent->Draw();
    ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.5, 0.75, "0~10% 25B events");
+   ltx->DrawLatexNDC(0.35, 0.75, "0~10% 25B events");
 
-   TCanvas* c5 = new TCanvas("c5", "", 450, 500);
+   TCanvas* c5 = new TCanvas("c5", "", 600, 500);
    gStyle->SetOptStat(0);
    hSCentMtd->SetLineColor(kRed);
    hSCent->GetYaxis()->SetTitle("S");
@@ -233,13 +241,15 @@ void calSigCent()
    hSCent->GetYaxis()->SetRangeUser(0, maxSCent*1.3);
    hSCent->Draw();
    hSCentMtd->Draw("same");
-   TLegend* lgdsCent = new TLegend(0.7, 0.8, 0.95, 0.95);
-   lgdsCent->AddEntry(hSMtd, "w/ mtd", "lp");
-   lgdsCent->AddEntry(hS, "w/o mtd", "lp");
+   TLegend* lgdsCent = new TLegend(0.7, 0.8, 0.9, 0.9);
+   lgdsCent->AddEntry(hSCentMtd, "w/ mtd", "lp");
+   lgdsCent->AddEntry(hSCent, "w/o mtd", "lp");
    lgdsCent->Draw();
-   ltx->DrawLatexNDC(0.5, 0.7, "central 2.5B events");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.34, 0.7, "0~10%2.5B events");
 
-   TCanvas* c6 = new TCanvas("c6", "", 450, 500);
+   TCanvas* c6 = new TCanvas("c6", "", 600, 500);
+   TGaxis::SetMaxDigits(4);
    gStyle->SetOptStat(0);
    hBCent->GetYaxis()->SetTitle("B");
    hBCent->GetXaxis()->SetTitle("y");
@@ -248,9 +258,10 @@ void calSigCent()
    hBCent->GetYaxis()->SetRangeUser(0, maxBCent*1.3);
    hBCent->Draw();
    hBCentMtd->Draw("same");
-   TLegend* lgdbCent = new TLegend(0.7, 0.8, 0.95, 0.95);
-   lgdbCent->AddEntry(hBMtd, "w/ mtd", "lp");
-   lgdbCent->AddEntry(hB, "w/o mtd", "lp");
+   TLegend* lgdbCent = new TLegend(0.7, 0.8, 0.90, 0.90);
+   lgdbCent->AddEntry(hBCentMtd, "w/ mtd", "lp");
+   lgdbCent->AddEntry(hBCent, "w/o mtd", "lp");
    lgdbCent->Draw();
-   ltx->DrawLatexNDC(0.5, 0.7, "central 2.5B events");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.34, 0.7, "0~10% 2.5B events");
 }
