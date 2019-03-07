@@ -75,6 +75,8 @@ public :
    Float_t         pathLength2;
    Bool_t          isMtdDau1;
    Bool_t          isMtdDau2;
+   Bool_t          isGoodMtdDau1;
+   Bool_t          isGoodMtdDau2;
    Float_t         pT_gen;
    Float_t         eta_gen;
    Float_t         y_gen;
@@ -138,6 +140,8 @@ public :
    TBranch        *b_pathLength2;   //!
    TBranch        *b_isMtdDau1;   //!
    TBranch        *b_isMtdDau2;   //!
+   TBranch        *b_isGoodMtdDau1;   //!
+   TBranch        *b_isGoodMtdDau2;   //!
    TBranch        *b_pT_gen;   //!
    TBranch        *b_eta_gen;   //!
    TBranch        *b_y_gen;   //!
@@ -272,6 +276,8 @@ void PromptD::Init(TChain *tree)
    fChain->SetBranchAddress("pathLength2", &pathLength2, &b_pathLength2);
    fChain->SetBranchAddress("isMtdDau1", &isMtdDau1, &b_isMtdDau1);
    fChain->SetBranchAddress("isMtdDau2", &isMtdDau2, &b_isMtdDau2);
+   fChain->SetBranchAddress("isGoodMtdDau1", &isGoodMtdDau1, &b_isGoodMtdDau1);
+   fChain->SetBranchAddress("isGoodMtdDau2", &isGoodMtdDau2, &b_isGoodMtdDau2);
    fChain->SetBranchAddress("pT_gen", &pT_gen, &b_pT_gen);
    fChain->SetBranchAddress("eta_gen", &eta_gen, &b_eta_gen);
    fChain->SetBranchAddress("y_gen", &y_gen, &b_y_gen);

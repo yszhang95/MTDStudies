@@ -28,7 +28,7 @@ void fillMatchNtuple()
     TH1F::SetDefaultSumw2(true);
 
     TChain *chain = new TChain("d0ana_mc/VertexCompositeNtuple");
-    TFileCollection* fc = new TFileCollection("dum", "", "d0signal.list");
+    TFileCollection* fc = new TFileCollection("dum", "", "newd0signal.list");
     chain->AddFileInfoList(fc->GetList()); 
     PromptD *t = new PromptD(chain);
     std::cout << "total entries: " << t->GetEntries() << std::endl;
@@ -43,7 +43,7 @@ void fillMatchNtuple()
     TH2F* hdInvBetaKaonVsPDau2 = new TH2F("hdInvBetaKaonVsPDau2", "hdInvBetaKaonVsPDau2", 1000, 0, 5, 1000, 0.9, 1.7);
 
     TNtuple *ntp = new TNtuple("PromptD", "PromptD", 
-            "pT:y:mass:flavor:eta:isSwap:matchGEN:pTD1:EtaD1:pTD2:EtaD2:beta1_PV:beta2_PV:beta1_PVerr:beta2_PVerr:isMtdDau1:isMtdDau2:sigmatmtd1:sigmatmtd2");
+            "pT:y:mass:flavor:eta:isSwap:matchGEN:pTD1:EtaD1:pTD2:EtaD2:beta1_PV:beta2_PV:beta1_PVerr:beta2_PVerr:isMtdDau1:isMtdDau2:sigmatmtd1:sigmatmtd2:isGoodMtdDau1:isGoodMtdDau2");
 
     int isMtdWrong = 0;
     Long64_t nD0 = 0;
@@ -55,13 +55,13 @@ void fillMatchNtuple()
         const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
         const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
         // fill dau1 histograms
-        if(t->isMtdDau1 && std::fabs(t->EtaD1)<3){
+        if(t->isGoodMtdDau1 && std::fabs(t->EtaD1)<3){
             hInvBetaVsPDau1->Fill(pD1, 1./t->beta1_PV);
             hdInvBetaPionVsPDau1->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
             hdInvBetaKaonVsPDau1->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
         } 
         // fill dau2 histograms
-        if(t->isMtdDau2 && std::fabs(t->EtaD2)<3){
+        if(t->isGoodMtdDau2 && std::fabs(t->EtaD2)<3){
             hInvBetaVsPDau2->Fill(pD2, 1./t->beta2_PV);
             hdInvBetaPionVsPDau2->Fill(pD2, 1./t->beta2_PV - invBetaPion(pD2));
             hdInvBetaKaonVsPDau2->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
@@ -95,6 +95,8 @@ void fillMatchNtuple()
         var[j++] = t->isMtdDau2;
         var[j++] = t->sigmatmtd1;
         var[j++] = t->sigmatmtd2;
+        var[j++] = t->isGoodMtdDau1;
+        var[j++] = t->isGoodMtdDau2;
 
         ntp->Fill(var);
 
@@ -102,7 +104,7 @@ void fillMatchNtuple()
     std::cout << "counts of sigmatmtd >= 0 but fabs(eta)>3: " << isMtdWrong << std::endl;
     std::cout << "number of D0 passing selection: " << nD0 << std::endl;
     TFile* fout;
-    fout = new TFile("matchPromptD0_fullSample.root", "recreate");
+    fout = new TFile("matchPromptD0_fullSample_reRECO.root", "recreate");
     ntp->Write();
     hInvBetaVsPDau1->Write();
     hInvBetaVsPDau2->Write();
