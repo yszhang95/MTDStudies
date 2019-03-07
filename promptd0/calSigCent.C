@@ -230,7 +230,7 @@ void calSigCent()
    lgdCent->AddEntry(hSigCent, "w/o mtd", "lp");
    lgdCent->Draw();
    ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.35, 0.75, "0~10% 25B events");
+   ltx->DrawLatexNDC(0.35, 0.75, "0~10% 2.5B events");
 
    TCanvas* c5 = new TCanvas("c5", "", 600, 500);
    gStyle->SetOptStat(0);
@@ -246,7 +246,7 @@ void calSigCent()
    lgdsCent->AddEntry(hSCent, "w/o mtd", "lp");
    lgdsCent->Draw();
    ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.34, 0.7, "0~10%2.5B events");
+   ltx->DrawLatexNDC(0.34, 0.7, "0~10% 2.5B events");
 
    TCanvas* c6 = new TCanvas("c6", "", 600, 500);
    TGaxis::SetMaxDigits(4);
