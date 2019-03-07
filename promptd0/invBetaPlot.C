@@ -38,7 +38,7 @@ void invBetaPlot()
    bool profile= true;
 
    TCanvas *c[4];
-   TFile* f1 = new TFile("matchPromptD0_fullSample.root");
+   TFile* f1 = new TFile("matchPromptD0_fullSample_reRECO.root");
    TNtuple* tp = (TNtuple*) f1->Get("PromptD");
    matchD* t = new matchD(tp);
    std::cout << t->GetEntries() << std::endl;
@@ -51,32 +51,28 @@ void invBetaPlot()
    TH2F* hdInvBetaPionVsP = new TH2F("hdInvBetaPionVsP", "hdInvBetaPionVsP", 50, 0, 10, 1000, -0.1, 0.1);
    TH2F* hdInvBetaKaonVsP = new TH2F("hdInvBetaKaonVsP", "hdInvBetaKaonVsP", 50, 0, 10, 1000, -0.1, 0.1);
 
-   // only talk about D0 pt<0.5
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
       t->GetEntry(ientry);
       if(t->y<-3 || t->y>3) continue;
-      //if(t->pT>0.5) continue;
-
-      // require eta<1.4 ? pT > 0.8 : pT > 0.5
-      //if(std::fabs(t->pTD1<0.8) && t->EtaD1<1.4) continue;
-      //if(std::fabs(t->pTD2<0.8) && t->EtaD2<1.4) continue;
-      //if(std::fabs(t->pTD1<0.5) && t->EtaD1>1.4) continue;
-      //if(std::fabs(t->pTD2<0.5) && t->EtaD2>1.4) continue;
-      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
 
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
-      if(t->flavor == 1 && t->isMtdDau1) hdInvBetaPionVsPDau1D->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
-      if(t->flavor == 1 && t->isMtdDau2) hdInvBetaKaonVsPDau2D->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
-      if(t->flavor == -1 && t->isMtdDau1) hdInvBetaKaonVsPDau1Dbar->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
-      if(t->flavor == -1 && t->isMtdDau2) hdInvBetaPionVsPDau2Dbar->Fill(pD2, 1./t->beta2_PV - invBetaPion(pD2));
+      //if(t->pT>0.5) continue;
 
-      if(t->flavor == 1 && t->isMtdDau1) hdInvBetaPionVsP->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
-      if(t->flavor == -1 && t->isMtdDau2) hdInvBetaPionVsP->Fill(pD2, 1./t->beta2_PV - invBetaPion(pD2));
+      // require eta<1.4 ? pT > 0.8 : p > 0.7
+      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.7 : pD1 <= 0.7) continue;
+      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.7 : pD2 <= 0.7) continue;
 
-      if(t->flavor == -1 && t->isMtdDau1) hdInvBetaKaonVsP->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
-      if(t->flavor == 1 && t->isMtdDau2) hdInvBetaKaonVsP->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
+      if(t->flavor == 1 && t->isGoodMtdDau1) hdInvBetaPionVsPDau1D->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
+      if(t->flavor == 1 && t->isGoodMtdDau2) hdInvBetaKaonVsPDau2D->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
+      if(t->flavor == -1 && t->isGoodMtdDau1) hdInvBetaKaonVsPDau1Dbar->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
+      if(t->flavor == -1 && t->isGoodMtdDau2) hdInvBetaPionVsPDau2Dbar->Fill(pD2, 1./t->beta2_PV - invBetaPion(pD2));
+
+      if(t->flavor == 1 && t->isGoodMtdDau1) hdInvBetaPionVsP->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
+      if(t->flavor == -1 && t->isGoodMtdDau2) hdInvBetaPionVsP->Fill(pD2, 1./t->beta2_PV - invBetaPion(pD2));
+
+      if(t->flavor == -1 && t->isGoodMtdDau1) hdInvBetaKaonVsP->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
+      if(t->flavor == 1 && t->isGoodMtdDau2) hdInvBetaKaonVsP->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
    }
    if(draw){
       setPalette();
@@ -168,20 +164,20 @@ void invBetaPlot()
          gKaon->SetPoint(i, hdInvBetaKaonstd->GetBinCenter(i+1), hdInvBetaKaonstd->GetBinError(i+1));
       }
 
-      TF1* fExpPion = new TF1("fExpPion_dInvBetaRMS", "[0]+[1]*exp(-[2]*x)", 0.8, 10);
-      TF1* fPoly2Pion = new TF1("fPoly2Pion_dInvBetaRMS", "[0]+[1]*x +[2]*x*x", 0.8, 10);
+      TF1* fExpPion = new TF1("fExpPion_dInvBetaRMS", "[0]+[1]*exp(-[2]*x)", 0.7, 10);
+      TF1* fPoly2Pion = new TF1("fPoly2Pion_dInvBetaRMS", "[0]+[1]*x +[2]*x*x", 0.7, 10);
 
       fExpPion->SetParameters(0.005, 0.016, 0.36);
       fPoly2Pion->SetParameters(0.0185, -0.003, 0.00017);
       fPoly2Pion->SetLineColor(kBlue);
-      gPion->Fit(fExpPion, "Q", "", 0.8, 10);
-      gPion->Fit(fExpPion, "Q", "", 0.8, 10);
-      gPion->Fit(fExpPion, "Q", "", 0.8, 10);
-      gPion->Fit(fExpPion, "", "", 0.8, 10);
-      gPion->Fit(fPoly2Pion, "Q", "", 0.8, 10);
-      gPion->Fit(fPoly2Pion, "Q", "", 0.8, 10);
-      gPion->Fit(fPoly2Pion, "Q", "", 0.8, 10);
-      gPion->Fit(fPoly2Pion, "", "", 0.8, 10);
+      gPion->Fit(fExpPion, "Q R", "", 0.8, 10);
+      gPion->Fit(fExpPion, "Q R", "", 0.8, 10);
+      gPion->Fit(fExpPion, "Q R", "", 0.8, 10);
+      gPion->Fit(fExpPion, "R", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "Q R", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "Q R", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "Q R", "", 0.8, 10);
+      gPion->Fit(fPoly2Pion, "R", "", 0.8, 10);
 
       c[0]->cd();
       gStyle->SetOptStat(0);

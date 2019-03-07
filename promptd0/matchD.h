@@ -42,6 +42,8 @@ public :
    Float_t         sigmatmtd2;
    Float_t         isMtdDau1;
    Float_t         isMtdDau2;
+   Float_t         isGoodMtdDau1;
+   Float_t         isGoodMtdDau2;
 
    // List of branches
    TBranch        *b_pT;   //!
@@ -97,6 +99,8 @@ public :
    TBranch        *b_pathLength2;   //!
    TBranch        *b_isMtdDau1;   //!
    TBranch        *b_isMtdDau2;   //!
+   TBranch        *b_isGoodMtdDau1;   //!
+   TBranch        *b_isGoodMtdDau2;   //!
    TBranch        *b_pT_gen;   //!
    TBranch        *b_eta_gen;   //!
    TBranch        *b_y_gen;   //!
@@ -197,6 +201,8 @@ void matchD::Init(TTree *tree)
    fChain->SetBranchAddress("sigmatmtd2", &sigmatmtd2, &b_sigmatmtd2);
    fChain->SetBranchAddress("isMtdDau1", &isMtdDau1, &b_isMtdDau1);
    fChain->SetBranchAddress("isMtdDau2", &isMtdDau2, &b_isMtdDau2);
+   fChain->SetBranchAddress("isGoodMtdDau1", &isGoodMtdDau1, &b_isGoodMtdDau1);
+   fChain->SetBranchAddress("isGoodMtdDau2", &isGoodMtdDau2, &b_isGoodMtdDau2);
    Notify();
 }
 

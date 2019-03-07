@@ -11,7 +11,7 @@ int whichY(const float& y)
 void mtdDauAccept()
 {
    TH1::SetDefaultSumw2();
-   TFile* f1 = new TFile("matchPromptD0_fullSample.root");
+   TFile* f1 = new TFile("matchPromptD0_fullSample_reRECO.root");
    TNtuple* tp = (TNtuple*) f1->Get("PromptD");
    matchD* t = new matchD(tp);
    std::cout << t->GetEntries() << std::endl;
@@ -50,31 +50,38 @@ void mtdDauAccept()
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
 
-      if(fabs(t->EtaD1) < 3 && fabs(t->EtaD1) < 1.4 ? t->pTD1 > 0.8 : t->pTD1 > 0.5){
-         ;
-      }
-
       if(fabs(t->EtaD1) > 3) continue;
       if(fabs(t->EtaD2) > 3) continue;
       //if(fabs(t->EtaD1) < 1.6) continue;
       //if(fabs(t->EtaD2) < 1.6) continue;
 
-      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
+      const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
+      const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
+
+      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.7 : pD1 <= 0.7) continue;
+      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.7 : pD2 <= 0.7) continue;
 
       hAllDau1Pt->Fill(t->pTD1);
+      //if(!t->isGoodMtdDau1)hNoMtdDau1Pt->Fill(t->pTD1);
+      //if(t->isGoodMtdDau1)hMtdDau1Pt->Fill(t->pTD1);
       if(!t->isMtdDau1)hNoMtdDau1Pt->Fill(t->pTD1);
       if(t->isMtdDau1)hMtdDau1Pt->Fill(t->pTD1);
 
       hAllDau2Pt->Fill(t->pTD2);
+      //if(!t->isGoodMtdDau2)hNoMtdDau2Pt->Fill(t->pTD2);
+      //if(t->isGoodMtdDau2)hMtdDau2Pt->Fill(t->pTD2);
       if(!t->isMtdDau2)hNoMtdDau2Pt->Fill(t->pTD2);
       if(t->isMtdDau2)hMtdDau2Pt->Fill(t->pTD2);
 
       hAllDau1Eta->Fill(t->EtaD1);
+      //if(!t->isGoodMtdDau1)hNoMtdDau1Eta->Fill(t->EtaD1);
+      //if(t->isGoodMtdDau1)hMtdDau1Eta->Fill(t->EtaD1);
       if(!t->isMtdDau1)hNoMtdDau1Eta->Fill(t->EtaD1);
       if(t->isMtdDau1)hMtdDau1Eta->Fill(t->EtaD1);
 
       hAllDau2Eta->Fill(t->EtaD2);
+      //if(!t->isGoodMtdDau2)hNoMtdDau2Eta->Fill(t->EtaD2);
+      //if(t->isGoodMtdDau2)hMtdDau2Eta->Fill(t->EtaD2);
       if(!t->isMtdDau2)hNoMtdDau2Eta->Fill(t->EtaD2);
       if(t->isMtdDau2)hMtdDau2Eta->Fill(t->EtaD2);
    }
@@ -96,6 +103,8 @@ void mtdDauAccept()
    hDrawDau1Pt->GetXaxis()->SetTitle("Dau1 pT (GeV)");
    hDrawDau1Pt->Draw();
 
+   std::cout << hMtdDau1Pt->GetEntries() << std::endl;
+   std::cout << hAllDau1Pt->GetEntries() << std::endl;
    hMtdDau1Pt->Divide(hAllDau1Pt);
    hNoMtdDau1Pt->Divide(hAllDau1Pt);
 
@@ -201,4 +210,5 @@ void mtdDauAccept()
    l4->AddEntry(hNoMtdDau2Eta, "dau2 no mtd hits", "pl");
    l4->AddEntry(hMtdDau2Eta, "dau2 has mtd", "pl");
    l4->Draw();
+
 }
