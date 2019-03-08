@@ -28,7 +28,8 @@ void fillGen()
    TH1F::SetDefaultSumw2(true);
 
    TChain *t = new TChain("d0ana_mc/genCandidateNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "d0signal.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "d0signal.list");
+   TFileCollection* fc = new TFileCollection("dum", "", "newd0signal.list");
    t->AddFileInfoList(fc->GetList()); 
    
    std::cout << "total entries: " << t->GetEntries() << std::endl;
@@ -71,7 +72,7 @@ void fillGen()
    std::cout << "status2" << nStatus2 << std::endl;
    std::cout << "status2 pass" << nStatus2_kpi << std::endl;
    TFile* fout;
-   fout = new TFile("genPt.root", "recreate");
+   fout = new TFile("genPt_reRECO.root", "recreate");
    for(int iy=0; iy<ana::nuOfY; iy++)
       hPt[iy]->Write();
 }

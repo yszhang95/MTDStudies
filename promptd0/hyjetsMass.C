@@ -36,11 +36,11 @@ void hyjetsMass()
    fExpPion = new TF1("fExpPion_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
    fExpKaon = new TF1("fExpKaon_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
 
-   //TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
+   TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
    //chain->Add("/eos/cms/store/group/phys_heavyions/MTD/anstahll/VertexCompositeAnalysis/HydJets_mc_mtd_NTUPLE_20190227/Hydjet_5p02TeV_TuneCP5_MTD/HydJets_mc_mtd_NTUPLE_20190227/190227_165027/0001/hyjets_mc_mtd_1165.root");
-   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
-   TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
+   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   //TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
+   //TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
@@ -93,6 +93,8 @@ void hyjetsMass()
 
       const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
       const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
+//      const float dInvBetaCut1 = fExpPion->Eval(pD1);
+//      const float dInvBetaCut2 = fExpPion->Eval(pD2);
 
       hMass[iy]->Fill(t->mass);
       if(isCentral) hMassCent[iy]->Fill(t->mass);
@@ -130,7 +132,8 @@ void hyjetsMass()
       hFracCent->SetBinContent(iy+1, fracCent);
    }
 
-   TFile fout("hyjetsMassHists_reRECO.root", "recreate");
+   //TFile fout("hyjetsMassHists_reRECO.root", "recreate");
+   TFile fout("hyjetsMassHists.root", "recreate");
    for(int iy=0; iy<ana::nuOfY; iy++){
       hMass[iy]->Write();
       hMassCent[iy]->Write();

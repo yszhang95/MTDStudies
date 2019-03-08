@@ -1,7 +1,8 @@
 void readEvts()
 {
    TFile* f[2048];
-   ifstream fin("hyjets_sample.list");
+   //ifstream fin("hyjets_sample.list");
+   ifstream fin("newhyjets.list");
    //char name[512];
    std::string name;
    TH1F* hCent[2048];
@@ -9,7 +10,8 @@ void readEvts()
    while(fin>>name){
       std::cout << name << std::endl;
       f[nfile] = new TFile(name.c_str());
-      f[nfile]->GetObject("d0ana/hCent", hCent[nfile]);
+      //f[nfile]->GetObject("d0ana/hCent", hCent[nfile]);
+      f[nfile]->GetObject("d0ana_mc/hCent", hCent[nfile]);
       nfile++;
    }
    std::cout << nfile << " files" << std::endl;
