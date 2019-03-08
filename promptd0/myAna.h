@@ -9,8 +9,10 @@ namespace ana{
    const int nuOfPt = 10;
    const float ptbin[nuOfPt+1] = {0., 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0};
 
-   const double evts_bkg_MB = 1273;
-   const double evts_bkg_central = 121;
+   //const double evts_bkg_MB = 1273;
+   //const double evts_bkg_central = 121;
+   const double evts_bkg_MB = 960;
+   const double evts_bkg_central = 151;
 
    const double evts_data_MB = 500e6;
 

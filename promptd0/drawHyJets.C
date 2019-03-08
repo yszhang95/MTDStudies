@@ -13,7 +13,8 @@ void setPalette()
 
 void drawHyJets()
 {
-   TFile *f1 = new TFile("hists.root");
+   TFile *f1 = new TFile("hists_reRECO.root");
+   //TFile *f1 = new TFile("hists.root");
    TH1F* hD0Pt, * hD0Pt3sigma, *hD0Pt2sigma, *hD0Pt1sigma;
    TH1F* hPionEff, * hPion3sigmaEff, *hPion2sigmaEff, *hPion1sigmaEff;
    TH1F* hKaonEff, * hKaon3sigmaEff, *hKaon2sigmaEff, *hKaon1sigmaEff;
@@ -57,10 +58,10 @@ void drawHyJets()
 	f1->GetObject("hKaon2sigmaEffCent",hKaon2sigmaEffCent);
 	f1->GetObject("hKaon1sigmaEffCent",hKaon1sigmaEffCent);
 
-   bool drawDau = true;
-   bool drawD0 = true;
-   bool drawDauCent = true;
-   bool drawD0Cent = true;
+   bool drawDau = false;
+   bool drawD0 = false;
+   bool drawDauCent = false;
+   bool drawD0Cent = false;
 
    setPalette();
 
@@ -144,7 +145,7 @@ void drawHyJets()
       hD0Pt1sigma->Draw("same");
 
       TLatex* latex = new TLatex();
-      latex->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
+      latex->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.5 TeV");
       latex->SetTextSize(0.036);
       latex->DrawLatexNDC(0.6, 0.28, "-3 < D^{0} Rapidity < 3");
       latex->DrawLatexNDC(0.6, 0.2, "MB events");
@@ -252,7 +253,7 @@ void drawHyJets()
       hD0PtCent1sigma->Draw("same");
 
       TLatex* latex = new TLatex();
-      latex->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.02 TeV");
+      latex->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.5 TeV");
       latex->SetTextSize(0.036);
       latex->DrawLatexNDC(0.6, 0.28, "-3 < D^{0} Rapidity < 3");
       latex->DrawLatexNDC(0.6, 0.2, "centrality 0 ~ 10%");
@@ -264,7 +265,7 @@ void drawHyJets()
       legend->Draw();
    }
 
-   TFile *f2 = new TFile("dauFrac_hyjets.root");
+   TFile *f2 = new TFile("dauFrac_hyjets_reRECO.root");
    TH1F* hMtdDau1Pt, *hMtdDau2Pt, *hMtdDau1Eta, *hMtdDau2Eta;
    TH1F* hNoMtdDau1Pt, *hNoMtdDau2Pt, *hNoMtdDau1Eta, *hNoMtdDau2Eta;
    TH2F* hPtVsEtaDau1Mtd, *hPtVsEtaDau1All;
@@ -280,7 +281,7 @@ void drawHyJets()
    f2->GetObject("hPtVsEtaDau1All", hPtVsEtaDau1All);
 
 
-   bool drawDauFrac = false;
+   bool drawDauFrac = true;
 
    if(drawDauFrac){
    TLatex* latex = new TLatex();

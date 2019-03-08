@@ -2,10 +2,14 @@
 void calSigCent()
 {
    TLatex* ltx = new TLatex();
-   TFile* f1 = new TFile("genPt.root");
+   //TFile* f1 = new TFile("genPt.root");
+   //TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
+   //TFile* f3 = new TFile("promptd0MassHists.root");
+   //TFile* f4 = new TFile("hyjetsMassHists.root");
+   TFile* f1 = new TFile("genPt_reRECO.root");
    TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
-   TFile* f3 = new TFile("promptd0MassHists.root");
-   TFile* f4 = new TFile("hyjetsMassHists.root");
+   TFile* f3 = new TFile("promptd0MassHists_reRECO.root");
+   TFile* f4 = new TFile("hyjetsMassHists_reRECO.root");
 
    TH1F* hGenPt[ana::nuOfY];
    TH1F* hRecoPt[ana::nuOfY];
@@ -229,8 +233,8 @@ void calSigCent()
    lgdCent->AddEntry(hSigCentMtd, "w/ mtd", "lp");
    lgdCent->AddEntry(hSigCent, "w/o mtd", "lp");
    lgdCent->Draw();
-   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.35, 0.75, "0~10% 2.5B events");
+   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
+   ltx->DrawLatexNDC(0.35, 0.75, Form("0~10%% %1.0f B events", ana::evts_sim_central / 1e9));
 
    TCanvas* c5 = new TCanvas("c5", "", 600, 500);
    gStyle->SetOptStat(0);
@@ -245,8 +249,8 @@ void calSigCent()
    lgdsCent->AddEntry(hSCentMtd, "w/ mtd", "lp");
    lgdsCent->AddEntry(hSCent, "w/o mtd", "lp");
    lgdsCent->Draw();
-   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.34, 0.7, "0~10% 2.5B events");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
+   ltx->DrawLatexNDC(0.34, 0.7, Form("0~10%% %1.0f B events", ana::evts_sim_central / 1e9));
 
    TCanvas* c6 = new TCanvas("c6", "", 600, 500);
    TGaxis::SetMaxDigits(4);
@@ -262,6 +266,6 @@ void calSigCent()
    lgdbCent->AddEntry(hBCentMtd, "w/ mtd", "lp");
    lgdbCent->AddEntry(hBCent, "w/o mtd", "lp");
    lgdbCent->Draw();
-   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
-   ltx->DrawLatexNDC(0.34, 0.7, "0~10% 2.5B events");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
+   ltx->DrawLatexNDC(0.34, 0.7, Form("0~10%% %1.0f B events", ana::evts_sim_central / 1e9));
 }

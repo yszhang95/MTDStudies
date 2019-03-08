@@ -20,7 +20,7 @@ void promptD0mass()
 {
    TH1::SetDefaultSumw2(true);
 
-   const bool drawMass = false;
+   const bool drawMass = true;
    const bool drawSwapMass = false;
    const bool drawFrac = true;
 
@@ -28,10 +28,14 @@ void promptD0mass()
    ltx->SetTextSize(0.06);
 
    TF1 *fExpPion, *fExpKaon;
+
    fExpPion = new TF1("fExpPion_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
    fExpKaon = new TF1("fExpKaon_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
 
-   TFile* f1 = new TFile("matchPromptD0_fullSample.root");
+   TF1* fExpBTL = new TF1("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
+   TF1* fExpETL = new TF1("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
+
+   TFile* f1 = new TFile("matchPromptD0_fullSample_reRECO.root");
    TNtuple* tp = (TNtuple*) f1->Get("PromptD");
    matchD* t = new matchD(tp);
    std::cout << t->GetEntries() << std::endl;
@@ -59,19 +63,25 @@ void promptD0mass()
    
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
       t->GetEntry(ientry);
-      // require eta<1.4 ? pT > 0.8 : pT > 0.5 and within MTD acceptance
+
       if(std::fabs(t->EtaD1) > 3) continue;
       if(std::fabs(t->EtaD2) > 3) continue;
-      if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
+
+      const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
+      const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
+
+      if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
+      if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD2 <= 0.7) continue;
 
       if(t->pT>0.5) continue;
 
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
 
-      const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
-      const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
+      //const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
+      //const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
+      const float dInvBetaCut1 = fExpPion->Eval(pD1);
+      const float dInvBetaCut2 = fExpPion->Eval(pD2);
 
       if(!(t->matchGEN && !t->isSwap)) continue;
 
@@ -82,10 +92,10 @@ void promptD0mass()
       bool is1sigmaPionDau2 = true;
       bool is1sigmaKaonDau2 = true;
 
-      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
-      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
-      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
-      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
+      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * dInvBetaCut1;
+      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * dInvBetaCut1;
+      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * dInvBetaCut2;
+      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * dInvBetaCut2;
       if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) {
          hMassMtd[iy]->Fill(t->mass);
          hPtMtd[iy]->Fill(t->pT);
@@ -102,8 +112,8 @@ void promptD0mass()
          ltx->DrawLatexNDC(0.55, 0.65, Form("%.1f < y < %.1f", ana::ybin[iy], ana::ybin[iy+1]));
          ltx->DrawLatexNDC(0.6, 0.55, "pT < 0.5 GeV");
          TLegend *lgd = new TLegend(0.7, 0.8, 0.9, 0.9);
-         lgd->AddEntry(hMass[iy], "w/o MTD", "p");
-         lgd->AddEntry(hMassMtd[iy], "w/ MTD", "p");
+         lgd->AddEntry(hMass[iy], "w/o MTD", "lp");
+         lgd->AddEntry(hMassMtd[iy], "w/ MTD", "lp");
          lgd->Draw();
       }
    }
@@ -119,6 +129,7 @@ void promptD0mass()
       hMassSwapMtd[iy]->SetLineColor(kRed);
    }
 
+   /*
    TFile* f2 = new TFile("matchSwapPromptD0_fullSample.root");
    tp = (TNtuple*) f2->Get("PromptD");
    t = new matchD(tp);
@@ -148,11 +159,11 @@ void promptD0mass()
       bool is1sigmaPionDau2 = true;
       bool is1sigmaKaonDau2 = true;
 
-      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
-      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
-      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
-      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
-      if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) hMassSwapMtd[iy]->Fill(t->mass);
+//      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
+//      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
+//      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
+//      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
+//      if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) hMassSwapMtd[iy]->Fill(t->mass);
    }
 
    TCanvas* c2[ana::nuOfY];
@@ -171,6 +182,7 @@ void promptD0mass()
          lgd->Draw();
       }
    }
+   */
 
    TH1F* hFrac = new TH1F("hfrac", "hfrac", ana::nuOfY, ana::ybin);
    TH1F* hFracSwap = new TH1F("hfracSwap", "hfracSwap", ana::nuOfY, ana::ybin);
@@ -187,24 +199,24 @@ void promptD0mass()
    hFracSwap->Sumw2(false);
 
    for(int iy = 0; iy<ana::nuOfY; iy++){
-      float frac = hMassMtd[iy]->Integral() / hMass[iy]->Integral();
-      float fracSwap = hMassSwapMtd[iy]->Integral() / hMassSwap[iy]->Integral();
+      float frac = hMassMtd[iy]->Integral(0, 1000) / hMass[iy]->Integral(0, 1000);
+      //float fracSwap = hMassSwapMtd[iy]->Integral() / hMassSwap[iy]->Integral();
       hFrac->SetBinContent(iy+1, frac);
-      hFracSwap->SetBinContent(iy+1, fracSwap);
+      //hFracSwap->SetBinContent(iy+1, fracSwap);
    }
    if(drawFrac){
       TCanvas* c1 = new TCanvas("cFrac", "", 500, 450);
       gPad->DrawFrame(-3, 0, 3, 1.2, ";y;yield ratio");
       hFrac->Draw("same");
-      hFracSwap->Draw("same");
+      //hFracSwap->Draw("same");
       TLegend *lgd = new TLegend(0.65, 0.8, 0.9, 0.95);
       lgd->AddEntry(hFrac, "non swap", "pl");
-      lgd->AddEntry(hFracSwap, "swap", "pl");
+      //lgd->AddEntry(hFracSwap, "swap", "pl");
       lgd->Draw();
       ltx->DrawLatexNDC(0.6, 0.65, "pT < 0.5 GeV");
    }
 
-   TFile fout("promptd0MassHists.root", "recreate");
+   TFile fout("promptd0MassHists_reRECO.root", "recreate");
    for(int iy=0; iy<ana::nuOfY; iy++){
       hMass[iy]->Write();
       hMassSwap[iy]->Write();

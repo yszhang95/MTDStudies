@@ -58,8 +58,8 @@ void mtdDauAccept()
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
 
-      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.7 : pD1 <= 0.7) continue;
-      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.7 : pD2 <= 0.7) continue;
+      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
+      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD2 <= 0.7) continue;
 
       hAllDau1Pt->Fill(t->pTD1);
       //if(!t->isGoodMtdDau1)hNoMtdDau1Pt->Fill(t->pTD1);

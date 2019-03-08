@@ -1,10 +1,14 @@
 #include "myAna.h"
 void calSig()
 {
-   TFile* f1 = new TFile("genPt.root");
+   //TFile* f1 = new TFile("genPt.root");
+   //TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
+   //TFile* f3 = new TFile("promptd0MassHists.root");
+   //TFile* f4 = new TFile("hyjetsMassHists.root");
+   TFile* f1 = new TFile("genPt_reRECO.root");
    TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
-   TFile* f3 = new TFile("promptd0MassHists.root");
-   TFile* f4 = new TFile("hyjetsMassHists.root");
+   TFile* f3 = new TFile("promptd0MassHists_reRECO.root");
+   TFile* f4 = new TFile("hyjetsMassHists_reRECO.root");
 
    TH1F* hGenPt[ana::nuOfY];
    TH1F* hRecoPt[ana::nuOfY];
@@ -128,7 +132,7 @@ void calSig()
    lgd->AddEntry(hSig, "w/o mtd", "lp");
    lgd->Draw();
    ltx->SetTextSize(0.05);
-   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
    ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 500);
@@ -146,7 +150,7 @@ void calSig()
    lgds->AddEntry(hS, "w/o mtd", "lp");
    lgds->Draw();
    ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
-   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
 
    TCanvas* c3 = new TCanvas("c3", "", 600, 500);
    c3->SetLeftMargin(0.15);
@@ -164,5 +168,5 @@ void calSig()
    lgdb->AddEntry(hB, "w/o mtd", "lp");
    lgdb->Draw();
    ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
-   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.02 TeV");
+   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
 }
