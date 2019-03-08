@@ -32,14 +32,14 @@ inline float invBetaKaon(const float& p){
 
 void mtdEffHyJets()
 {
-   TF1 *fExpPion, *fExpKaon; 
+   TF1* fExpBTL = new TF1("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
+   TF1* fExpETL = new TF1("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
 
-   fExpPion = new TF1("fExpPion_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
-   fExpKaon = new TF1("fExpKaon_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
-
-   TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
-   //chain->Add("/eos/cms/store/group/phys_heavyions/MTD/anstahll/VertexCompositeAnalysis/HydJets_mc_mtd_NTUPLE_20190227/Hydjet_5p02TeV_TuneCP5_MTD/HydJets_mc_mtd_NTUPLE_20190227/190227_165027/0001/hyjets_mc_mtd_1165.root");
-   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
+   //chain->Add("/eos/cms/store/group/phys_heavyions/MTD/anstahll/VertexCompositeAnalysis/HydJets_mc_mtd_D0_NTUPLE_20190307/MinBias_Hydjet_Drume5_5p5TeV_TuneCP5_Pythia8/HydJets_mc_mtd_D0_NTUPLE_20190307/190307_151548/0000/hyjets_mc_mtd_d0_1.root");
+   TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
+   //TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
+   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
@@ -126,14 +126,19 @@ void mtdEffHyJets()
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
 
-      // require eta<1.4 ? pT > 0.8 : pT > 0.5 and within MTD acceptance
       if(std::fabs(t->EtaD1) > 3) continue;
       if(std::fabs(t->EtaD2) > 3) continue;
-      if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
 
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
+
+      if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
+      if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD2 <= 0.7) continue;
+      //if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
+      //if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
+
+      const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
+      const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
 
       if(daughterEff_P){
          if(t->flavor == 1){
@@ -153,9 +158,9 @@ void mtdEffHyJets()
                if(isCentral) hPionEffCent->Fill(pD1);
             }
 
-            if(t->beta1_PV!=-99) is3sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
-            if(t->beta1_PV!=-99) is2sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
-            if(t->beta1_PV!=-99) is1sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
+            if(t->beta1_PV!=-99) is3sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * dInvBetaCut1;
+            if(t->beta1_PV!=-99) is2sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * dInvBetaCut1;
+            if(t->beta1_PV!=-99) is1sigmaPion = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * dInvBetaCut1;
 
             if(is3sigmaPion && t->beta1_PV!=-99) {
                hPion3sigmaEff->Fill(pD1);
@@ -175,9 +180,9 @@ void mtdEffHyJets()
                if(isCentral) hKaonEffCent->Fill(pD2);
             }
 
-            if(t->beta2_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 *fExpKaon->Eval(pD2);
-            if(t->beta2_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 *fExpKaon->Eval(pD2);
-            if(t->beta2_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 *fExpKaon->Eval(pD2);
+            if(t->beta2_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 *dInvBetaCut2;
+            if(t->beta2_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 *dInvBetaCut2;
+            if(t->beta2_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 *dInvBetaCut2;
 
             if(is3sigmaKaon && t->beta2_PV!=-99) {
                hKaon3sigmaEff->Fill(pD2);
@@ -210,9 +215,9 @@ void mtdEffHyJets()
                if(isCentral) hKaonEffCent->Fill(pD1);
             }
 
-            if(t->beta1_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
-            if(t->beta1_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
-            if(t->beta1_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
+            if(t->beta1_PV!=-99) is3sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * dInvBetaCut1;
+            if(t->beta1_PV!=-99) is2sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * dInvBetaCut1;
+            if(t->beta1_PV!=-99) is1sigmaKaon = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * dInvBetaCut1;
 
             if(is3sigmaKaon && t->beta1_PV!=-99) {
                hKaon3sigmaEff->Fill(pD1);
@@ -232,9 +237,9 @@ void mtdEffHyJets()
                if(isCentral) hPionEffCent->Fill(pD2);
             }
 
-            if(t->beta2_PV!=-99) is3sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
-            if(t->beta2_PV!=-99) is2sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
-            if(t->beta2_PV!=-99) is1sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
+            if(t->beta2_PV!=-99) is3sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * dInvBetaCut2;
+            if(t->beta2_PV!=-99) is2sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * dInvBetaCut2;
+            if(t->beta2_PV!=-99) is1sigmaPion = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * dInvBetaCut2;
 
             if(is3sigmaPion && t->beta2_PV!=-99) {
                hPion3sigmaEff->Fill(pD2);
@@ -265,10 +270,10 @@ void mtdEffHyJets()
          bool is3sigmaPionDau2 = true;
          bool is3sigmaKaonDau2 = true;
          
-         if(t->beta1_PV!=-99) is3sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * fExpPion->Eval(pD1);
-         if(t->beta1_PV!=-99) is3sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * fExpKaon->Eval(pD1);
-         if(t->beta2_PV!=-99) is3sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * fExpPion->Eval(pD2);
-         if(t->beta2_PV!=-99) is3sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 * fExpKaon->Eval(pD2);
+         if(t->beta1_PV!=-99) is3sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 3.0 * dInvBetaCut1;
+         if(t->beta1_PV!=-99) is3sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 3.0 * dInvBetaCut1;
+         if(t->beta2_PV!=-99) is3sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 3.0 * dInvBetaCut2;
+         if(t->beta2_PV!=-99) is3sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 3.0 * dInvBetaCut2;
 
          if((t->flavor == 1 && is3sigmaPionDau1 && is3sigmaKaonDau2) || (t->flavor == -1 && is3sigmaKaonDau1 && is3sigmaPionDau2)) {
             hD0Pt3sigma->Fill(t->pT);
@@ -280,10 +285,10 @@ void mtdEffHyJets()
          bool is2sigmaPionDau2 = true;
          bool is2sigmaKaonDau2 = true;
 
-         if(t->beta1_PV!=-99) is2sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * fExpPion->Eval(pD1);
-         if(t->beta1_PV!=-99) is2sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * fExpKaon->Eval(pD1);
-         if(t->beta2_PV!=-99) is2sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * fExpPion->Eval(pD2);
-         if(t->beta2_PV!=-99) is2sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 * fExpKaon->Eval(pD2);
+         if(t->beta1_PV!=-99) is2sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 2.0 * dInvBetaCut1;
+         if(t->beta1_PV!=-99) is2sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 2.0 * dInvBetaCut1;
+         if(t->beta2_PV!=-99) is2sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 2.0 * dInvBetaCut2;
+         if(t->beta2_PV!=-99) is2sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 2.0 * dInvBetaCut2;
 
          if((t->flavor == 1 && is2sigmaPionDau1 && is2sigmaKaonDau2) || (t->flavor == -1 && is2sigmaKaonDau1 && is2sigmaPionDau2)) {
             hD0Pt2sigma->Fill(t->pT);
@@ -295,10 +300,10 @@ void mtdEffHyJets()
          bool is1sigmaPionDau2 = true;
          bool is1sigmaKaonDau2 = true;
 
-         if(t->beta1_PV!=-99) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
-         if(t->beta1_PV!=-99) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
-         if(t->beta2_PV!=-99) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
-         if(t->beta2_PV!=-99) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
+         if(t->beta1_PV!=-99) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * dInvBetaCut1;
+         if(t->beta1_PV!=-99) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * dInvBetaCut1;
+         if(t->beta2_PV!=-99) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * dInvBetaCut2;
+         if(t->beta2_PV!=-99) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * dInvBetaCut2;
 
          if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)) {
             hD0Pt1sigma->Fill(t->pT);
@@ -407,7 +412,7 @@ void mtdEffHyJets()
 //      //std::cout << "2 RMS, using eff_pi/k = 0.99, eff_D0 = " << effCal->Eval(0.99) << std::endl;
 //   }
 
-   TFile fout("hists.root", "recreate");
+   TFile fout("hists_reRECO.root", "recreate");
    hD0Pt->Write();
    hD0Pt3sigma->Write();
    hD0Pt2sigma->Write();

@@ -25,8 +25,10 @@ int whichY(const float& y)
 
 void mtdDauAccept_HyJets()
 {
-   TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   //TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
+   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
+   TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
@@ -75,8 +77,13 @@ void mtdDauAccept_HyJets()
 //      if(fabs(t->EtaD1) < 1.6) continue;
 //      if(fabs(t->EtaD2) < 1.6) continue;
 
-      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
+      //if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
+      //if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
+      //
+      const float pD1 = t->pTD1 * std::cosh( t->EtaD1 );
+      const float pD2 = t->pTD2 * std::cosh( t->EtaD2 );
+      if(fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
+      if(fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD1 <= 0.7) continue;
 
       hAllDau1Pt->Fill(t->pTD1);
       if(!(t->beta1_PV!=-99))hNoMtdDau1Pt->Fill(t->pTD1);
@@ -212,7 +219,7 @@ void mtdDauAccept_HyJets()
    l4->Draw();
    c4->SaveAs("dau2Eta.gif");
 
-   TFile fout("dauFrac_hyjets.root", "recreate");
+   TFile fout("dauFrac_hyjets_reRECO.root", "recreate");
    hMtdDau1Pt->Write();
    hMtdDau2Pt->Write();
    hMtdDau1Eta->Write();

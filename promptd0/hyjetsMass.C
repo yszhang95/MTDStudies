@@ -36,12 +36,17 @@ void hyjetsMass()
    fExpPion = new TF1("fExpPion_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
    fExpKaon = new TF1("fExpKaon_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
 
-   TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
+   //TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
    //chain->Add("/eos/cms/store/group/phys_heavyions/MTD/anstahll/VertexCompositeAnalysis/HydJets_mc_mtd_NTUPLE_20190227/Hydjet_5p02TeV_TuneCP5_MTD/HydJets_mc_mtd_NTUPLE_20190227/190227_165027/0001/hyjets_mc_mtd_1165.root");
-   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
+   TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
+
+   TF1* fExpBTL = new TF1("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
+   TF1* fExpETL = new TF1("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
 
    TH2F* hDau1PvsY = new TH2F("hDau1PvsY", "hDau1PvsY", 100, -3, 3, 1000, 0, 10);
    TH2F* hDau2PvsY = new TH2F("hDau2PvsY", "hDau2PvsY", 100, -3, 3, 1000, 0, 10);
@@ -73,17 +78,21 @@ void hyjetsMass()
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
 
-      // require eta<1.4 ? pT > 0.8 : pT > 0.5 and within MTD acceptance
+      if(t->pT>0.5) continue;
+
       if(std::fabs(t->EtaD1) > 3) continue;
       if(std::fabs(t->EtaD2) > 3) continue;
-      if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
-
-      if(t->pT>0.5) continue;
 
       const float pD1 = t->pTD1 * std::cosh(t->EtaD1);
       const float pD2 = t->pTD2 * std::cosh(t->EtaD2);
+
+      if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
+      if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD2 <= 0.7) continue;
+
       const bool isCentral = t->centrality < 20;
+
+      const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
+      const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
 
       hMass[iy]->Fill(t->mass);
       if(isCentral) hMassCent[iy]->Fill(t->mass);
@@ -96,10 +105,10 @@ void hyjetsMass()
       if(t->beta1_PV!=99) hDau1PvsY->Fill(t->y, pD1);
       if(t->beta2_PV!=99) hDau2PvsY->Fill(t->y, pD2);
 
-      if(t->beta1_PV!=-99) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * fExpPion->Eval(pD1);
-      if(t->beta1_PV!=-99) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * fExpKaon->Eval(pD1);
-      if(t->beta2_PV!=-99) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * fExpPion->Eval(pD2);
-      if(t->beta2_PV!=-99) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * fExpKaon->Eval(pD2);
+      if(t->beta1_PV!=-99) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - invBetaPion(pD1)) < 1.0 * dInvBetaCut1;
+      if(t->beta1_PV!=-99) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - invBetaKaon(pD1)) < 1.0 * dInvBetaCut1;
+      if(t->beta2_PV!=-99) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - invBetaPion(pD2)) < 1.0 * dInvBetaCut2;
+      if(t->beta2_PV!=-99) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2)) < 1.0 * dInvBetaCut2;
       if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)){
          hMassMtd[iy]->Fill(t->mass);
          if(isCentral) hMassCentMtd[iy]->Fill(t->mass);
@@ -121,7 +130,7 @@ void hyjetsMass()
       hFracCent->SetBinContent(iy+1, fracCent);
    }
 
-   TFile fout("hyjetsMassHists.root", "recreate");
+   TFile fout("hyjetsMassHists_reRECO.root", "recreate");
    for(int iy=0; iy<ana::nuOfY; iy++){
       hMass[iy]->Write();
       hMassCent[iy]->Write();
