@@ -86,4 +86,8 @@ void fillHyJetsMass()
    }
 
    TFile fout("hyjetsMassHists_reRECO_all.root", "recreate");
+   hMassVsPtVsY->Write();
+   hMassVsPtVsYCent->Write();
+   hMassVsPtVsYMtd->Write();
+   hMassVsPtVsYCentMtd->Write();
 }
