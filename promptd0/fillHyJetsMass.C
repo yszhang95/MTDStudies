@@ -23,6 +23,11 @@ inline float invBetaKaon(const float& p){
       return std::sqrt(1 + std::pow(ana::massKaon/p,2));
 }
 
+bool passTopoCuts(HyJets* t)
+{
+   return true;
+}
+
 void fillHyJetsMass()
 {
    //TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
@@ -38,16 +43,18 @@ void fillHyJetsMass()
    TF1* fExpBTL = new TF1("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
    TF1* fExpETL = new TF1("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
 
-   float massbin[61];
+   double massbin[61];
    for(int i=0; i<61; i++){
       massbin[i] = i * 0.005 + 1.7;
    }
 
-   TH3F* hMassVsPtVsY = new TH3F("hMassVsPtVsY", "hMassVsPtVsY", ana::nuOfY, ana::ybin, ana::nuOfPt, ana::ptbin, 60, massbin);
-   TH3F* hMassVsPtVsYCent = new TH3F("hMassVsPtVsYCent", "hMassVsPtVsYCent", ana::nuOfY, ana::ybin, ana::nuOfPt, ana::ptbin, 60, massbin);
+   TH3F* hMassVsPtVsY = new TH3F("hMassVsPtVsY", "hMassVsPtVsY", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
+   TH3F* hMassVsPtVsYCent = new TH3F("hMassVsPtVsYCent", "hMassVsPtVsYCent", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
 
-   TH3F* hMassVsPtVsYMtd = new TH3F("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", ana::nuOfY, ana::ybin, ana::nuOfPt, ana::ptbin, 60, massbin);
-   TH3F* hMassVsPtVsYCentMtd = new TH3F("hMassVsPtVsYCentMtd", "hMassVsPtVsYCentMtd", ana::nuOfY, ana::ybin, ana::nuOfPt, ana::ptbin, 60, massbin);
+   TH3F* hMassVsPtVsYMtd = new TH3F("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
+   TH3F* hMassVsPtVsYCentMtd = new TH3F("hMassVsPtVsYCentMtd", "hMassVsPtVsYCentMtd", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
+
+   std::cout << hMassVsPtVsY->GetZaxis()->FindBin(1.7);
 
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
       t->GetEntry(ientry);
@@ -65,6 +72,8 @@ void fillHyJetsMass()
 
       const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
       const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
+
+      if(!passTopoCuts(t)) continue;
 
       hMassVsPtVsY->Fill(t->y, t->pT, t->mass);
       if(isCentral) hMassVsPtVsYCent->Fill(t->y, t->pT, t->mass);
