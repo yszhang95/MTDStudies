@@ -36,10 +36,8 @@ void mtdEffHyJets()
    TF1* fExpETL = new TF1("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
 
    TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
-   //chain->Add("/eos/cms/store/group/phys_heavyions/MTD/anstahll/VertexCompositeAnalysis/HydJets_mc_mtd_D0_NTUPLE_20190307/MinBias_Hydjet_Drume5_5p5TeV_TuneCP5_Pythia8/HydJets_mc_mtd_D0_NTUPLE_20190307/190307_151548/0000/hyjets_mc_mtd_d0_1.root");
-   TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
-   //TChain* chain = new TChain("d0ana/VertexCompositeNtuple");
-   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "oldHyJets.list");
+   TFileCollection* fc = new TFileCollection("dum", "", "newHyJets.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
@@ -134,8 +132,6 @@ void mtdEffHyJets()
 
       if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
       if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD2 <= 0.7) continue;
-      //if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : t->pTD1 <= 0.5) continue;
-      //if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : t->pTD2 <= 0.5) continue;
 
       const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
       const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
@@ -412,6 +408,7 @@ void mtdEffHyJets()
 //      //std::cout << "2 RMS, using eff_pi/k = 0.99, eff_D0 = " << effCal->Eval(0.99) << std::endl;
 //   }
 
+   //TFile fout("hists_oldRECO.root", "recreate");
    TFile fout("hists_reRECO.root", "recreate");
    hD0Pt->Write();
    hD0Pt3sigma->Write();
