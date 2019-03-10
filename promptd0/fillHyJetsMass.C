@@ -73,6 +73,8 @@ void fillHyJetsMass()
       const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
       const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
 
+      if( fabs(t->y)>3 ) continue;
+
       if(!passTopoCuts(t)) continue;
 
       hMassVsPtVsY->Fill(t->y, t->pT, t->mass);
