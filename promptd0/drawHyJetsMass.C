@@ -5,7 +5,8 @@ void drawHyJetsMass()
    //TFile* f1 = new TFile("hyjetsMassHists_reRECO.root.old");
    //TFile* f1 = new TFile("hyjetsMassHists.root.old");
    //TFile* f1 = new TFile("hyjetsMassHists_reRECO.root");
-   TFile* f1 = new TFile("hyjetsMassHists.root");
+   //TFile* f1 = new TFile("hyjetsMassHists.root");
+   TFile* f1 = new TFile("hyjetsMassHists_reRECO_both_mtd.root");
    TH1F* hMass[ana::nuOfY];
    TH1F* hMassMtd[ana::nuOfY];
    TH1F* hMassCent[ana::nuOfY];

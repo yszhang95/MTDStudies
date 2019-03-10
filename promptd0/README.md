@@ -13,3 +13,8 @@
 7. promptD0mass.C fill mass histograms used for sig calculation
 
 8. myAna.h stores consts used in each macro
+
+# calculate significance vs y in bins of pt
+1. fillPromptDMass fills Mass vs Pt and Y into a TH3F object, project it to z axis with different range of y and pT would give the yield.
+2. fillHyJetsMass fills Mass vs Pt and Y into a TH3F object,
+3. calSigAll.C calculate the significance, it project TH3F to z axis to get the yield
