@@ -35,20 +35,52 @@ void calSigAll()
    hGenPtMidY->Add(hGenPt[7]);
 
    // try to scale gen spectrum
-   double yield_mc_Pt2_3GeV = hGenPtMidY->Integral(20, 30);
+   double scale_factor_perEvt[ana::nuOfPt];
+   double yield_mc_Pt2_3GeV = hGenPtMidY->Integral(21, 30);
    double yield_data_Pt2_3GeV_perEvt = hData->GetBinContent(1) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
-   double scale_factor_perEvt = yield_data_Pt2_3GeV_perEvt / yield_mc_Pt2_3GeV;
+   scale_factor_perEvt[0] = yield_data_Pt2_3GeV_perEvt / yield_mc_Pt2_3GeV; // 0 - 0.5 GeV
+   scale_factor_perEvt[1] = scale_factor_perEvt[0]; // 0.5 - 1.0 GeV
+   scale_factor_perEvt[2] = scale_factor_perEvt[0]; // 1.0 - 1.5 GeV
+   scale_factor_perEvt[3] = scale_factor_perEvt[0]; // 1.5 - 2.0 GeV
+   scale_factor_perEvt[4] = scale_factor_perEvt[0]; // 2.0 - 3.0 GeV
+
+   double yield_data_Pt3_4GeV_perEvt = hData->GetBinContent(2) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   scale_factor_perEvt[5] = yield_data_Pt3_4GeV_perEvt / hGenPtMidY->Integral(31, 40); // 3.0 - 4.0 GeV
+
+   double yield_data_Pt4_5GeV_perEvt = hData->GetBinContent(3) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   scale_factor_perEvt[6] = yield_data_Pt3_4GeV_perEvt / hGenPtMidY->Integral(41, 50); // 4.0 - 5.0 GeV
+
+   double yield_data_Pt5_6GeV_perEvt = hData->GetBinContent(4) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   scale_factor_perEvt[7] = yield_data_Pt5_6GeV_perEvt / hGenPtMidY->Integral(51, 60); // 5.0 - 6.0 GeV
+
+   double yield_data_Pt6_8GeV_perEvt = hData->GetBinContent(5) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   scale_factor_perEvt[8] = yield_data_Pt6_8GeV_perEvt / hGenPtMidY->Integral(61, 80); // 6.0 - 8.0 GeV
+
+   double yield_data_Pt8_10GeV_perEvt = hData->GetBinContent(6) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   scale_factor_perEvt[9] = yield_data_Pt8_10GeV_perEvt / hGenPtMidY->Integral(81, 100); // 8.0 - 10.0 GeV
 
    TH1F* hSig[ana::nuOfPt];
    TH1F* hSigMtd[ana::nuOfPt];
 
-   //for(int ipt=0; ipt<ana::nuOfPt; ipt++){
-   for(int ipt=0; ipt<2; ipt++){
+   TH1F* hS[ana::nuOfPt];
+   TH1F* hSMtd[ana::nuOfPt];
+
+   TH1F* hB[ana::nuOfPt];
+   TH1F* hBMtd[ana::nuOfPt];
+
+   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
+   //for(int ipt=0; ipt<2; ipt++){
 
       TLatex* ltx = new TLatex();
 
       hSig[ipt] = new TH1F(Form("hSig%d", ipt), "", ana::nuOfY, ana::ybin);
       hSigMtd[ipt] = new TH1F(Form("hSigMtd%d", ipt), "", ana::nuOfY, ana::ybin);
+
+      hS[ipt] = new TH1F(Form("hS%d", ipt), "", ana::nuOfY, ana::ybin);
+      hSMtd[ipt] = new TH1F(Form("hSMtd%d", ipt), "", ana::nuOfY, ana::ybin);
+
+      hB[ipt] = new TH1F(Form("hB%d", ipt), "", ana::nuOfY, ana::ybin);
+      hBMtd[ipt] = new TH1F(Form("hBMtd%d", ipt), "", ana::nuOfY, ana::ybin);
 
       float pTCutMin = ana::ptbin[ipt];
       float pTCutMax = ana::ptbin[ipt+1];
@@ -64,16 +96,25 @@ void calSigAll()
          double sig, s, b, sErr, bErr;
          double sigMtd, sMtd, bMtd, sMtdErr, bMtdErr;
 
-         calSig(hSignal, hBkg, scale_factor_perEvt,
+         calSig(hSignal, hBkg, scale_factor_perEvt[ipt],
                yCutMin, yCutMax, pTCutMin, pTCutMax, massCutMin, massCutMax, 
                sig, s, b, sErr, bErr);
-         calSig(hSignalMtd, hBkgMtd, scale_factor_perEvt,
+         calSig(hSignalMtd, hBkgMtd, scale_factor_perEvt[ipt],
                yCutMin, yCutMax, pTCutMin, pTCutMax, massCutMin, massCutMax, 
                sigMtd, sMtd, bMtd, sMtdErr, bMtdErr);
 
          hSig[ipt]->SetBinContent(iy+1, sig);
          hSigMtd[ipt]->SetBinContent(iy+1, sigMtd);
-         std::cout << hSig[ipt]->GetBinContent(iy+1) << std::endl;
+
+         hS[ipt]->SetBinContent(iy+1, s);
+         hSMtd[ipt]->SetBinContent(iy+1, sMtd);
+         hS[ipt]->SetBinError(iy+1, sErr);
+         hSMtd[ipt]->SetBinError(iy+1, sMtdErr);
+
+         hB[ipt]->SetBinContent(iy+1, b);
+         hBMtd[ipt]->SetBinContent(iy+1, bMtd);
+         hB[ipt]->SetBinError(iy+1, bErr);
+         hBMtd[ipt]->SetBinError(iy+1, bMtdErr);
       }
 
       TCanvas* c1 = new TCanvas(Form("c1_%d", ipt), "", 600, 500);
@@ -94,43 +135,54 @@ void calSigAll()
       ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      c1->SaveAs(Form("plot0309/sig_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+
+      TCanvas* c2 = new TCanvas(Form("c2_%d", ipt), "", 600, 500);
+      c2->SetLeftMargin(0.15);
+      gStyle->SetOptStat(0);
+      hSMtd[ipt]->SetLineColor(kRed);
+      hS[ipt]->GetYaxis()->SetTitle("S");
+      hS[ipt]->GetXaxis()->SetTitle("y");
+      float maxS = hS[ipt]->GetMaximum();
+      hS[ipt]->GetYaxis()->SetRangeUser(0, maxS*1.3);
+      hS[ipt]->Draw("e");
+      hSMtd[ipt]->Draw("esame");
+      TLegend* lgds = new TLegend(0.7, 0.8, 0.90, 0.90);
+      lgds->AddEntry(hSMtd[ipt], "w/ mtd", "lp");
+      lgds->AddEntry(hS[ipt], "w/o mtd", "lp");
+      lgds->Draw();
+      ltx->SetTextSize(0.05);
+      ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
+      ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
+      ltx->SetTextSize(0.035);
+      ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      c2->SaveAs(Form("plot0309/scaled_s_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+
+      TCanvas* c3 = new TCanvas(Form("c3_%d", ipt), "", 600, 500);
+      c3->SetLeftMargin(0.15);
+      TGaxis::SetMaxDigits(4);
+      gStyle->SetOptStat(0);
+      hB[ipt]->GetYaxis()->SetTitle("B");
+      hB[ipt]->GetXaxis()->SetTitle("y");
+      hBMtd[ipt]->SetLineColor(kRed);
+      float maxB = hB[ipt]->GetMaximum();
+      hB[ipt]->GetYaxis()->SetRangeUser(0, maxB*1.3);
+      hB[ipt]->Draw("e");
+      hBMtd[ipt]->Draw("esame");
+      TLegend* lgdb = new TLegend(0.7, 0.8, 0.90, 0.90);
+      lgdb->AddEntry(hBMtd[ipt], "w/ mtd", "lp");
+      lgdb->AddEntry(hB[ipt], "w/o mtd", "lp");
+      lgdb->Draw();
+      ltx->SetTextSize(0.05);
+      ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
+      ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
+      ltx->SetTextSize(0.035);
+      ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
    }
 
 
 /*
-   TCanvas* c1 = new TCanvas("c1", "", 600, 500);
-   gStyle->SetOptStat(0);
-   hSigMtd->GetYaxis()->SetTitle("Significance");
-   hSigMtd->GetXaxis()->SetTitle("y");
-   float max = hSigMtd->GetMaximum();
-   hSigMtd->GetYaxis()->SetRangeUser(0, max*1.3);
-   hSigMtd->SetLineColor(kRed);
-   hSigMtd->Draw();
-   hSig->Draw("same");
-   TLegend* lgd = new TLegend(0.7, 0.8, 0.90, 0.90);
-   lgd->AddEntry(hSigMtd, "w/ mtd", "lp");
-   lgd->AddEntry(hSig, "w/o mtd", "lp");
-   lgd->Draw();
-   ltx->SetTextSize(0.05);
-   ltx->DrawLatexNDC(0.1, 0.93, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
-   ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
-
-   TCanvas* c2 = new TCanvas("c2", "", 600, 500);
-   c2->SetLeftMargin(0.15);
-   gStyle->SetOptStat(0);
-   hSMtd->SetLineColor(kRed);
-   hS->GetYaxis()->SetTitle("S");
-   hS->GetXaxis()->SetTitle("y");
-   float maxS = hS->GetMaximum();
-   hS->GetYaxis()->SetRangeUser(0, maxS*1.3);
-   hS->Draw("e");
-   hSMtd->Draw("esame");
-   TLegend* lgds = new TLegend(0.7, 0.8, 0.90, 0.90);
-   lgds->AddEntry(hSMtd, "w/ mtd", "lp");
-   lgds->AddEntry(hS, "w/o mtd", "lp");
-   lgds->Draw();
-   ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
-   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
 
    TCanvas* c3 = new TCanvas("c3", "", 600, 500);
    c3->SetLeftMargin(0.15);
@@ -179,4 +231,5 @@ void calSig(TH3* hSignal, TH3* hBkg, const float& scale_factor_perEvt,
    bErr *= ana::evts_sim_MB / ana::evts_bkg_MB;
 
    sig = s/sqrt(s+b);
+   if(hBkg->Integral(ylw, yup-1, ptlw, ptup-1, zlw, zup) < 60) sig = 0;
 }
