@@ -7,6 +7,8 @@ void calSig()
    //TFile* f4 = new TFile("hyjetsMassHists.root");
    TFile* f1 = new TFile("genPt_reRECO.root");
    TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
+   //TFile* f3 = new TFile("promptd0MassHists_reRECO_both_mtd.root");
+   //TFile* f4 = new TFile("hyjetsMassHists_reRECO_both_mtd.root");
    TFile* f3 = new TFile("promptd0MassHists_reRECO.root");
    TFile* f4 = new TFile("hyjetsMassHists_reRECO.root");
 

@@ -27,11 +27,6 @@ void promptD0mass()
    TLatex* ltx = new TLatex();
    ltx->SetTextSize(0.06);
 
-   TF1 *fExpPion, *fExpKaon;
-
-   fExpPion = new TF1("fExpPion_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
-   fExpKaon = new TF1("fExpKaon_dInvBetaRMS","0.005 + 0.017*exp(-x/2.8)", 0.8, 10);
-
    TF1* fExpBTL = new TF1("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
    TF1* fExpETL = new TF1("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
 
@@ -73,15 +68,15 @@ void promptD0mass()
       if(std::fabs(t->EtaD1) < 1.4 ? t->pTD1 <= 0.8 : pD1 <= 0.7) continue;
       if(std::fabs(t->EtaD2) < 1.4 ? t->pTD2 <= 0.8 : pD2 <= 0.7) continue;
 
-      if(t->pT>0.5) continue;
+      if(t->pT>=0.5) continue;
 
       const int iy = whichY(t->y);
       if( iy == -1 ) continue;
 
-      //const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
-      //const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
-      const float dInvBetaCut1 = fExpPion->Eval(pD1);
-      const float dInvBetaCut2 = fExpPion->Eval(pD2);
+      const float dInvBetaCut1 = std::fabs(t->EtaD1<1.5) ? fExpBTL->Eval(pD1) : fExpETL->Eval(pD1);
+      const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? fExpBTL->Eval(pD2) : fExpETL->Eval(pD2);
+      //const float dInvBetaCut1 = fExpPion->Eval(pD1);
+      //const float dInvBetaCut2 = fExpPion->Eval(pD2);
 
       if(!(t->matchGEN && !t->isSwap)) continue;
 
