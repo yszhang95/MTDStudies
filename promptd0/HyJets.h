@@ -139,6 +139,7 @@ public :
    virtual void     Show(Long64_t entry = -1);
 
    virtual Float_t  Y(){return y;}
+   virtual Float_t  Mass(){return mass;}
    virtual Float_t  PtD1(){return pTD1;}
    virtual Float_t  PtD2(){return pTD2;}
    virtual Float_t  etaD1(){return EtaD1;}

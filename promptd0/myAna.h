@@ -14,14 +14,28 @@ namespace ana{
    const double ptbin[nuOfPt+1] = {0., 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0};
 
    const int npt = 100;
-   const float ptMin = 0;
-   const float ptMax = 10;
+   const double ptMin = 0;
+   const double ptMax = 10;
+
    const int ny = 60;
-   const float yMin = -3;
-   const float yMax = 3;
+   const double yMin = -3;
+   const double yMax = 3;
+
    const int nmass = 60;
-   const float massMin = 1.7;
-   const float massMax = 2.0;
+   const double massMin = 1.7;
+   const double massMax = 2.0;
+
+   const int nVtxProb = 80;
+   const double VtxProbMin = 0.0;
+   const double VtxProbMax = 0.4;
+
+   const int nagl3D = 60;
+   const double agl3DMin = 0.;
+   const double agl3DMax = 3.;
+
+   const int ndlSig3D = 80;
+   const double dlSig3DMin = 0.;
+   const double dlSig3DMax = 8.;
 
    const double evts_bkg_MB = 966;
    const double evts_bkg_central = 139;
@@ -40,8 +54,6 @@ namespace ana{
    const float mass_lw[nuOfY] = {1.82, 1.825, 1.835, 1.845, 1.85, 1.85, 1.85, 1.85, 1.845, 1.835, 1.825, 1.82};
    const float mass_up[nuOfY] = {1.91, 1.905, 1.895, 1.885, 1.88, 1.88, 1.88, 1.88, 1.885, 1.895, 1.905, 1.91};
 
-   const bool isKeepNoMtd = false;
-
    bool isCentralEvt(const HyJets& t){ return t.centrality < 20;}
 
    bool passKinematicCuts(D0Cand* t ) {
@@ -49,6 +61,20 @@ namespace ana{
       if ( std::fabs(t->etaD1()) < 1.5 ? t->PtD1() <= 0.8 : (t->PtD1() * std::cosh(t->etaD1())) <= 0.7 ) return false;
       if ( std::fabs(t->etaD2()) < 1.5 ? t->PtD2() <= 0.8 : (t->PtD2() * std::cosh(t->etaD2())) <= 0.7 ) return false;
       return true;
+   }
+
+   int whichY(D0Cand* t){
+      for(int iy=0; iy<nuOfY; iy++){
+         if(t->Y() < ybin[iy+1] && t->Y() > ybin[iy]) return iy;
+      }
+      return -1;
+   }
+
+   bool isFWHM(D0Cand* t){
+      int iy = whichY(t);
+      if(iy == -1) return false;
+      if( t->Mass() < mass_up[iy] && t->Mass() > mass_lw[iy]) return true;
+      return false;
    }
 
    bool passTopoCuts(D0Cand *t){

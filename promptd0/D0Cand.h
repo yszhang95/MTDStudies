@@ -34,6 +34,7 @@ public :
    virtual void     Show(Long64_t entry = -1);
 
    virtual Float_t  Y(){return 0;}
+   virtual Float_t  Mass(){return 0;}
    virtual Float_t  PtD1(){return 0;}
    virtual Float_t  PtD2(){return 0;}
    virtual Float_t  etaD1(){return 0;}
