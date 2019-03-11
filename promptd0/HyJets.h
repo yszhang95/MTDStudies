@@ -251,8 +251,6 @@ void HyJets::Init(TChain *tree)
    fChain->SetBranchAddress("isMtdDau1", &isMtdDau1, &b_isMtdDau1);
    fChain->SetBranchAddress("isMtdDau2", &isMtdDau2, &b_isMtdDau2);
    fChain->SetBranchStatus("2D*", 0);
-   fChain->SetBranchStatus("3D*", 0);
-   fChain->SetBranchStatus("VtxProb", 0);
    fChain->SetBranchStatus("best*", 0);
    fChain->SetBranchStatus("*DCAS*", 0);
    fChain->SetBranchStatus("High*", 0);

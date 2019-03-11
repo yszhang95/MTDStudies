@@ -145,8 +145,24 @@ void fillHyJetsMass()
    }
 
    TFile fout("hyjetsMassHists_reRECO_all.root", "recreate");
+
    hMassVsPtVsY->Write();
    hMassVsPtVsYCent->Write();
    hMassVsPtVsYMtd->Write();
    hMassVsPtVsYCentMtd->Write();
+
+   hVtxProbVsPtVsY->Write();
+   hVtxProbVsPtVsYMtd->Write();
+   hVtxProbVsPtVsYCent->Write();
+   hVtxProbVsPtVsYCentMtd->Write();
+
+   hagl3DVsPtVsY->Write();
+   hagl3DVsPtVsYMtd->Write();
+   hagl3DVsPtVsYCent->Write();
+   hagl3DVsPtVsYCentMtd->Write();
+
+   hdlSig3DVsPtVsY->Write();
+   hdlSig3DVsPtVsYMtd->Write();
+   hdlSig3DVsPtVsYCent->Write();
+   hdlSig3DVsPtVsYCentMtd->Write();
 }
