@@ -22,6 +22,22 @@
    also, some other common function for prompt d0 and hyjets samples are defined in myAna.h,
    class PromptD and class HyJets are derived from class D0Cand, it should be more convenient to modify any definition in myAna.h
 5. topological cuts optimization could be done straightforward
+
    one can define a new TH3 Object like Mass Vs Pt and Y, 
+
    and fill the TH3 object when candidate mass is in mass windows, (FWHM)
+
    then like mass vs pt and y, project the histograms into the range from cutMin to cutMax, to calculate the significance
+
+# TODO
+   LambdaC/D0 ratio vs pT in |y|<1, 1<|y|<2, 2<|y| < 3
+
+   LamdaC and D0 v2 vs pT for |y| < 3
+
+   D0 and D0bar v1 and v2 integrate over full pT>0, for every 1 unit y bin from -3 to 3
+
+   combine negative and positive if we need to separate them, we just devided by sqrt(2)
+
+   combine 1-1.5 and 1.5-2 into 1-2, in pT
+
+   increase signal yield by 1.1

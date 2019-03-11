@@ -8,18 +8,18 @@ namespace ana{
    const float massPion = 0.139570;
    const float massKaon = 0.493677;
 
-   const int nuOfY = 12;
-   const double ybin[nuOfY+1] = {-3, -2.5, -2., -1.5, -1., -0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0};
-   const int nuOfPt = 10;
-   const double ptbin[nuOfPt+1] = {0., 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0};
+   const int nuOfY = 3;
+   const double ybin[nuOfY+1] = {0, 1.0, 2.0, 3.0};
+   const int nuOfPt = 9;
+   const double ptbin[nuOfPt+1] = {0., 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0};
 
    const int npt = 100;
    const double ptMin = 0;
    const double ptMax = 10;
 
-   const int ny = 60;
-   const double yMin = -3;
-   const double yMax = 3;
+   const int nyAbs = 60;
+   const double yAbsMin = 0;
+   const double yAbsMax = 3;
 
    const int nmass = 60;
    const double massMin = 1.7;
