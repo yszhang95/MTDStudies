@@ -99,8 +99,7 @@ void calSigAll()
    TH1F* hB[ana::nuOfPt];
    TH1F* hBMtd[ana::nuOfPt];
 
-   //for(int ipt=0; ipt<ana::nuOfPt; ipt++){
-   for(int ipt=0; ipt<2; ipt++){
+   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
 
       TLatex* ltx = new TLatex();
 
@@ -174,7 +173,7 @@ void calSigAll()
       ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-      //c1->SaveAs(Form("plot0309/sig_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      c1->SaveAs(Form("plot0309/sig_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
       TCanvas* c2 = new TCanvas(Form("c2_%d", ipt), "", 600, 500);
       c2->SetLeftMargin(0.15);
@@ -195,7 +194,7 @@ void calSigAll()
       ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-      //c2->SaveAs(Form("plot0309/scaled_s_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      c2->SaveAs(Form("plot0309/scaled_s_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
       TCanvas* c3 = new TCanvas(Form("c3_%d", ipt), "", 600, 500);
       c3->SetLeftMargin(0.15);
@@ -217,41 +216,9 @@ void calSigAll()
       ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-      //c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
    }
 }
-
-/*
-void calSig(TH3* hSignal, TH3* hBkg, const float& scale_factor_perEvt,
-      const float& yCutMin, const float& yCutMax, 
-      const float& pTCutMin, const float& pTCutMax, const float& zCutMin, const float& zCutMax, 
-      double& sig, double& s, double& b, double& sErr, double& bErr)
-{
-   int ylw = 0;
-   int yup = 0;
-   int ptlw = 0;
-   int ptup = 0;
-   int zlw = 0;
-   int zup = 0;
-
-   int globalMin = hSignal->FindBin(yCutMin, pTCutMin, zCutMin);
-   int globalMax = hSignal->FindBin(yCutMax, pTCutMax, zCutMax);
-
-   hSignal->GetBinXYZ(globalMin, ylw, ptlw, zlw);
-   hSignal->GetBinXYZ(globalMax, yup, ptup, zup);
-
-   s = hSignal->IntegralAndError(ylw, yup-1, ptlw, ptup-1, zlw, zup, sErr); // ptup-1 and yup-1 due to we already know it would be at bin low edge,
-   b = hBkg->IntegralAndError(ylw, yup-1, ptlw, ptup-1, zlw, zup, bErr);
-
-   s *= scale_factor_perEvt * ana::evts_sim_MB;
-   b *= ana::evts_sim_MB / ana::evts_bkg_MB;
-   sErr *= scale_factor_perEvt * ana::evts_sim_MB;
-   bErr *= ana::evts_sim_MB / ana::evts_bkg_MB;
-
-   sig = s/sqrt(s+b);
-   if(hBkg->Integral(ylw, yup-1, ptlw, ptup-1, zlw, zup) < 60) sig = 0;
-}
-*/
 
 void calSig(TH3* hSignalScale, TH3* hBkg,
       const float& yCutMin, const float& yCutMax, 
