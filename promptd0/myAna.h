@@ -37,14 +37,16 @@ namespace ana{
    bool isCentralEvt(const HyJets& t){ return t.centrality < 20;}
 
    bool passKinematicCuts(D0Cand* t ) {
-      //if ( std::fabs(t.EtaD1) > 3  ||  std::fabs(t.EtaD2) > 3  ||  std::fabs(t.y) > 3 ) return false;
-      //if ( std::fabs(t.EtaD1) < 1.5 ? t.pTD1 <= 0.8 : (t.pTD1 * std::cosh(t.EtaD1)) <= 0.7 ) return false;
-      //if ( std::fabs(t.EtaD2) < 1.5 ? t.pTD2 <= 0.8 : (t.pTD2 * std::cosh(t.EtaD2)) <= 0.7 ) return false;
       if ( std::fabs(t->etaD1()) > 3  ||  std::fabs(t->etaD2()) > 3  ||  std::fabs(t->Y()) > 3 ) return false;
       if ( std::fabs(t->etaD1()) < 1.5 ? t->PtD1() <= 0.8 : (t->PtD1() * std::cosh(t->etaD1())) <= 0.7 ) return false;
       if ( std::fabs(t->etaD2()) < 1.5 ? t->PtD2() <= 0.8 : (t->PtD2() * std::cosh(t->etaD2())) <= 0.7 ) return false;
       return true;
    }
+
+   bool passTopoCuts(D0Cand *t){
+      return true;
+   }
+
    inline float invBetaPion(const float& p){
       return std::sqrt(1 + std::pow(ana::massPion/p,2));
    }
@@ -53,5 +55,41 @@ namespace ana{
    }
    TF1 fExpBTL("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
    TF1 fExpETL("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
+
+   float meanPion(D0Cand* t, const int& dau){
+
+      TF1 fPionResBTL("fPionResBTL", "0.0012*(x-2)*(x-2) + 0.0004", 0.7, 2);
+      TF1 fPionResETL("fPionResETL", "0.00025*(x-2)*(x-2) + 0.0005", 0.7, 2);
+
+      if(dau == 1) {
+         const float pD1 = std::cosh(t->etaD1()) * t->PtD1() ;
+         if(std::fabs(t->etaD1()) < 1.5) return pD1 < 2 ? fPionResBTL.Eval(pD1) : 0;
+         if(std::fabs(t->etaD1()) >= 1.5) return pD1 < 2 ? fPionResETL.Eval(pD1) : 0;
+      }
+      if(dau == 2) {
+         const float pD2 = std::cosh(t->etaD2()) * t->PtD2() ;
+         if(std::fabs(t->etaD2()) < 1.5) return pD2 < 2 ? fPionResBTL.Eval(pD2) : 0;
+         if(std::fabs(t->etaD2()) >= 1.5) return pD2 < 2 ? fPionResETL.Eval(pD2) : 0;
+      }
+      return -99.;
+   }
+
+   float meanKaon(D0Cand* t, const int& dau){
+
+      TF1 fKaonResBTL("fKaonResBTL", "0.003*(x-2)*(x-2) + 0.0001", 0.7, 2);
+      TF1 fKaonResETL("fKaonResETL", "0.00025*(x-2)*(x-2) + 0.0003", 0.7, 2);
+
+      if(dau == 1) {
+         const float pD1 = std::cosh(t->etaD1()) * t->PtD1() ;
+         if(std::fabs(t->etaD1()) < 1.5) return pD1 < 2 ? fKaonResBTL.Eval(pD1) : 0;
+         if(std::fabs(t->etaD1()) >= 1.5) return pD1 < 2 ? fKaonResETL.Eval(pD1) : 0;
+      }
+      if(dau == 2) {
+         const float pD2 = std::cosh(t->etaD2()) * t->PtD2() ;
+         if(std::fabs(t->etaD2()) < 1.5) return pD2 < 2 ? fKaonResBTL.Eval(pD2) : 0;
+         if(std::fabs(t->etaD2()) >= 1.5) return pD2 < 2 ? fKaonResETL.Eval(pD2) : 0;
+      }
+      return -99.;
+   }
 };
 #endif

@@ -68,8 +68,8 @@ void calSigAll()
    TH1F* hB[ana::nuOfPt];
    TH1F* hBMtd[ana::nuOfPt];
 
-   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
-   //for(int ipt=0; ipt<2; ipt++){
+   //for(int ipt=0; ipt<ana::nuOfPt; ipt++){
+   for(int ipt=0; ipt<2; ipt++){
 
       TLatex* ltx = new TLatex();
 
@@ -135,7 +135,7 @@ void calSigAll()
       ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-      c1->SaveAs(Form("plot0309/sig_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      //c1->SaveAs(Form("plot0309/sig_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
       TCanvas* c2 = new TCanvas(Form("c2_%d", ipt), "", 600, 500);
       c2->SetLeftMargin(0.15);
@@ -156,7 +156,7 @@ void calSigAll()
       ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-      c2->SaveAs(Form("plot0309/scaled_s_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      //c2->SaveAs(Form("plot0309/scaled_s_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
       TCanvas* c3 = new TCanvas(Form("c3_%d", ipt), "", 600, 500);
       c3->SetLeftMargin(0.15);
@@ -178,7 +178,7 @@ void calSigAll()
       ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
       ltx->SetTextSize(0.035);
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-      c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+      //c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
    }
 
 

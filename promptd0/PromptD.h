@@ -11,10 +11,11 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include "D0Cand.h"
 
 // Header file for the classes stored in the TChain if any.
 
-class PromptD {
+class PromptD : public D0Cand{
 public :
    TChain          *fChain;   //!pointer to the analyzed TChain or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -160,6 +161,12 @@ public :
    virtual void     Init(TChain *tree);
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+   virtual Float_t  Y(){return y;}
+   virtual Float_t  PtD1(){return pTD1;}
+   virtual Float_t  PtD2(){return pTD2;}
+   virtual Float_t  etaD1(){return EtaD1;}
+   virtual Float_t  etaD2(){return EtaD2;}
 };
 
 #endif

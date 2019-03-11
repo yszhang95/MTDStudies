@@ -13,8 +13,8 @@ void setPalette()
 
 void drawHyJets()
 {
+   //TFile *f1 = new TFile("hists_oldRECO.root");
    TFile *f1 = new TFile("hists_reRECO.root");
-   //TFile *f1 = new TFile("hists.root");
    TH1F* hD0Pt, * hD0Pt3sigma, *hD0Pt2sigma, *hD0Pt1sigma;
    TH1F* hPionEff, * hPion3sigmaEff, *hPion2sigmaEff, *hPion1sigmaEff;
    TH1F* hKaonEff, * hKaon3sigmaEff, *hKaon2sigmaEff, *hKaon1sigmaEff;
@@ -265,9 +265,10 @@ void drawHyJets()
       legend->Draw();
    }
 
+   //TFile *f2 = new TFile("dauFrac_hyjets_oldRECO.root");
    TFile *f2 = new TFile("dauFrac_hyjets_reRECO.root");
-   TH1F* hMtdDau1Pt, *hMtdDau2Pt, *hMtdDau1Eta, *hMtdDau2Eta;
-   TH1F* hNoMtdDau1Pt, *hNoMtdDau2Pt, *hNoMtdDau1Eta, *hNoMtdDau2Eta;
+   TH1D* hMtdDau1Pt, *hMtdDau2Pt, *hMtdDau1Eta, *hMtdDau2Eta;
+   TH1D* hNoMtdDau1Pt, *hNoMtdDau2Pt, *hNoMtdDau1Eta, *hNoMtdDau2Eta;
    TH2F* hPtVsEtaDau1Mtd, *hPtVsEtaDau1All;
    f2->GetObject("hMtdDau1Pt", hMtdDau1Pt);
    f2->GetObject("hMtdDau2Pt", hMtdDau2Pt);
