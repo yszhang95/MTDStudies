@@ -33,44 +33,44 @@ void fillHyJetsMass()
    std::cout << t->GetEntries() << std::endl;
 
    TH3F* hMassVsPtVsY = new TH3F("hMassVsPtVsY", "hMassVsPtVsY", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
    TH3F* hMassVsPtVsYCent = new TH3F("hMassVsPtVsYCent", "hMassVsPtVsYCent", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
    TH3F* hVtxProbVsPtVsY = new TH3F("hVtxProbVsPtVsY", "hVtxProbVsPtVsY", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
    TH3F* hVtxProbVsPtVsYCent = new TH3F("hVtxProbVsPtVsYCent", "hVtxProbVsPtVsYCent", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
 
    TH3F* hagl3DVsPtVsY = new TH3F("hagl3DVsPtVsY", "hagl3DVsPtVsY", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
    TH3F* hagl3DVsPtVsYCent = new TH3F("hagl3DVsPtVsYCent", "hagl3DVsPtVsYCent", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
 
    TH3F* hdlSig3DVsPtVsY = new TH3F("hdlSig3DVsPtVsY", "hdlSig3DVsPtVsY", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
    TH3F* hdlSig3DVsPtVsYCent = new TH3F("hdlSig3DVsPtVsYCent", "hdlSig3DVsPtVsYCent", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
 
    TH3F* hMassVsPtVsYMtd = new TH3F("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
    TH3F* hMassVsPtVsYCentMtd = new TH3F("hMassVsPtVsYCentMtd", "hMassVsPtVsYCentMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
    TH3F* hVtxProbVsPtVsYMtd = new TH3F("hVtxProbVsPtVsYMtd", "hVtxProbVsPtVsYMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
    TH3F* hVtxProbVsPtVsYCentMtd = new TH3F("hVtxProbVsPtVsYCentMtd", "hVtxProbVsPtVsYCentMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
 
    TH3F* hagl3DVsPtVsYMtd = new TH3F("hagl3DVsPtVsYMtd", "hagl3DVsPtVsYMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
    TH3F* hagl3DVsPtVsYCentMtd = new TH3F("hagl3DVsPtVsYCentMtd", "hagl3DVsPtVsYCentMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
 
    TH3F* hdlSig3DVsPtVsYMtd = new TH3F("hdlSig3DVsPtVsYMtd", "hdlSig3DVsPtVsYMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
    TH3F* hdlSig3DVsPtVsYCentMtd = new TH3F("hdlSig3DVsPtVsYCentMtd", "hdlSig3DVsPtVsYCentMtd", 
-         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
 
    std::cout << hMassVsPtVsY->GetZaxis()->FindBin(1.7) << std::endl;
 

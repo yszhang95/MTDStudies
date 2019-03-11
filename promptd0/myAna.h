@@ -25,17 +25,17 @@ namespace ana{
    const double massMin = 1.7;
    const double massMax = 2.0;
 
-   const int nVtxProb = 80;
+   const int nVtxProb = 60;
    const double VtxProbMin = 0.0;
-   const double VtxProbMax = 0.4;
+   const double VtxProbMax = 0.3;
 
-   const int nagl3D = 60;
+   const int nagl3D = 120;
    const double agl3DMin = 0.;
    const double agl3DMax = 3.;
 
-   const int ndlSig3D = 80;
+   const int ndlSig3D = 200;
    const double dlSig3DMin = 0.;
-   const double dlSig3DMax = 8.;
+   const double dlSig3DMax = 5.;
 
    const double evts_bkg_MB = 966;
    const double evts_bkg_central = 139;
@@ -46,7 +46,7 @@ namespace ana{
    const double TAA0_10 = 23.2; // mb^-1
    const double pbOvermb = 1e-12/1e-3;
    const double GeV = 1;
-   const double BR = 0.0393;
+   const double BR = 0.0393 * 1.1;
 
    const double evts_sim_MB = 25e9;
    const double evts_sim_central = evts_sim_MB * evts_bkg_central / evts_bkg_MB;
