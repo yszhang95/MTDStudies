@@ -1,15 +1,27 @@
 #include "myAna.h"
 
+/*
 void calSig(TH3*, TH3*, const float&, 
       const float&, const float&, const float&, const float&, 
       const float&, const float&, 
       double&, double&, double&, double&, double&);
+      */
+void calSig(TH3*, TH3*, 
+      const float&, const float&, const float&, const float&, 
+      const float&, const float&, 
+      double&, double&, double&, double&, double&);
+int whichPt(const float& pt){
+   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
+      if( pt < ana::ptbin[ipt+1] && pt > ana::ptbin[ipt]) return ipt;
+   }
+   return -1;
+}
 
 void calSigAll()
 {
    TFile* f1 = new TFile("genPt_reRECO.root");
    TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
-   TFile* f3 = new TFile("promptd0MassHists_reRECO_all.root");
+   TFile* f3 = new TFile("PromptDMassHists_reRECO_all.root");
    TFile* f4 = new TFile("hyjetsMassHists_reRECO_all.root");
 
    TH1F* hGenPt[ana::nuOfY];
@@ -28,6 +40,7 @@ void calSigAll()
    f4->GetObject("hMassVsPtVsY", hBkg);
    f3->GetObject("hMassVsPtVsYMtd", hSignalMtd);
    f4->GetObject("hMassVsPtVsYMtd", hBkgMtd);
+
 
    hGenPtMidY = (TH1F*) hGenPt[4]->Clone();
    hGenPtMidY->Add(hGenPt[5]);
@@ -58,6 +71,24 @@ void calSigAll()
 
    double yield_data_Pt8_10GeV_perEvt = hData->GetBinContent(6) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
    scale_factor_perEvt[9] = yield_data_Pt8_10GeV_perEvt / hGenPtMidY->Integral(81, 100); // 8.0 - 10.0 GeV
+
+   TH3F* hScale = new TH3F("hScale", "", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
+   for(int ipt=0; ipt<ana::npt; ipt++){
+      for(int iy=0; iy<ana::ny; iy++){
+         for(int iz=0; iz<ana::nmass; iz++){
+            float pt = ((float)ipt + 0.5) * (ana::ptMax - ana::ptMin) / (float) ana::npt;
+            int iscale = whichPt(pt);
+            if(iscale == -1) continue;
+            hScale->SetBinContent(iy+1, ipt+1, iz+1, scale_factor_perEvt[iscale]);
+            hScale->SetBinError(iy+1, ipt+1, iz+1, 0);
+         }
+      }
+   }
+   TH3F *hSignalScale = new TH3F();
+   *hSignalScale =  (*hSignal) * (*hScale);
+
+   TH3F *hSignalMtdScale = new TH3F();
+   *hSignalMtdScale = (*hSignalMtd) * (*hScale);
 
    TH1F* hSig[ana::nuOfPt];
    TH1F* hSigMtd[ana::nuOfPt];
@@ -96,10 +127,18 @@ void calSigAll()
          double sig, s, b, sErr, bErr;
          double sigMtd, sMtd, bMtd, sMtdErr, bMtdErr;
 
+         /*
          calSig(hSignal, hBkg, scale_factor_perEvt[ipt],
                yCutMin, yCutMax, pTCutMin, pTCutMax, massCutMin, massCutMax, 
                sig, s, b, sErr, bErr);
          calSig(hSignalMtd, hBkgMtd, scale_factor_perEvt[ipt],
+               yCutMin, yCutMax, pTCutMin, pTCutMax, massCutMin, massCutMax, 
+               sigMtd, sMtd, bMtd, sMtdErr, bMtdErr);
+               */
+         calSig(hSignalScale, hBkg, 
+               yCutMin, yCutMax, pTCutMin, pTCutMax, massCutMin, massCutMax, 
+               sig, s, b, sErr, bErr);
+         calSig(hSignalMtdScale, hBkgMtd, 
                yCutMin, yCutMax, pTCutMin, pTCutMax, massCutMin, massCutMax, 
                sigMtd, sMtd, bMtd, sMtdErr, bMtdErr);
 
@@ -180,30 +219,9 @@ void calSigAll()
       ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
       //c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
    }
-
-
-/*
-
-   TCanvas* c3 = new TCanvas("c3", "", 600, 500);
-   c3->SetLeftMargin(0.15);
-   TGaxis::SetMaxDigits(4);
-   gStyle->SetOptStat(0);
-   hB->GetYaxis()->SetTitle("B");
-   hB->GetXaxis()->SetTitle("y");
-   hBMtd->SetLineColor(kRed);
-   float maxB = hB->GetMaximum();
-   hB->GetYaxis()->SetRangeUser(0, maxB*1.3);
-   hB->Draw("e");
-   hBMtd->Draw("esame");
-   TLegend* lgdb = new TLegend(0.7, 0.8, 0.90, 0.90);
-   lgdb->AddEntry(hBMtd, "w/ mtd", "lp");
-   lgdb->AddEntry(hB, "w/o mtd", "lp");
-   lgdb->Draw();
-   ltx->DrawLatexNDC(0.35, 0.7, "MB 25B events");
-   ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
-   */
 }
 
+/*
 void calSig(TH3* hSignal, TH3* hBkg, const float& scale_factor_perEvt,
       const float& yCutMin, const float& yCutMax, 
       const float& pTCutMin, const float& pTCutMax, const float& zCutMin, const float& zCutMax, 
@@ -228,6 +246,37 @@ void calSig(TH3* hSignal, TH3* hBkg, const float& scale_factor_perEvt,
    s *= scale_factor_perEvt * ana::evts_sim_MB;
    b *= ana::evts_sim_MB / ana::evts_bkg_MB;
    sErr *= scale_factor_perEvt * ana::evts_sim_MB;
+   bErr *= ana::evts_sim_MB / ana::evts_bkg_MB;
+
+   sig = s/sqrt(s+b);
+   if(hBkg->Integral(ylw, yup-1, ptlw, ptup-1, zlw, zup) < 60) sig = 0;
+}
+*/
+
+void calSig(TH3* hSignalScale, TH3* hBkg,
+      const float& yCutMin, const float& yCutMax, 
+      const float& pTCutMin, const float& pTCutMax, const float& zCutMin, const float& zCutMax, 
+      double& sig, double& s, double& b, double& sErr, double& bErr)
+{
+   int ylw = 0;
+   int yup = 0;
+   int ptlw = 0;
+   int ptup = 0;
+   int zlw = 0;
+   int zup = 0;
+
+   int globalMin = hSignalScale->FindBin(yCutMin, pTCutMin, zCutMin);
+   int globalMax = hSignalScale->FindBin(yCutMax, pTCutMax, zCutMax);
+
+   hSignalScale->GetBinXYZ(globalMin, ylw, ptlw, zlw);
+   hSignalScale->GetBinXYZ(globalMax, yup, ptup, zup);
+
+   s = hSignalScale->IntegralAndError(ylw, yup-1, ptlw, ptup-1, zlw, zup, sErr); // ptup-1 and yup-1 due to we already know it would be at bin low edge,
+   b = hBkg->IntegralAndError(ylw, yup-1, ptlw, ptup-1, zlw, zup, bErr);
+
+   s *= ana::evts_sim_MB;
+   b *= ana::evts_sim_MB / ana::evts_bkg_MB;
+   sErr *= ana::evts_sim_MB;
    bErr *= ana::evts_sim_MB / ana::evts_bkg_MB;
 
    sig = s/sqrt(s+b);

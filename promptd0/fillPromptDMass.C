@@ -30,9 +30,11 @@ void fillPromptDMass()
    PromptD* t = new PromptD(chain);
    std::cout << t->GetEntries() << std::endl;
 
-   TH3F* hMassVsPtVsY = new TH3F("hMassVsPtVsY", "hMassVsPtVsY", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
+   TH3F* hMassVsPtVsY = new TH3F("hMassVsPtVsY", "hMassVsPtVsY", 
+         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
-   TH3F* hMassVsPtVsYMtd = new TH3F("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 60, -3, 3, 100, 0, 10, 60, 1.7, 2.0);
+   TH3F* hMassVsPtVsYMtd = new TH3F("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
+         ana::ny, ana::yMin, ana::yMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
    std::cout << hMassVsPtVsY->GetZaxis()->FindBin(1.7) << std::endl;
 

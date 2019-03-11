@@ -13,10 +13,18 @@ namespace ana{
    const int nuOfPt = 10;
    const double ptbin[nuOfPt+1] = {0., 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0};
 
-   //const double evts_bkg_MB = 1273;
-   //const double evts_bkg_central = 121;
-   const double evts_bkg_MB = 960;
-   const double evts_bkg_central = 151;
+   const int npt = 100;
+   const float ptMin = 0;
+   const float ptMax = 10;
+   const int ny = 60;
+   const float yMin = -3;
+   const float yMax = 3;
+   const int nmass = 60;
+   const float massMin = 1.7;
+   const float massMax = 2.0;
+
+   const double evts_bkg_MB = 966;
+   const double evts_bkg_central = 139;
 
    const double evts_data_MB = 500e6;
 
