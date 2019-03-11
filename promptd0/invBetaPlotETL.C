@@ -1,4 +1,4 @@
-#include "matchD.h"
+#include "PromptD.h"
 #include "myAna.h"
 int whichY(const float& y)
 {
@@ -38,9 +38,11 @@ void invBetaPlotETL()
    bool profile= true;
 
    TCanvas *c[4];
-   TFile* f1 = new TFile("matchPromptD0_fullSample_reRECO.root");
-   TNtuple* tp = (TNtuple*) f1->Get("PromptD");
-   matchD* t = new matchD(tp);
+   TFile* f1 = new TFile("matchPromptD0Tree_fullSample_reRECO.root");
+   TChain* tp = new TChain("PromptD"); 
+   tp->Add("matchPromptD0Tree_fullSample_reRECO.root");
+   PromptD *t = new PromptD(tp);
+
    std::cout << t->GetEntries() << std::endl;
 
    TH2F* hdInvBetaPionVsPDau1D = new TH2F("hdInvBetaPionVsPDau1D", "hdInvBetaPionVsPDau1D" , 100, 0, 10, 1000, -0.1, 0.1);
@@ -309,5 +311,49 @@ void invBetaPlotETL()
 
       std::cout << hdInvBetaPionVsPETL->ProjectionY("pion", 0, 12)->Integral(420, 580)/ hdInvBetaPionVsPETL->ProjectionY("pion", 0, 12)->Integral(0, 100000)<< std::endl;
       std::cout << hdInvBetaKaonVsPETL->ProjectionY("kaon", 0, 12)->Integral(420, 580)/ hdInvBetaKaonVsPETL->ProjectionY("kaon", 0, 12)->Integral(0, 100000)<< std::endl;
+
+      TF1* fPionRes = new TF1("fPionRes", "[0]*(x-2)*(x-2) + [1]", 0.7, 2);
+      TCanvas* cPionMean = new TCanvas("cPionMean", "", 575, 500);
+      cPionMean->SetLeftMargin(0.16);
+      hdInvBetaPion->GetYaxis()->SetRangeUser(-0.005, 0.005);
+      hdInvBetaPion->SetTitle("");
+      hdInvBetaPion->GetYaxis()->SetTitle("Mean of 1/beta - 1/beta_{#pi}");
+      hdInvBetaPion->GetXaxis()->SetTitle("p (GeV)");
+      hdInvBetaPion->Draw();
+      hdInvBetaPion->Fit(fPionRes, "Q R", "", 0.8, 2 );
+      hdInvBetaPion->Fit(fPionRes, "Q R", "", 0.8, 2 );
+      hdInvBetaPion->Fit(fPionRes, "R", "", 0.8, 2 );
+      ltx->SetTextSize(0.05);
+      ltx->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.5 TeV");
+      ltx->DrawLatexNDC(0.75, 0.85, "CMS");
+      ltx->SetTextSize(0.035);
+      ltx->DrawLatexNDC(0.72, 0.8, "Preliminary");
+      ltx->DrawLatexNDC(0.72, 0.74, "D -> K + #pi");
+      ltx->DrawLatexNDC(0.72, 0.65, "| #eta | < 1.5");
+      ltx->DrawLatexNDC(0.4, 0.7, "p0 * (x-2)^2 + p1");
+      ltx->DrawLatexNDC(0.4, 0.35, Form("p0: %.2e", fPionRes->GetParameter(0)));
+      ltx->DrawLatexNDC(0.4, 0.31, Form("p0: %.2e", fPionRes->GetParameter(1)));
+
+      TF1* fKaonRes = new TF1("fKaonRes", "[0]*(x-2)*(x-2) + [1]", 0.7, 3);
+      TCanvas* cKaonMean = new TCanvas("cKaonMean", "", 575, 500);
+      cKaonMean->SetLeftMargin(0.16);
+      hdInvBetaKaon->GetYaxis()->SetRangeUser(-0.005, 0.005);
+      hdInvBetaKaon->SetTitle("");
+      hdInvBetaKaon->GetYaxis()->SetTitle("Mean of 1/beta - 1/beta_{K}");
+      hdInvBetaKaon->GetXaxis()->SetTitle("p (GeV)");
+      hdInvBetaKaon->Draw();
+      hdInvBetaKaon->Fit(fKaonRes, "Q R", "", 0.8, 2 );
+      hdInvBetaKaon->Fit(fKaonRes, "Q R", "", 0.8, 2 );
+      hdInvBetaKaon->Fit(fKaonRes, "R", "", 0.8, 2 );
+      ltx->SetTextSize(0.05);
+      ltx->DrawLatexNDC(0.3, 0.93, "Phase II Simulation #sqrt{s} = 5.5 TeV");
+      ltx->DrawLatexNDC(0.75, 0.85, "CMS");
+      ltx->SetTextSize(0.035);
+      ltx->DrawLatexNDC(0.72, 0.8, "Preliminary");
+      ltx->DrawLatexNDC(0.72, 0.74, "D -> K + #pi");
+      ltx->DrawLatexNDC(0.72, 0.65, "| #eta | < 1.5");
+      ltx->DrawLatexNDC(0.4, 0.7, "p0 * (x-2)^2 + p1");
+      ltx->DrawLatexNDC(0.4, 0.35, Form("p0: %.2e", fKaonRes->GetParameter(0)));
+      ltx->DrawLatexNDC(0.4, 0.31, Form("p1: %.2e", fKaonRes->GetParameter(1)));
    }
 }
