@@ -29,40 +29,42 @@ void mtdDauAccept_HyJets()
    //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample.list");
    TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
    //TFileCollection* fc = new TFileCollection("dum", "", "oldHyJets.list");
-   //TFileCollection* fc = new TFileCollection("dum", "", "newHyJets.list");
-   TFileCollection* fc = new TFileCollection("dum", "", "oldfiles/newhyjets.list");
+   TFileCollection* fc = new TFileCollection("dum", "", "newHyJets.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "oldfiles/newhyjets.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
 
    // here is related to full pT
-   TH1F* hDrawDau1Pt = new TH1F("hDrawDau1Pt", "", 100, 0, 10);
-   TH1F* hDrawDau2Pt = new TH1F("hDrawDau2Pt", "", 100, 0, 10);
+   TH1D* hDrawDau1Pt = new TH1D("hDrawDau1Pt", "", 100, 0, 10);
+   TH1D* hDrawDau2Pt = new TH1D("hDrawDau2Pt", "", 100, 0, 10);
 
-   TH1F* hAllDau1Pt = new TH1F("hAllDau1Pt", "", 100, 0, 10);
-   TH1F* hAllDau2Pt = new TH1F("hAllDau2Pt", "", 100, 0, 10);
+   TH1D* hAllDau1Pt = new TH1D("hAllDau1Pt", "", 100, 0, 10);
+   TH1D* hAllDau2Pt = new TH1D("hAllDau2Pt", "", 100, 0, 10);
 
-   TH1F* hNoMtdDau1Pt = new TH1F("hNoMtdDau1Pt", "hNoMtdDau1Pt", 100, 0, 10);
-   TH1F* hNoMtdDau2Pt = new TH1F("hNoMtdDau2Pt", "hNoMtdDau2Pt", 100, 0, 10);
+   TH1D* hNoMtdDau1Pt = new TH1D("hNoMtdDau1Pt", "hNoMtdDau1Pt", 100, 0, 10);
+   TH1D* hNoMtdDau2Pt = new TH1D("hNoMtdDau2Pt", "hNoMtdDau2Pt", 100, 0, 10);
 
-   TH1F* hMtdDau1Pt = new TH1F("hMtdDau1Pt", "hMtdDau1Pt", 100, 0, 10);
-   TH1F* hMtdDau2Pt = new TH1F("hMtdDau2Pt", "hMtdDau2Pt", 100, 0, 10);
+   TH1D* hMtdDau1Pt = new TH1D("hMtdDau1Pt", "hMtdDau1Pt", 100, 0, 10);
+   TH1D* hMtdDau2Pt = new TH1D("hMtdDau2Pt", "hMtdDau2Pt", 100, 0, 10);
 
-   TH1F* hDrawDau1Eta = new TH1F("hDrawDau1Eta", "", 60, -3, 3);
-   TH1F* hDrawDau2Eta = new TH1F("hDrawDau2Eta", "", 60, -3, 3);
+   TH1D* hDrawDau1Eta = new TH1D("hDrawDau1Eta", "", 60, -3, 3);
+   TH1D* hDrawDau2Eta = new TH1D("hDrawDau2Eta", "", 60, -3, 3);
 
-   TH1F* hAllDau1Eta = new TH1F("hAllDau1Eta", "", 60, -3, 3);
-   TH1F* hAllDau2Eta = new TH1F("hAllDau2Eta", "", 60, -3, 3);
+   TH1D* hAllDau1Eta = new TH1D("hAllDau1Eta", "", 60, -3, 3);
+   TH1D* hAllDau2Eta = new TH1D("hAllDau2Eta", "", 60, -3, 3);
 
-   TH1F* hNoMtdDau1Eta = new TH1F("hNoMtdDau1Eta", "hNoMtdDau1Eta", 60, -3, 3);
-   TH1F* hNoMtdDau2Eta = new TH1F("hNoMtdDau2Eta", "hNoMtdDau2Eta", 60, -3, 3);
+   TH1D* hNoMtdDau1Eta = new TH1D("hNoMtdDau1Eta", "hNoMtdDau1Eta", 60, -3, 3);
+   TH1D* hNoMtdDau2Eta = new TH1D("hNoMtdDau2Eta", "hNoMtdDau2Eta", 60, -3, 3);
 
-   TH1F* hMtdDau1Eta = new TH1F("hMtdDau1Eta", "hMtdDau1Eta", 60, -3, 3);
-   TH1F* hMtdDau2Eta = new TH1F("hMtdDau2Eta", "hMtdDau2Eta", 60, -3, 3);
+   TH1D* hMtdDau1Eta = new TH1D("hMtdDau1Eta", "hMtdDau1Eta", 60, -3, 3);
+   TH1D* hMtdDau2Eta = new TH1D("hMtdDau2Eta", "hMtdDau2Eta", 60, -3, 3);
 
    TH2F* hPtVsEtaDau1All = new TH2F("hPtVsEtaDau1All", "hPtVsEtaDau1All", 1000, -3, 3, 1000, 0, 5);
    TH2F* hPtVsEtaDau1Mtd = new TH2F("hPtVsEtaDau1Mtd", "hPtVsEtaDau1Mtd", 1000, -3, 3, 1000, 0, 5);
 
+
+   Long64_t nw = 0;
    for(Long64_t ientry=0; ientry<t->GetEntries(); ientry++){
       t->GetEntry(ientry);
 
@@ -70,32 +72,32 @@ void mtdDauAccept_HyJets()
       if( iy == -1 ) continue;
 
       hPtVsEtaDau1All->Fill(t->EtaD1, t->pTD1);
-      if(t->beta1_PV!=-99) hPtVsEtaDau1Mtd->Fill(t->EtaD1, t->pTD1);
+      if(t->isMtdDau1) hPtVsEtaDau1Mtd->Fill(t->EtaD1, t->pTD1);
 
       if(fabs(t->EtaD1) > 3) continue;
       if(fabs(t->EtaD2) > 3) continue;
 
-      if(std::fabs(t->EtaD1)<1.5 ? t->pTD1 <= 0.8 : t->pTD1 * std::cosh(t->EtaD1) <= 0.7) continue;
-      if(std::fabs(t->EtaD2)<1.5 ? t->pTD2 <= 0.8 : t->pTD2 * std::cosh(t->EtaD2) <= 0.7) continue;
+      if(std::fabs(t->EtaD1)<1.4 ? t->pTD1 <= 0.7 : t->pTD1 * std::cosh(t->EtaD1) <= 0.7) continue;
+      if(std::fabs(t->EtaD2)<1.4 ? t->pTD2 <= 0.7 : t->pTD2 * std::cosh(t->EtaD2) <= 0.7) continue;
 
       const float pD1 = t->pTD1 * std::cosh( t->EtaD1 );
       const float pD2 = t->pTD2 * std::cosh( t->EtaD2 );
 
       hAllDau1Pt->Fill(t->pTD1);
-      if(!(t->beta1_PV!=-99))hNoMtdDau1Pt->Fill(t->pTD1);
-      if(t->beta1_PV!=-99)hMtdDau1Pt->Fill(t->pTD1);
+      if(!(t->isMtdDau1))hNoMtdDau1Pt->Fill(t->pTD1);
+      if(t->isMtdDau1)hMtdDau1Pt->Fill(t->pTD1);
 
       hAllDau2Pt->Fill(t->pTD2);
-      if(!(t->beta2_PV!=-99))hNoMtdDau2Pt->Fill(t->pTD2);
-      if(t->beta2_PV!=-99)hMtdDau2Pt->Fill(t->pTD2);
+      if(!(t->isMtdDau2))hNoMtdDau2Pt->Fill(t->pTD2);
+      if(t->isMtdDau2)hMtdDau2Pt->Fill(t->pTD2);
 
       hAllDau1Eta->Fill(t->EtaD1);
-      if(!(t->beta1_PV!=-99))hNoMtdDau1Eta->Fill(t->EtaD1);
-      if(t->beta1_PV!=-99)hMtdDau1Eta->Fill(t->EtaD1);
+      if(!(t->isMtdDau1))hNoMtdDau1Eta->Fill(t->EtaD1);
+      if(t->isMtdDau1)hMtdDau1Eta->Fill(t->EtaD1);
 
       hAllDau2Eta->Fill(t->EtaD2);
-      if(!(t->beta2_PV!=-99))hNoMtdDau2Eta->Fill(t->EtaD2);
-      if(t->beta2_PV!=-99)hMtdDau2Eta->Fill(t->EtaD2);
+      if(!(t->isMtdDau2))hNoMtdDau2Eta->Fill(t->EtaD2);
+      if(t->isMtdDau2)hMtdDau2Eta->Fill(t->EtaD2);
    }
    
 

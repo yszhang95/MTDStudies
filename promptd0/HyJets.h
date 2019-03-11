@@ -125,6 +125,8 @@ public :
    TBranch        *b_beta2_PV;   //!
    TBranch        *b_beta1_PVerr;   //!
    TBranch        *b_beta2_PVerr;   //!
+   TBranch        *b_isMtdDau1;   //!
+   TBranch        *b_isMtdDau2;   //!
 
    HyJets(TChain *tree=0);
    virtual ~HyJets();
@@ -245,6 +247,8 @@ void HyJets::Init(TChain *tree)
    fChain->SetBranchAddress("beta2_PV", &beta2_PV, &b_beta2_PV);
    fChain->SetBranchAddress("beta1_PVerr", &beta1_PVerr, &b_beta1_PVerr);
    fChain->SetBranchAddress("beta2_PVerr", &beta2_PVerr, &b_beta2_PVerr);
+   fChain->SetBranchAddress("isMtdDau1", &isMtdDau1, &b_isMtdDau1);
+   fChain->SetBranchAddress("isMtdDau2", &isMtdDau2, &b_isMtdDau2);
    fChain->SetBranchStatus("2D*", 0);
    fChain->SetBranchStatus("3D*", 0);
    fChain->SetBranchStatus("VtxProb", 0);
