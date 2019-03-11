@@ -27,7 +27,7 @@ inline float invBetaKaon(const float& p){
 void fillHyJetsMass()
 {
    TChain* chain = new TChain("d0ana_mc/VertexCompositeNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "newhyjets.list");
+   TFileCollection* fc = new TFileCollection("dum", "", "newHyJets.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;

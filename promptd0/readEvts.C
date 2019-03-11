@@ -2,7 +2,7 @@ void readEvts()
 {
    TFile* f[2048];
    //ifstream fin("hyjets_sample.list");
-   ifstream fin("newhyjets.list");
+   ifstream fin("newHyJets.list");
    //char name[512];
    std::string name;
    TH1F* hCent[2048];

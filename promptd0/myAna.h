@@ -53,13 +53,17 @@ namespace ana{
    inline float invBetaKaon(const float& p){
       return std::sqrt(1 + std::pow(ana::massKaon/p,2));
    }
+
    TF1 fExpBTL("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
    TF1 fExpETL("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
 
-   float meanPion(D0Cand* t, const int& dau){
+   TF1 fPionResBTL("fPionResBTL", "0.0012*(x-2)*(x-2) + 0.0004", 0.7, 2);
+   TF1 fPionResETL("fPionResETL", "0.00025*(x-2)*(x-2) + 0.0005", 0.7, 2);
 
-      TF1 fPionResBTL("fPionResBTL", "0.0012*(x-2)*(x-2) + 0.0004", 0.7, 2);
-      TF1 fPionResETL("fPionResETL", "0.00025*(x-2)*(x-2) + 0.0005", 0.7, 2);
+   TF1 fKaonResBTL("fKaonResBTL", "0.003*(x-2)*(x-2) + 0.0001", 0.7, 2);
+   TF1 fKaonResETL("fKaonResETL", "0.00025*(x-2)*(x-2) + 0.0003", 0.7, 2);
+
+   float meanPion(D0Cand* t, const int& dau){
 
       if(dau == 1) {
          const float pD1 = std::cosh(t->etaD1()) * t->PtD1() ;
@@ -75,9 +79,6 @@ namespace ana{
    }
 
    float meanKaon(D0Cand* t, const int& dau){
-
-      TF1 fKaonResBTL("fKaonResBTL", "0.003*(x-2)*(x-2) + 0.0001", 0.7, 2);
-      TF1 fKaonResETL("fKaonResETL", "0.00025*(x-2)*(x-2) + 0.0003", 0.7, 2);
 
       if(dau == 1) {
          const float pD1 = std::cosh(t->etaD1()) * t->PtD1() ;
