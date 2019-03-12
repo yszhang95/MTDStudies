@@ -68,6 +68,7 @@ void fillPromptDMass()
       const float dInvBetaCut2 = std::fabs(t->EtaD2<1.5) ? ana::fExpBTL.Eval(pD2) : ana::fExpETL.Eval(pD2);
 
       if(!ana::passTopoCuts(t)) continue;
+      std::cout << std::endl;
 
       if(t->isSwap || !t->matchGEN) continue;
 

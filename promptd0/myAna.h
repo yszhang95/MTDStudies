@@ -127,6 +127,8 @@ namespace ana{
    bool passTopoCuts(D0Cand *t){
       const int ipt = whichPt(t->Pt());
       const int iy = whichY(t);
+      if(ipt == -1) return false;
+      if(iy == -1) return false;
       if(t->vtxProb() <= vtxProbCut[ipt][iy]) return false;
       if(std::fabs(t->agl3D()) >= agl3DCut[ipt][iy]) return false;
       if(t->dlSig3D() <= dlSig3DCut[ipt][iy]) return false;
