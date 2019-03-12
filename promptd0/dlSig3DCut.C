@@ -2,6 +2,8 @@
 
 void dlSig3DCut()
 {
+   std::vector<std::vector<double>> dlSig3DCut;
+
    TFile* f1 = new TFile("genPt_reRECO.root");
    TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
    TFile* f3 = new TFile("PromptDMassHists_reRECO_all.root");
@@ -44,13 +46,14 @@ void dlSig3DCut()
    TH1D* hB[ana::nuOfPt][ana::nuOfY];
    TH1D* hBMtd[ana::nuOfPt][ana::nuOfY];
 
-   //for(int ipt=0; ipt<ana::nuOfPt; ipt++){
-   for(int ipt=4; ipt<5; ipt++){
+   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
 
       TLatex* ltx = new TLatex();
 
       double pTCutMin = ana::ptbin[ipt];
       double pTCutMax = ana::ptbin[ipt+1];
+
+      std::vector<double> dlSig3DCut_temp;
 
       for(int iy=0; iy<ana::nuOfY; iy++){
 
@@ -93,6 +96,9 @@ void dlSig3DCut()
             hB[ipt][iy]->SetBinError(idlSig3D+1, bErr);
             hBMtd[ipt][iy]->SetBinError(idlSig3D+1, bMtdErr);
          }
+         double tmp = hSig[ipt][iy]->GetBinCenter(hSig[ipt][iy]->GetMaximumBin());
+         dlSig3DCut_temp.push_back(tmp);
+
          TCanvas* c1 = new TCanvas(Form("c1_%d%d", ipt, iy), "", 600, 500);
          gStyle->SetOptStat(0);
          hSigMtd[ipt][iy]->GetYaxis()->SetTitle("Significance");
@@ -111,7 +117,8 @@ void dlSig3DCut()
          ltx->DrawLatexNDC(0.35, 0.75, "MB 25B events");
          ltx->SetTextSize(0.035);
          ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-         //c1->SaveAs(Form("plot0309/sig_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+         ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
+         c1->SaveAs(Form("optimization/dlSig3D/y%d/sig_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
          TCanvas* c2 = new TCanvas(Form("c2_%d%d", ipt, iy), "", 600, 500);
          c2->SetLeftMargin(0.15);
@@ -132,7 +139,8 @@ void dlSig3DCut()
          ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
          ltx->SetTextSize(0.035);
          ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-         //c2->SaveAs(Form("plot0309/scaled_s_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+         ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
+         c2->SaveAs(Form("optimization/dlSig3D/y%d/scaled_s_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
          TCanvas* c3 = new TCanvas(Form("c3_%d%d", ipt, iy), "", 600, 500);
          c3->SetLeftMargin(0.15);
@@ -154,9 +162,20 @@ void dlSig3DCut()
          ltx->DrawLatexNDC(0.1, 0.95, "Lumi = 3 nb^{-1}  Phase II Simulation #sqrt{s} = 5.5 TeV");
          ltx->SetTextSize(0.035);
          ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
-         //c3->SaveAs(Form("plot0309/scaled_b_pT%.1f_%.1f.png", ana::ptbin[ipt], ana::ptbin[ipt+1]));
+         ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
+         c3->SaveAs(Form("optimization/dlSig3D/y%d/scaled_b_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
       }
-
+      dlSig3DCut.push_back(dlSig3DCut_temp);
+      dlSig3DCut_temp.clear();
    }
+   std::ofstream fout("dlSig3DCut.txt");
+   fout << "double dlSig3DCut[nuOfPt][nuOfY] = {" << std::endl;
+   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
+      for(int iy=0; iy<ana::nuOfY; iy++){
+         fout << dlSig3DCut[ipt][iy] << ", ";
+      }
+      fout << std::endl;
+   }
+   fout << "};" << std::endl;
 }
 

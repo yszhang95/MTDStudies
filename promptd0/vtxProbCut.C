@@ -2,6 +2,8 @@
 
 void vtxProbCut()
 {
+   std::vector<std::vector<double>> vtxCut;
+
    TFile* f1 = new TFile("genPt_reRECO.root");
    TFile* f2 = new TFile("HEPData-ins1616207-v1.root");
    TFile* f3 = new TFile("PromptDMassHists_reRECO_all.root");
@@ -51,6 +53,8 @@ void vtxProbCut()
       double pTCutMin = ana::ptbin[ipt];
       double pTCutMax = ana::ptbin[ipt+1];
 
+      std::vector<double> vtxCut_temp;
+
       for(int iy=0; iy<ana::nuOfY; iy++){
 
          hSig[ipt][iy] = new TH1D(Form("hSigPt%dY%d", ipt, iy), "", ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
@@ -92,6 +96,9 @@ void vtxProbCut()
             hB[ipt][iy]->SetBinError(iVtxProb+1, bErr);
             hBMtd[ipt][iy]->SetBinError(iVtxProb+1, bMtdErr);
          }
+         double tmp = hSig[ipt][iy]->GetBinCenter(hSig[ipt][iy]->GetMaximumBin());
+         vtxCut_temp.push_back(tmp);
+
          TCanvas* c1 = new TCanvas(Form("c1_%d%d", ipt, iy), "", 600, 500);
          gStyle->SetOptStat(0);
          hSigMtd[ipt][iy]->GetYaxis()->SetTitle("Significance");
@@ -158,7 +165,17 @@ void vtxProbCut()
          ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
          c3->SaveAs(Form("optimization/vtxProb/y%d/scaled_b_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
       }
-
+      vtxCut.push_back(vtxCut_temp);
+      vtxCut_temp.clear();
    }
+   std::ofstream fout("vtxProbCut.txt");
+   fout << "double vtxProbCut[nuOfPt][nuOfY] = {" << std::endl;
+   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
+      for(int iy=0; iy<ana::nuOfY; iy++){
+         fout << vtxCut[ipt][iy] << ", ";
+      }
+      fout << std::endl;
+   }
+   fout << "};" << std::endl;
 }
 
