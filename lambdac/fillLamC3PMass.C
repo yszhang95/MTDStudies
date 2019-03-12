@@ -63,15 +63,16 @@ void fillLamC3PMass()
       bool is1sigmaKaonDau3 = false;
       bool is1sigmaProtonDau3 = false;
 
-      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - ana::invBetaPion(pD1) - meanPion(t, 1) ) < 1.4 * dInvBetaCut1;
-      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaKaon(pD1) - meanKaon(t, 1) ) < 1.4 * dInvBetaCut1;
-      if(t->isMtdDau1) is1sigmaProtonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaProton(pD1) - meanProton(t, 1) ) < 1.4 * dInvBetaCut1;
-      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - ana::invBetaPion(pD2) - meanPion(t, 2) ) < 1.4 * dInvBetaCut2;
-      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaKaon(pD2) - meanKaon(t, 2) ) < 1.4 * dInvBetaCut2;
-      if(t->isMtdDau2) is1sigmaProtonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaProton(pD2) - meanProton(t, 2) ) < 1.4 * dInvBetaCut2;
-      if(t->isMtdDau3) is1sigmaPionDau3 = std::fabs(1./t->beta3_PV - ana::invBetaPion(pD3) - meanPion(t, 3) ) < 1.4 * dInvBetaCut3;
-      if(t->isMtdDau3) is1sigmaKaonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaKaon(pD3) - meanKaon(t, 3) ) < 1.4 * dInvBetaCut3;
-      if(t->isMtdDau3) is1sigmaProtonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaProton(pD3) - meanProton(t, 3) ) < 1.4 * dInvBetaCut3;
+      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - ana::invBetaPion(pD1) - ana::meanPion(t, 1) ) < 1.4 * dInvBetaCut1;
+      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaKaon(pD1) - ana::meanKaon(t, 1) ) < 1.4 * dInvBetaCut1;
+      if(t->isMtdDau1) is1sigmaProtonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaProton(pD1)  ) < 1.4 * dInvBetaCut1;
+      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - ana::invBetaPion(pD2) - ana::meanPion(t, 2) ) < 1.4 * dInvBetaCut2;
+      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaKaon(pD2) - ana::meanKaon(t, 2) ) < 1.4 * dInvBetaCut2;
+      if(t->isMtdDau2) is1sigmaProtonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaProton(pD2) ) < 1.4 * dInvBetaCut2;
+      if(t->isMtdDau3) is1sigmaPionDau3 = std::fabs(1./t->beta3_PV - ana::invBetaPion(pD3) - ana::meanPion(t, 3) ) < 1.4 * dInvBetaCut3;
+      if(t->isMtdDau3) is1sigmaKaonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaKaon(pD3) - ana::meanKaon(t, 3) ) < 1.4 * dInvBetaCut3;
+      if(t->isMtdDau3) is1sigmaProtonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaProton(pD3)  ) < 1.4 * dInvBetaCut3;
+      if(is1sigmaProtonDau3) std::cout << std::endl;
 
       if((t->flavor == 1 && is1sigmaKaonDau2 && ((is1sigmaPionDau1 && is1sigmaProtonDau3) || (is1sigmaPionDau3 && is1sigmaProtonDau1))) ||
          (t->flavor == -1 && is1sigmaKaonDau1 && ((is1sigmaPionDau2 && is1sigmaProtonDau3) || (is1sigmaPionDau3 && is1sigmaProtonDau2)))
@@ -95,15 +96,15 @@ void fillLamC3PMass()
       is1sigmaKaonDau3 = false;
       is1sigmaProtonDau3 = false;
 
-      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - ana::invBetaPion(pD1) - meanPion(t, 1) ) < 1.0 * dInvBetaCut1;
-      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaKaon(pD1) - meanKaon(t, 1) ) < 1.0 * dInvBetaCut1;
-      if(t->isMtdDau1) is1sigmaProtonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaProton(pD1) - meanProton(t, 1) ) < 1.0 * dInvBetaCut1;
-      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - ana::invBetaPion(pD2) - meanPion(t, 2) ) < 1.0 * dInvBetaCut2;
-      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaKaon(pD2) - meanKaon(t, 2) ) < 1.0 * dInvBetaCut2;
-      if(t->isMtdDau2) is1sigmaProtonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaProton(pD2) - meanProton(t, 2) ) < 1.0 * dInvBetaCut2;
-      if(t->isMtdDau3) is1sigmaPionDau3 = std::fabs(1./t->beta3_PV - ana::invBetaPion(pD3) - meanPion(t, 3) ) < 1.0 * dInvBetaCut3;
-      if(t->isMtdDau3) is1sigmaKaonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaKaon(pD3) - meanKaon(t, 3) ) < 1.0 * dInvBetaCut3;
-      if(t->isMtdDau3) is1sigmaProtonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaProton(pD3) - meanProton(t, 3) ) < 1.0 * dInvBetaCut3;
+      if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - ana::invBetaPion(pD1) - ana::meanPion(t, 1) ) < 1.0 * dInvBetaCut1;
+      if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaKaon(pD1) - ana::meanKaon(t, 1) ) < 1.0 * dInvBetaCut1;
+      if(t->isMtdDau1) is1sigmaProtonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaProton(pD1) - ana::meanProton(t, 1) ) < 1.0 * dInvBetaCut1;
+      if(t->isMtdDau2) is1sigmaPionDau2 = std::fabs(1./t->beta2_PV - ana::invBetaPion(pD2) - ana::meanPion(t, 2) ) < 1.0 * dInvBetaCut2;
+      if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaKaon(pD2) - ana::meanKaon(t, 2) ) < 1.0 * dInvBetaCut2;
+      if(t->isMtdDau2) is1sigmaProtonDau2 = std::fabs(1./t->beta2_PV - ana::invBetaProton(pD2) - ana::meanProton(t, 2) ) < 1.0 * dInvBetaCut2;
+      if(t->isMtdDau3) is1sigmaPionDau3 = std::fabs(1./t->beta3_PV - ana::invBetaPion(pD3) - ana::meanPion(t, 3) ) < 1.0 * dInvBetaCut3;
+      if(t->isMtdDau3) is1sigmaKaonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaKaon(pD3) - ana::meanKaon(t, 3) ) < 1.0 * dInvBetaCut3;
+      if(t->isMtdDau3) is1sigmaProtonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaProton(pD3) - ana::meanProton(t, 3) ) < 1.0 * dInvBetaCut3;
 
       if((t->flavor == 1 && is1sigmaKaonDau2 && ((is1sigmaPionDau1 && is1sigmaProtonDau3) || (is1sigmaPionDau3 && is1sigmaProtonDau1))) ||
          (t->flavor == -1 && is1sigmaKaonDau1 && ((is1sigmaPionDau2 && is1sigmaProtonDau3) || (is1sigmaPionDau3 && is1sigmaProtonDau2)))

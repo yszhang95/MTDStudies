@@ -59,9 +59,10 @@ namespace ana{
    bool isCentralEvt(const HyJets& t){ return t.centrality < 20;}
 
    bool passKinematicCuts(Cand* t ) {
-      if ( std::fabs(t->etaD1()) > 3  ||  std::fabs(t->etaD2()) > 3  ||  std::fabs(t->Y()) > 3 ) return false;
+      if ( std::fabs(t->etaD1()) > 3  ||  std::fabs(t->etaD2()) > 3  || std::fabs(t->etaD3()) >3 ||std::fabs(t->Y()) > 3 ) return false;
       if ( std::fabs(t->etaD1()) < 1.5 ? t->PtD1() <= 0.8 : (t->PtD1() * std::cosh(t->etaD1())) <= 0.7 ) return false;
       if ( std::fabs(t->etaD2()) < 1.5 ? t->PtD2() <= 0.8 : (t->PtD2() * std::cosh(t->etaD2())) <= 0.7 ) return false;
+      if ( std::fabs(t->etaD3()) < 1.5 ? t->PtD3() <= 0.8 : (t->PtD3() * std::cosh(t->etaD3())) <= 0.7 ) return false;
       return true;
    }
 
@@ -112,6 +113,11 @@ namespace ana{
          if(std::fabs(t->etaD2()) < 1.5) return pD2 < 2 ? fPionResBTL.Eval(pD2) : 0;
          if(std::fabs(t->etaD2()) >= 1.5) return pD2 < 2 ? fPionResETL.Eval(pD2) : 0;
       }
+      if(dau == 3) {
+         const float pD3 = std::cosh(t->etaD3()) * t->PtD3() ;
+         if(std::fabs(t->etaD3()) < 1.5) return pD3 < 2 ? fPionResBTL.Eval(pD3) : 0;
+         if(std::fabs(t->etaD3()) >= 1.5) return pD3 < 2 ? fPionResETL.Eval(pD3) : 0;
+      }
       return -99.;
    }
 
@@ -127,11 +133,15 @@ namespace ana{
          if(std::fabs(t->etaD2()) < 1.5) return pD2 < 2 ? fKaonResBTL.Eval(pD2) : 0;
          if(std::fabs(t->etaD2()) >= 1.5) return pD2 < 2 ? fKaonResETL.Eval(pD2) : 0;
       }
+      if(dau == 3) {
+         const float pD3 = std::cosh(t->etaD3()) * t->PtD3() ;
+         if(std::fabs(t->etaD3()) < 1.5) return pD3 < 2 ? fKaonResBTL.Eval(pD3) : 0;
+         if(std::fabs(t->etaD3()) >= 1.5) return pD3 < 2 ? fKaonResETL.Eval(pD3) : 0;
+      }
       return -99.;
    }
 
    float meanProton(Cand* t, const int& dau){
-
       if(dau == 1) {
          const float pD1 = std::cosh(t->etaD1()) * t->PtD1() ;
          if(std::fabs(t->etaD1()) < 1.5) return pD1 < 2 ? fKaonResBTL.Eval(pD1) : 0;
@@ -141,6 +151,11 @@ namespace ana{
          const float pD2 = std::cosh(t->etaD2()) * t->PtD2() ;
          if(std::fabs(t->etaD2()) < 1.5) return pD2 < 2 ? fKaonResBTL.Eval(pD2) : 0;
          if(std::fabs(t->etaD2()) >= 1.5) return pD2 < 2 ? fKaonResETL.Eval(pD2) : 0;
+      }
+      if(dau == 3) {
+         const float pD3 = std::cosh(t->etaD3()) * t->PtD3() ;
+         if(std::fabs(t->etaD3()) < 1.5) return pD3 < 2 ? fKaonResBTL.Eval(pD3) : 0;
+         if(std::fabs(t->etaD3()) >= 1.5) return pD3 < 2 ? fKaonResETL.Eval(pD3) : 0;
       }
       return -99.;
    }

@@ -191,8 +191,10 @@ public :
    virtual Float_t  Mass(){return mass;}
    virtual Float_t  PtD1(){return pTD1;}
    virtual Float_t  PtD2(){return pTD2;}
+   virtual Float_t  PtD3(){return pTD3;}
    virtual Float_t  etaD1(){return EtaD1;}
    virtual Float_t  etaD2(){return EtaD2;}
+   virtual Float_t  etaD3(){return EtaD3;}
 };
 
 #endif

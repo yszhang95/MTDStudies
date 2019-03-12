@@ -69,6 +69,8 @@ void fillPromptDMass()
 
       if(!ana::passTopoCuts(t)) continue;
 
+      if(t->isSwap || !t->matchGEN) continue;
+
       bool isFWHM = ana::isFWHM(t);
 
       hMassVsPtVsY->Fill(std::fabs(t->y), t->pT, t->mass);

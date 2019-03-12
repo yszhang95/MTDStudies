@@ -34,8 +34,10 @@ public :
    virtual Float_t  Mass(){return 0;}
    virtual Float_t  PtD1(){return 0;}
    virtual Float_t  PtD2(){return 0;}
+   virtual Float_t  PtD3(){return 0;}
    virtual Float_t  etaD1(){return 0;}
    virtual Float_t  etaD2(){return 0;}
+   virtual Float_t  etaD3(){return 0;}
 };
 
 #endif

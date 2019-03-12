@@ -118,7 +118,7 @@ void agl3DCut()
          ltx->SetTextSize(0.035);
          ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
          ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
-         c1->SaveAs(Form("optimization/agl3D/y%d/sig_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
+         c1->SaveAs(Form("optimizationLamC/agl3D/y%d/sig_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
          TCanvas* c2 = new TCanvas(Form("c2_%d%d", ipt, iy), "", 600, 500);
          c2->SetLeftMargin(0.15);
@@ -140,7 +140,7 @@ void agl3DCut()
          ltx->SetTextSize(0.035);
          ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
          ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
-         c2->SaveAs(Form("optimization/agl3D/y%d/scaled_s_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
+         c2->SaveAs(Form("optimizationLamC/agl3D/y%d/scaled_s_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
 
          TCanvas* c3 = new TCanvas(Form("c3_%d%d", ipt, iy), "", 600, 500);
          c3->SetLeftMargin(0.15);
@@ -163,7 +163,7 @@ void agl3DCut()
          ltx->SetTextSize(0.035);
          ltx->DrawLatexNDC(0.6, 0.3, Form("%.1f < p_{T} < %.1f GeV", ana::ptbin[ipt], ana::ptbin[ipt+1]));
          ltx->DrawLatexNDC(0.6, 0.2, Form("%.1f < |y| < %.1f GeV", ana::ybin[iy], ana::ybin[iy+1]));
-         c3->SaveAs(Form("optimization/agl3D/y%d/scaled_b_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
+         c3->SaveAs(Form("optimizationLamC/agl3D/y%d/scaled_b_pT%.1f_%.1f.png", iy, ana::ptbin[ipt], ana::ptbin[ipt+1]));
       }
       agl3DCut.push_back(agl3DCut_temp);
       agl3DCut_temp.clear();

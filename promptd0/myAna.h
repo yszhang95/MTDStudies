@@ -162,7 +162,6 @@ void calSig(TH3* hSignalScale, TH3* hBkg,
    bErr *= ana::evts_sim_MB / ana::evts_bkg_MB;
 
    sig = s/sqrt(s+b);
-   if(hBkg->Integral(ylw, yup-1, ptlw, ptup-1, zlw, zup) < 60) sig = 0;
 }
 
 void calScalePerEvt(TH1* hGenPtMidY, TH1* hData, TH3* hScale, std::vector<double> & scale_factor_perEvt,int nz)
