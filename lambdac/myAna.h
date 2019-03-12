@@ -40,7 +40,7 @@ namespace ana{
    const double dlSig3DMax = 5.;
 
    const double evts_bkg_MB = 200;
-   const double evts_bkg_central = 20;
+   const double evts_bkg_central = 200 *0.1;
 
    const double evts_data_MB = 500e6;
 
@@ -51,7 +51,7 @@ namespace ana{
    const double BR = 0.05*2*1.1;
 
    const double evts_sim_MB = 25e9;
-   const double evts_sim_central = evts_sim_MB * 0.1;
+   const double evts_sim_central = evts_sim_MB * evts_bkg_central / evts_bkg_MB;
 
    const float mass_lw[nuOfY] = {2.286-0.01, 2.286-0.02, 2.286-0.03};
    const float mass_up[nuOfY] = {2.286+0.01, 2.286+0.02, 2.286+0.03};
@@ -196,7 +196,6 @@ void calSig(TH3* hSignalScale, TH3* hBkg,
    bErr *= ana::evts_sim_MB / ana::evts_bkg_MB;
 
    sig = s/sqrt(s+b);
-   if(hBkg->Integral(ylw, yup-1, ptlw, ptup-1, zlw, zup) < 60) sig = 0;
 }
 
 void calScalePerEvt(TH1* hGenPtMidY, TH1* hData, TH3* hScale, std::vector<double> & scale_factor_perEvt,int nz)
