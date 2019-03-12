@@ -30,7 +30,7 @@ public :
    virtual void     Show(Long64_t entry = -1);
 
    virtual Float_t  Y(){return 0;}
-   virtual Float_t  pT(){ return 0;}
+   virtual Float_t  Pt(){ return 0;}
    virtual Float_t  Mass(){return 0;}
    virtual Float_t  PtD1(){return 0;}
    virtual Float_t  PtD2(){return 0;}
@@ -38,6 +38,9 @@ public :
    virtual Float_t  etaD1(){return 0;}
    virtual Float_t  etaD2(){return 0;}
    virtual Float_t  etaD3(){return 0;}
+   virtual Float_t  vtxProb() {return 0;}
+   virtual Float_t  agl3D() {return 0;}
+   virtual Float_t dlSig3D() {return 0;}
 };
 
 #endif

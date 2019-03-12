@@ -191,6 +191,9 @@ public :
    virtual Float_t  etaD1(){return EtaD1;}
    virtual Float_t  etaD2(){return EtaD2;}
    virtual Float_t  etaD3(){return EtaD3;}
+   virtual Float_t  vtxProb() {return VtxProb;}
+   virtual Float_t  agl3D() {return m3DPointingAngle;}
+   virtual Float_t dlSig3D() {return m3DDecayLengthSignificance;}
 };
 
 #endif

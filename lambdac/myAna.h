@@ -56,6 +56,43 @@ namespace ana{
    const float mass_lw[nuOfY] = {2.286-0.01, 2.286-0.02, 2.286-0.03};
    const float mass_up[nuOfY] = {2.286+0.01, 2.286+0.02, 2.286+0.03};
 
+   const double vtxProbCut[nuOfPt][nuOfY] = {
+      0, 0, 0,  // 0.0 - 0.5 GeV
+      0, 0, 0,  // 0.5 - 1.0 GeV
+      0, 0, 0,  // 1.0 - 2.0 GeV
+      0, 0, 0,  // 2.0 - 3.0 GeV
+      0, 0, 0,  // 3.0 - 4.0 GeV
+      0, 0, 0,  // 4.0 - 5.0 GeV
+      0, 0, 0,  // 5.0 - 6.0 GeV
+      0, 0, 0,  // 6.0 - 8.0 GeV
+      0, 0, 0  // 8.0 - 10.0 GeV
+   };
+
+   const double agl3DCut[nuOfPt][nuOfY] = {
+      0,0,0,
+      0,0,0,
+      4.0, 4.0, 4.0,
+      4.0, 4.0, 4.0,
+      0.4, 0.4, 0.4,
+      0.25, 0.25, 0.25,
+      0.25, 0.25, 0.25,
+      0.25, 0.25, 0.25,
+      0.1, 0.1, 0.1
+   };
+
+   const double dlSig3DCut[nuOfPt][nuOfY] = {
+      0,0,0,
+      0,0,0,
+      0,0,0,
+      0,0,0,
+      0,0,0,
+      4.0, 4.0, 0,
+      4.0, 4.0, 4.0,
+      4.0, 4.0, 4.0,
+      4.0, 4.0, 4.0
+   };
+
+
    bool isCentralEvt(const HyJets& t){ return t.centrality < 20;}
 
    bool passKinematicCuts(Cand* t ) {
@@ -72,6 +109,13 @@ namespace ana{
       }
       return -1;
    }
+   int whichPt(const double& pt){
+      for(int ipt=0; ipt<ana::nuOfPt; ipt++){
+         if( pt < ana::ptbin[ipt+1] && pt > ana::ptbin[ipt]) return ipt;
+      }
+      return -1;
+   }
+
    bool isFWHM(Cand* t){
       int iy = whichY(t);
       if(iy == -1) return false;
@@ -79,6 +123,13 @@ namespace ana{
       return false;
    }
    bool passTopoCuts(Cand *t){
+      const int ipt = whichPt(t->Pt());
+      const int iy = whichY(t);
+      if(ipt == -1) return false;
+      if(iy == -1) return false;
+      if(t->vtxProb() <= vtxProbCut[ipt][iy]) return false;
+      if(std::fabs(t->agl3D()) >= agl3DCut[ipt][iy]) return false;
+      if(t->dlSig3D() <= dlSig3DCut[ipt][iy]) return false;
       return true;
    }
 
@@ -162,12 +213,6 @@ namespace ana{
 
 };
 
-int whichPt(const double& pt){
-   for(int ipt=0; ipt<ana::nuOfPt; ipt++){
-      if( pt < ana::ptbin[ipt+1] && pt > ana::ptbin[ipt]) return ipt;
-   }
-   return -1;
-}
 
 void calSig(TH3* hSignalScale, TH3* hBkg,
       const double& yCutMin, const double& yCutMax, 
@@ -224,7 +269,7 @@ void calScalePerEvt(TH1* hGenPtMidY, TH1* hData, TH3* hScale, std::vector<double
 
    for(int ipt=0; ipt<ana::npt; ipt++){
       double pt = ((double)ipt + 0.5) * (ana::ptMax - ana::ptMin) / (double) ana::npt;
-      int iscale = whichPt(pt);
+      int iscale = ana::whichPt(pt);
       for(int iy=0; iy<ana::nyAbs; iy++){
          for(int iz=0; iz<nz; iz++){
             if(iscale == -1) continue;
