@@ -11,27 +11,17 @@
 #include "TLatex.h"
 #include "TFileCollection.h"
 #include "TVector3.h"
+#include "TStopwatch.h"
 
 #include "myAna.h"
 
-inline float invBetaPion(const float p){
-    return std::sqrt(1 + std::pow(ana::massPion/p,2));
-}
-
-inline float invBetaKaon(const float p){
-    return std::sqrt(1 + std::pow(ana::massKaon/p,2));
-}
-
-inline float invBetaProton(const float p){
-    return std::sqrt(1 + std::pow(ana::massProton/p,2));
-}
-
-void fillMatchTree()
+void fillMatchTree(std::string name="")
 {
    TH1F::SetDefaultSumw2(true);
 
    TChain *chain = new TChain("lamc3pana_mc/VertexCompositeNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "lamc3psignal_new.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "lamc3psignal_new.list");
+   TFileCollection* fc = new TFileCollection("dum", "", name.c_str());
    chain->AddFileInfoList(fc->GetList());
    LamC3P *t = new LamC3P(chain);
    std::cout << "total entries: " << t->GetEntries() << std::endl;
@@ -123,9 +113,6 @@ void fillMatchTree()
    bool  isMtdDau1;
    bool  isMtdDau2;
    bool  isMtdDau3;
-//   bool  isGoodMtdDau1;
-//   bool  isGoodMtdDau2;
-//   bool  isGoodMtdDau3;
 
    float t0_PV;
    float sigmat0_PV;
@@ -209,9 +196,6 @@ void fillMatchTree()
    tree->Branch("isMtdDau1", &isMtdDau1, "isMtdDau1/O");
    tree->Branch("isMtdDau2", &isMtdDau2, "isMtdDau2/O");
    tree->Branch("isMtdDau3", &isMtdDau3, "isMtdDau3/O");
-//   tree->Branch("isGoodMtdDau1", &isGoodMtdDau1, "isGoodMtdDau1/O");
-//   tree->Branch("isGoodMtdDau2", &isGoodMtdDau2, "isGoodMtdDau2/O");
-//   tree->Branch("isGoodMtdDau3", &isGoodMtdDau3, "isGoodMtdDau3/O");
    tree->Branch("pT_gen",&pt_gen,"pT_gen/F");
    tree->Branch("eta_gen",&eta_gen,"eta_gen/F");
    tree->Branch("y_gen",&y_gen,"y_gen/F");
@@ -224,11 +208,14 @@ void fillMatchTree()
 
    cout<<"Total number of entries: "<<t->GetEntries()<<endl;
 
+   TStopwatch ts;
+   ts.Start();
+
    int isMtdWrong = 0;
    Long64_t nLamC3P = 0;
    for(Long64_t ientry=0; ientry<t->GetEntries(); ++ientry){
 
-      if(!(ientry % 100000)) cout<<"Processing "<<ientry<<" candidates!"<<endl;
+      if(!(ientry % 100000000)) cout<<"Processing "<<ientry<<" candidates!"<<endl;
 
       t->GetEntry(ientry);
 
@@ -239,20 +226,20 @@ void fillMatchTree()
        // fill dau1 histograms
       if(t->isMtdDau1 && std::fabs(t->EtaD1)<3){
          hInvBetaVsPDau1->Fill(pD1, 1./t->beta1_PV);
-         hdInvBetaPionVsPDau1->Fill(pD1, 1./t->beta1_PV - invBetaPion(pD1));
-         hdInvBetaKaonVsPDau1->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
+         hdInvBetaPionVsPDau1->Fill(pD1, 1./t->beta1_PV - ana::invBetaPion(pD1));
+         hdInvBetaKaonVsPDau1->Fill(pD1, 1./t->beta1_PV - ana::invBetaKaon(pD1));
       } 
        // fill dau2 histograms
       if(t->isMtdDau2 && std::fabs(t->EtaD2)<3){
          hInvBetaVsPDau2->Fill(pD2, 1./t->beta2_PV);
-         hdInvBetaPionVsPDau2->Fill(pD2, 1./t->beta2_PV - invBetaPion(pD2));
-         hdInvBetaKaonVsPDau2->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
+         hdInvBetaPionVsPDau2->Fill(pD2, 1./t->beta2_PV - ana::invBetaPion(pD2));
+         hdInvBetaKaonVsPDau2->Fill(pD2, 1./t->beta2_PV - ana::invBetaKaon(pD2));
       } 
 
       if(t->isMtdDau3 && std::fabs(t->EtaD3)<3){
          hInvBetaVsPDau3->Fill(pD3, 1./t->beta3_PV);
-         hdInvBetaPionVsPDau3->Fill(pD3, 1./t->beta3_PV - invBetaPion(pD3));
-         hdInvBetaKaonVsPDau3->Fill(pD3, 1./t->beta3_PV - invBetaKaon(pD3));
+         hdInvBetaPionVsPDau3->Fill(pD3, 1./t->beta3_PV - ana::invBetaPion(pD3));
+         hdInvBetaKaonVsPDau3->Fill(pD3, 1./t->beta3_PV - ana::invBetaKaon(pD3));
       }
 
         // look up whether there is a case track has mtd hits when eta>3
@@ -331,9 +318,6 @@ void fillMatchTree()
       isMtdDau1 = t->isMtdDau1;
       isMtdDau2 = t->isMtdDau2;
       isMtdDau3 = t->isMtdDau3;
-//      isGoodMtdDau1 = t->isGoodMtdDau1;
-//      isGoodMtdDau2 = t->isGoodMtdDau2;
-//      isGoodMtdDau3 = t->isGoodMtdDau3;
 
       t0_PV = t->t0_PV;
       sigmat0_PV = t->sigmat0_PV;
@@ -352,7 +336,8 @@ void fillMatchTree()
    std::cout << "counts of sigmatmtd >= 0 but fabs(eta)>3: " << isMtdWrong << std::endl;
    std::cout << "number of LamC3P passing selection: " << nLamC3P << std::endl;
    TFile* fout;
-   fout = new TFile("matchLamC3PTree_fullSample_reRECO.root", "recreate");
+   //fout = new TFile("matchLamC3PTree_fullSample_reRECO.root", "recreate");
+   fout = new TFile(Form("matchLamC3PTree_fullSample_reRECO_%s.root", name.c_str()), "recreate");
    tree->Write();
    hInvBetaVsPDau1->Write();
    hInvBetaVsPDau2->Write();
@@ -366,4 +351,7 @@ void fillMatchTree()
    hdInvBetaProtonVsPDau1->Write();
    hdInvBetaProtonVsPDau2->Write();
    hdInvBetaProtonVsPDau3->Write();
+
+   ts.Stop();
+   ts.Print();
 }

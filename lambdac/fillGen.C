@@ -15,14 +15,6 @@
 
 #include "myAna.h"
 
-int whichY(const float& y)
-{
-   for(int i=0; i<ana::nuOfY; i++){
-      if(y>ana::ybin[i] && y<ana::ybin[i+1]) return i;
-   }
-   return -1;
-}
-
 void fillGen()
 {
    TH1F::SetDefaultSumw2(true);
@@ -33,10 +25,7 @@ void fillGen()
    
    std::cout << "total entries: " << t->GetEntries() << std::endl;
 
-   TH1F* hPt[ana::nuOfY];
-   for(int iy=0; iy<ana::nuOfY; iy++){
-      hPt[iy] = new TH1F(Form("hPt%d", iy), "", 100, 0, 10);
-   }
+   TH1D* hGenPtMidY = new TH1D("hGenPtMidY", "", 100, 0, 10);
 
    float pT_gen;
    float y_gen;
@@ -53,8 +42,7 @@ void fillGen()
    for(Long64_t ientry=0; ientry<t->GetEntries(); ++ientry){
       t->GetEntry(ientry);
 
-      const int iy = whichY(y_gen);
-      if( iy == -1 ) continue;
+      if(std::fabs(y_gen) > 1) continue;
 
       if((std::fabs(dau1ID_gen) == 211 && std::fabs(dau2ID_gen) == 321 && std::fabs(dau3ID_gen) == 2212) 
       || (std::fabs(dau1ID_gen) == 321 && std::fabs(dau2ID_gen) == 211 && std::fabs(dau3ID_gen) == 2212)
@@ -63,10 +51,9 @@ void fillGen()
       || (std::fabs(dau3ID_gen) == 211 && std::fabs(dau2ID_gen) == 321 && std::fabs(dau1ID_gen) == 2212) 
       || (std::fabs(dau3ID_gen) == 321 && std::fabs(dau2ID_gen) == 211 && std::fabs(dau1ID_gen) == 2212)
       )
-            hPt[iy]->Fill(pT_gen);
+         hGenPtMidY->Fill(pT_gen);
    }
    TFile* fout;
    fout = new TFile("genPt_reRECO.root", "recreate");
-   for(int iy=0; iy<ana::nuOfY; iy++)
-      hPt[iy]->Write();
+   hGenPtMidY->Write();
 }
