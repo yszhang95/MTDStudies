@@ -139,11 +139,15 @@ public :
    virtual void     Show(Long64_t entry = -1);
 
    virtual Float_t  Y(){return y;}
+   virtual Float_t  Pt(){return pT;}
    virtual Float_t  Mass(){return mass;}
    virtual Float_t  PtD1(){return pTD1;}
    virtual Float_t  PtD2(){return pTD2;}
    virtual Float_t  etaD1(){return EtaD1;}
    virtual Float_t  etaD2(){return EtaD2;}
+   virtual Float_t  vtxProb() {return VtxProb;}
+   virtual Float_t  agl3D() {return m3DPointingAngle;}
+   virtual Float_t  dlSig3D() {return m3DDecayLengthSignificance;}
 };
 
 #endif
