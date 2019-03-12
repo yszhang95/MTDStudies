@@ -51,8 +51,8 @@ namespace ana{
    const double evts_sim_MB = 25e9;
    const double evts_sim_central = evts_sim_MB * evts_bkg_central / evts_bkg_MB;
 
-   const float mass_lw[nuOfY] = {1.82, 1.825, 1.835, 1.845, 1.85, 1.85, 1.85, 1.85, 1.845, 1.835, 1.825, 1.82};
-   const float mass_up[nuOfY] = {1.91, 1.905, 1.895, 1.885, 1.88, 1.88, 1.88, 1.88, 1.885, 1.895, 1.905, 1.91};
+   const float mass_lw[nuOfY] = {1.85,  1.84, 1.82};
+   const float mass_up[nuOfY] = {1.88,  1.89, 1.91};
 
    bool isCentralEvt(const HyJets& t){ return t.centrality < 20;}
 

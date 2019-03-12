@@ -13,7 +13,7 @@
 #include "TFileCollection.h"
 #include "TVector3.h"
 #include "TF1.h"
-#include "TH3F.h"
+#include "TH3D.h"
 
 inline float invBetaPion(const float& p){
       return std::sqrt(1 + std::pow(ana::massPion/p,2));
@@ -32,44 +32,44 @@ void fillHyJetsMass()
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
 
-   TH3F* hMassVsPtVsY = new TH3F("hMassVsPtVsY", "hMassVsPtVsY", 
+   TH3D* hMassVsPtVsY = new TH3D("hMassVsPtVsY", "hMassVsPtVsY", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
-   TH3F* hMassVsPtVsYCent = new TH3F("hMassVsPtVsYCent", "hMassVsPtVsYCent", 
+   TH3D* hMassVsPtVsYCent = new TH3D("hMassVsPtVsYCent", "hMassVsPtVsYCent", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
-   TH3F* hVtxProbVsPtVsY = new TH3F("hVtxProbVsPtVsY", "hVtxProbVsPtVsY", 
+   TH3D* hVtxProbVsPtVsY = new TH3D("hVtxProbVsPtVsY", "hVtxProbVsPtVsY", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
-   TH3F* hVtxProbVsPtVsYCent = new TH3F("hVtxProbVsPtVsYCent", "hVtxProbVsPtVsYCent", 
+   TH3D* hVtxProbVsPtVsYCent = new TH3D("hVtxProbVsPtVsYCent", "hVtxProbVsPtVsYCent", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
 
-   TH3F* hagl3DVsPtVsY = new TH3F("hagl3DVsPtVsY", "hagl3DVsPtVsY", 
+   TH3D* hagl3DVsPtVsY = new TH3D("hagl3DVsPtVsY", "hagl3DVsPtVsY", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
-   TH3F* hagl3DVsPtVsYCent = new TH3F("hagl3DVsPtVsYCent", "hagl3DVsPtVsYCent", 
+   TH3D* hagl3DVsPtVsYCent = new TH3D("hagl3DVsPtVsYCent", "hagl3DVsPtVsYCent", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
 
-   TH3F* hdlSig3DVsPtVsY = new TH3F("hdlSig3DVsPtVsY", "hdlSig3DVsPtVsY", 
+   TH3D* hdlSig3DVsPtVsY = new TH3D("hdlSig3DVsPtVsY", "hdlSig3DVsPtVsY", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
-   TH3F* hdlSig3DVsPtVsYCent = new TH3F("hdlSig3DVsPtVsYCent", "hdlSig3DVsPtVsYCent", 
+   TH3D* hdlSig3DVsPtVsYCent = new TH3D("hdlSig3DVsPtVsYCent", "hdlSig3DVsPtVsYCent", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
 
-   TH3F* hMassVsPtVsYMtd = new TH3F("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
+   TH3D* hMassVsPtVsYMtd = new TH3D("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
-   TH3F* hMassVsPtVsYCentMtd = new TH3F("hMassVsPtVsYCentMtd", "hMassVsPtVsYCentMtd", 
+   TH3D* hMassVsPtVsYCentMtd = new TH3D("hMassVsPtVsYCentMtd", "hMassVsPtVsYCentMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
-   TH3F* hVtxProbVsPtVsYMtd = new TH3F("hVtxProbVsPtVsYMtd", "hVtxProbVsPtVsYMtd", 
+   TH3D* hVtxProbVsPtVsYMtd = new TH3D("hVtxProbVsPtVsYMtd", "hVtxProbVsPtVsYMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
-   TH3F* hVtxProbVsPtVsYCentMtd = new TH3F("hVtxProbVsPtVsYCentMtd", "hVtxProbVsPtVsYCentMtd", 
+   TH3D* hVtxProbVsPtVsYCentMtd = new TH3D("hVtxProbVsPtVsYCentMtd", "hVtxProbVsPtVsYCentMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
 
-   TH3F* hagl3DVsPtVsYMtd = new TH3F("hagl3DVsPtVsYMtd", "hagl3DVsPtVsYMtd", 
+   TH3D* hagl3DVsPtVsYMtd = new TH3D("hagl3DVsPtVsYMtd", "hagl3DVsPtVsYMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
-   TH3F* hagl3DVsPtVsYCentMtd = new TH3F("hagl3DVsPtVsYCentMtd", "hagl3DVsPtVsYCentMtd", 
+   TH3D* hagl3DVsPtVsYCentMtd = new TH3D("hagl3DVsPtVsYCentMtd", "hagl3DVsPtVsYCentMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nagl3D, ana::agl3DMin, ana::agl3DMax);
 
-   TH3F* hdlSig3DVsPtVsYMtd = new TH3F("hdlSig3DVsPtVsYMtd", "hdlSig3DVsPtVsYMtd", 
+   TH3D* hdlSig3DVsPtVsYMtd = new TH3D("hdlSig3DVsPtVsYMtd", "hdlSig3DVsPtVsYMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
-   TH3F* hdlSig3DVsPtVsYCentMtd = new TH3F("hdlSig3DVsPtVsYCentMtd", "hdlSig3DVsPtVsYCentMtd", 
+   TH3D* hdlSig3DVsPtVsYCentMtd = new TH3D("hdlSig3DVsPtVsYCentMtd", "hdlSig3DVsPtVsYCentMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::ndlSig3D, ana::dlSig3DMin, ana::dlSig3DMax);
 
    std::cout << hMassVsPtVsY->GetZaxis()->FindBin(1.7) << std::endl;
@@ -91,17 +91,17 @@ void fillHyJetsMass()
 
       bool isFWHM = ana::isFWHM(t);
 
-      hMassVsPtVsY->Fill(t->y, t->pT, t->mass);
-      if(isCentral) hMassVsPtVsYCent->Fill(t->y, t->pT, t->mass);
+      hMassVsPtVsY->Fill(std::fabs(t->y), t->pT, t->mass);
+      if(isCentral) hMassVsPtVsYCent->Fill(std::fabs(t->y), t->pT, t->mass);
       if( isFWHM ) {
-         hVtxProbVsPtVsY->Fill(t->y, t->pT, t->VtxProb);
-         hagl3DVsPtVsY->Fill(t->y, t->pT, t->m3DPointingAngle);
-         hdlSig3DVsPtVsY->Fill(t->y, t->pT, t->m3DDecayLengthSignificance);
+         hVtxProbVsPtVsY->Fill(std::fabs(t->y), t->pT, t->VtxProb);
+         hagl3DVsPtVsY->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
+         hdlSig3DVsPtVsY->Fill(std::fabs(t->y), t->pT, t->m3DDecayLengthSignificance);
       }
       if( isFWHM && isCentral ) {
-         hVtxProbVsPtVsYCent->Fill(t->y, t->pT, t->VtxProb);
-         hagl3DVsPtVsYCent->Fill(t->y, t->pT, t->m3DPointingAngle);
-         hdlSig3DVsPtVsYCent->Fill(t->y, t->pT, t->m3DDecayLengthSignificance);
+         hVtxProbVsPtVsYCent->Fill(std::fabs(t->y), t->pT, t->VtxProb);
+         hagl3DVsPtVsYCent->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
+         hdlSig3DVsPtVsYCent->Fill(std::fabs(t->y), t->pT, t->m3DDecayLengthSignificance);
       }
 
       bool is1sigmaPionDau1;
@@ -127,18 +127,18 @@ void fillHyJetsMass()
       if(t->isMtdDau2) is1sigmaKaonDau2 = std::fabs(1./t->beta2_PV - invBetaKaon(pD2) - ana::meanKaon(t, 2) ) < 1.0 * dInvBetaCut2;
 
       if((t->flavor == 1 && is1sigmaPionDau1 && is1sigmaKaonDau2) || (t->flavor == -1 && is1sigmaKaonDau1 && is1sigmaPionDau2)){
-         hMassVsPtVsYMtd->Fill(t->y, t->pT, t->mass);
+         hMassVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->mass);
          if( isFWHM ) {
-            hVtxProbVsPtVsYMtd->Fill(t->y, t->pT, t->VtxProb);
-            hagl3DVsPtVsYMtd->Fill(t->y, t->pT, t->m3DPointingAngle);
-            hdlSig3DVsPtVsYMtd->Fill(t->y, t->pT, t->m3DDecayLengthSignificance);
+            hVtxProbVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->VtxProb);
+            hagl3DVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
+            hdlSig3DVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->m3DDecayLengthSignificance);
          }
          if(isCentral) {
-            hMassVsPtVsYCentMtd->Fill(t->y, t->pT, t->mass);
+            hMassVsPtVsYCentMtd->Fill(std::fabs(t->y), t->pT, t->mass);
             if(isFWHM){
-               hVtxProbVsPtVsYCentMtd->Fill(t->y, t->pT, t->VtxProb);
-               hagl3DVsPtVsYCentMtd->Fill(t->y, t->pT, t->m3DPointingAngle);
-               hdlSig3DVsPtVsYCentMtd->Fill(t->y, t->pT, t->m3DDecayLengthSignificance);
+               hVtxProbVsPtVsYCentMtd->Fill(std::fabs(t->y), t->pT, t->VtxProb);
+               hagl3DVsPtVsYCentMtd->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
+               hdlSig3DVsPtVsYCentMtd->Fill(std::fabs(t->y), t->pT, t->m3DDecayLengthSignificance);
             }
          }
       }
