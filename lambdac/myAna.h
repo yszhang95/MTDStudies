@@ -1,3 +1,8 @@
+#include "TH3.h"
+#include "TF1.h"
+#include "Cand.h"
+#include "HyJets.h"
+
 #ifndef _ANA_h_
 #define _ANA_h_
 namespace ana{
