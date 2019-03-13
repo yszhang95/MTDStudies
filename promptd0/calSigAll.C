@@ -1,11 +1,5 @@
 #include "myAna.h"
 
-/*
-void calSig(TH3*, TH3*, const float&, 
-      const float&, const float&, const float&, const float&, 
-      const float&, const float&, 
-      double&, double&, double&, double&, double&);
-      */
 void calSig(TH3*, TH3*, 
       const float&, const float&, const float&, const float&, 
       const float&, const float&, 
@@ -32,15 +26,12 @@ void calSigAll()
    TH3F* hSignalMtd;
    TH3F* hBkgMtd;
 
-   for(int iy=0; iy<ana::nuOfY; iy++){
-      f1->GetObject(Form("hPt%d", iy), hGenPt[iy]);
-   }
+   f1->GetObject("hGenPtMidY", hGenPtMidY);
    f2->GetObject("Table 3/Hist1D_y1", hData);
    f3->GetObject("hMassVsPtVsY", hSignal);
    f4->GetObject("hMassVsPtVsY", hBkg);
    f3->GetObject("hMassVsPtVsYMtd", hSignalMtd);
    f4->GetObject("hMassVsPtVsYMtd", hBkgMtd);
-
 
    hGenPtMidY = (TH1F*) hGenPt[4]->Clone();
    hGenPtMidY->Add(hGenPt[5]);

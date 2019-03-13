@@ -230,10 +230,10 @@ void calScalePerEvt(TH1* hGenPtMidY, TH1* hData, TH3* hScale, std::vector<double
    double yield_data_Pt5_6GeV_perEvt = hData->GetBinContent(4) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
    scale_factor_perEvt[6] = yield_data_Pt5_6GeV_perEvt / hGenPtMidY->Integral(51, 60); // 5.0 - 6.0 GeV
 
-   double yield_data_Pt6_8GeV_perEvt = hData->GetBinContent(5) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   double yield_data_Pt6_8GeV_perEvt = hData->GetBinContent(5) * ana::TAA0_100 * ana::pbOvermb * 2 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
    scale_factor_perEvt[7] = yield_data_Pt6_8GeV_perEvt / hGenPtMidY->Integral(61, 80); // 6.0 - 8.0 GeV
 
-   double yield_data_Pt8_10GeV_perEvt = hData->GetBinContent(6) * ana::TAA0_100 * ana::pbOvermb * 1 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
+   double yield_data_Pt8_10GeV_perEvt = hData->GetBinContent(6) * ana::TAA0_100 * ana::pbOvermb * 2 *ana::GeV * ana::BR * 2; // 2 is because of the data is for (D+Dbar)/2
    scale_factor_perEvt[8] = yield_data_Pt8_10GeV_perEvt / hGenPtMidY->Integral(81, 100); // 8.0 - 10.0 GeV
 
    for(int ipt=0; ipt<ana::npt; ipt++){
