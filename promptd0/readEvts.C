@@ -17,12 +17,15 @@ void readEvts()
    std::cout << nfile << " files" << std::endl;
    int MB=0;
    int central=0;
+   int n30_50 = 0;
    for(int ifile=0; ifile<nfile; ifile++){
       //std::cout << "MB: " << hCent[ifile]->Integral() << std::endl;
       //std::cout << "central: " << hCent[ifile]->Integral(1, 20) << std::endl;
       MB += hCent[ifile]->Integral();
       central += hCent[ifile]->Integral(1, 20);
+      n30_50 += hCent[ifile]->Integral(61, 100);
    }
    std::cout << "MB: " << MB << std::endl;
    std::cout << "central: " << central << std::endl;
+   std::cout << "30 - 50 " << n30_50 << std::endl;
 }

@@ -330,6 +330,18 @@ void HyJets::Init(TChain *tree)
    fChain->SetBranchAddress("DauID1_gen", &DauID1_gen, &b_DauID1_gen);
    fChain->SetBranchAddress("DauID2_gen", &DauID2_gen, &b_DauID2_gen);
    fChain->SetBranchAddress("DauID3_gen", &DauID3_gen, &b_DauID3_gen);
+
+   fChain->SetBranchStatus("*gen", 0);
+   fChain->SetBranchStatus("*err*", 0);
+   fChain->SetBranchStatus("dedx*", 0);
+   fChain->SetBranchStatus("best*", 0);
+   fChain->SetBranchStatus("N*", 0);
+   fChain->SetBranchStatus("High*", 0);
+   fChain->SetBranchStatus("sigma*", 0);
+   fChain->SetBranchStatus("tmtd*", 0);
+   fChain->SetBranchStatus("path*", 0);
+   fChain->SetBranchStatus("3D*", 0);
+   fChain->SetBranchStatus("2D*", 0);
    Notify();
 }
 

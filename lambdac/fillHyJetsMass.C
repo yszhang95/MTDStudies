@@ -19,7 +19,7 @@
 void fillHyJetsMass()
 {
    TChain* chain = new TChain("lamc3pana_mc/VertexCompositeNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample_wPID.list");
+   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample_woPID_pt2toinf.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
@@ -28,6 +28,8 @@ void fillHyJetsMass()
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
    TH3D* hMassVsPtVsYCent = new TH3D("hMassVsPtVsYCent", "hMassVsPtVsYCent", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
+   TH3D* hMassVsPtVsY30_50 = new TH3D("hMassVsPtVsY30_50", "hMassVsPtVsY30_50", 
+            ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
    TH3D* hVtxProbVsPtVsY = new TH3D("hVtxProbVsPtVsY", "hVtxProbVsPtVsY", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nVtxProb, ana::VtxProbMin, ana::VtxProbMax);
@@ -47,6 +49,8 @@ void fillHyJetsMass()
    TH3D* hMassVsPtVsYMtd = new TH3D("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
    TH3D* hMassVsPtVsYCentMtd = new TH3D("hMassVsPtVsYCentMtd", "hMassVsPtVsYCentMtd", 
+         ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
+   TH3D* hMassVsPtVsY30_50Mtd = new TH3D("hMassVsPtVsY30_50Mtd", "hMassVsPtVsY30_50Mtd", 
          ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax);
 
    TH3D* hVtxProbVsPtVsYMtd = new TH3D("hVtxProbVsPtVsYMtd", "hVtxProbVsPtVsYMtd", 
@@ -85,11 +89,14 @@ void fillHyJetsMass()
       const float dInvBetaCut3 = std::fabs(t->EtaD3<1.5) ? ana::fExpBTL.Eval(pD3) : ana::fExpETL.Eval(pD3);
 
       if(!ana::passTopoCuts(t)) continue;
+      if(t->pT < 1) continue;
 
-      bool isFWHM = ana::isFWHM(t);
+      //bool isFWHM = ana::isFWHM(t);
+      bool isFWHM = false;
 
       hMassVsPtVsY->Fill(std::fabs(t->y), t->pT, t->mass);
       if(isCentral) hMassVsPtVsYCent->Fill(std::fabs(t->y), t->pT, t->mass);
+      if(t->centrality <100 && t->centrality > 60) hMassVsPtVsY30_50->Fill(std::fabs(t->y), t->pT, t->mass);
       if( isFWHM ) {
          hVtxProbVsPtVsY->Fill(std::fabs(t->y), t->pT, t->VtxProb);
          hagl3DVsPtVsY->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
@@ -126,6 +133,7 @@ void fillHyJetsMass()
         )
       {
          hMassVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->mass);
+         if(t->centrality <100 && t->centrality > 60) hMassVsPtVsY30_50Mtd->Fill(std::fabs(t->y), t->pT, t->mass);
          if( isFWHM ) {
             hVtxProbVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->VtxProb);
             hagl3DVsPtVsYMtd->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
@@ -147,6 +155,9 @@ void fillHyJetsMass()
    hMassVsPtVsYCent->Write();
    hMassVsPtVsYMtd->Write();
    hMassVsPtVsYCentMtd->Write();
+   hMassVsPtVsY30_50->Write();
+   hMassVsPtVsY30_50Mtd->Write();
+
 
    hVtxProbVsPtVsY->Write();
    hVtxProbVsPtVsYMtd->Write();
