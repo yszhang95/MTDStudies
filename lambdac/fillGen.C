@@ -26,6 +26,7 @@ void fillGen()
    std::cout << "total entries: " << t->GetEntries() << std::endl;
 
    TH1D* hGenPtMidY = new TH1D("hGenPtMidY", "", 100, 0, 10);
+   TH1D* hGenPt = new TH1D("hGenPt", "", 100, 0, 10);
 
    float pT_gen;
    float y_gen;
@@ -50,10 +51,13 @@ void fillGen()
       || (std::fabs(dau1ID_gen) == 321 && std::fabs(dau3ID_gen) == 211 && std::fabs(dau2ID_gen) == 2212)
       || (std::fabs(dau3ID_gen) == 211 && std::fabs(dau2ID_gen) == 321 && std::fabs(dau1ID_gen) == 2212) 
       || (std::fabs(dau3ID_gen) == 321 && std::fabs(dau2ID_gen) == 211 && std::fabs(dau1ID_gen) == 2212)
-      )
+      ){
          hGenPtMidY->Fill(pT_gen);
+         if(std::fabs(y_gen) < 0.5)hGenPt->Fill(pT_gen);
+      }
    }
    TFile* fout;
    fout = new TFile("genPt_reRECO.root", "recreate");
    hGenPtMidY->Write();
+   hGenPt->Write();
 }

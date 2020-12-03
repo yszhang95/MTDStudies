@@ -127,6 +127,11 @@ public :
    TBranch        *b_beta2_PVerr;   //!
    TBranch        *b_isMtdDau1;   //!
    TBranch        *b_isMtdDau2;   //!
+   TBranch        *b_tmtd1;
+   TBranch        *b_tmtd2;
+   TBranch        *b_pathLength1;
+   TBranch        *b_pathLength2;
+   TBranch        *b_t0_PV;
 
    HyJets(TChain *tree=0);
    virtual ~HyJets();
@@ -254,6 +259,11 @@ void HyJets::Init(TChain *tree)
    fChain->SetBranchAddress("beta2_PVerr", &beta2_PVerr, &b_beta2_PVerr);
    fChain->SetBranchAddress("isMtdDau1", &isMtdDau1, &b_isMtdDau1);
    fChain->SetBranchAddress("isMtdDau2", &isMtdDau2, &b_isMtdDau2);
+   fChain->SetBranchAddress("tmtd1", &tmtd1, &b_tmtd1);
+   fChain->SetBranchAddress("tmtd2", &tmtd2, &b_tmtd2);
+   fChain->SetBranchAddress("pathLength1", &pathLength1, &b_pathLength1);
+   fChain->SetBranchAddress("pathLength2", &pathLength2, &b_pathLength2);
+   fChain->SetBranchAddress("t0_PV", &t0_PV, &b_t0_PV);
    fChain->SetBranchStatus("2D*", 0);
    fChain->SetBranchStatus("best*", 0);
    fChain->SetBranchStatus("*DCAS*", 0);

@@ -83,6 +83,7 @@ void invBetaPlotETL()
       if(t->flavor == 1 && t->isMtdDau2) hdInvBetaKaonVsPETL->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
       if(t->flavor == -1 && t->isMtdDau1) hdInvBetaKaonVsPETLDraw->Fill(pD1, 1./t->beta1_PV - invBetaKaon(pD1));
       if(t->flavor == 1 && t->isMtdDau2) hdInvBetaKaonVsPETLDraw->Fill(pD2, 1./t->beta2_PV - invBetaKaon(pD2));
+
    }
    if(draw){
       setPalette();

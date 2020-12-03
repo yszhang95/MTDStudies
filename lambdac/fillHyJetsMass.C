@@ -16,10 +16,13 @@
 #include "TH3D.h"
 #include "TStopwatch.h"
 
-void fillHyJetsMass()
+void fillHyJetsMass(std::string list = "")
 {
    TChain* chain = new TChain("lamc3pana_mc/VertexCompositeNtuple");
-   TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample_woPID_pt2toinf.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample_woPID_pt2toinf.list");
+   TFileCollection* fc = new TFileCollection("dum", "", list.c_str());
+   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_test.list");
+   //TFileCollection* fc = new TFileCollection("dum", "", "hyjets_sample_wPID_nevts4950.list");
    chain->AddFileInfoList(fc->GetList()); 
    HyJets* t = new HyJets(chain);
    std::cout << t->GetEntries() << std::endl;
@@ -150,7 +153,8 @@ void fillHyJetsMass()
       }
    }
 
-   TFile fout("hyjetsMassHists_reRECO_all.root", "recreate");
+  // TFile fout("hyjetsMassHists_reRECO_all.root", "recreate");
+   TFile fout(Form("hyjetsMassHists_reRECO_all_%s.root", list.c_str()), "recreate");
    hMassVsPtVsY->Write();
    hMassVsPtVsYCent->Write();
    hMassVsPtVsYMtd->Write();

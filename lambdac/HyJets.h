@@ -337,10 +337,9 @@ void HyJets::Init(TChain *tree)
    fChain->SetBranchStatus("best*", 0);
    fChain->SetBranchStatus("N*", 0);
    fChain->SetBranchStatus("High*", 0);
-   fChain->SetBranchStatus("sigma*", 0);
-   fChain->SetBranchStatus("tmtd*", 0);
-   fChain->SetBranchStatus("path*", 0);
-   fChain->SetBranchStatus("3D*", 0);
+   //fChain->SetBranchStatus("sigma*", 0);
+   //fChain->SetBranchStatus("tmtd*", 0);
+   //fChain->SetBranchStatus("path*", 0);
    fChain->SetBranchStatus("2D*", 0);
    Notify();
 }
