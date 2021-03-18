@@ -5,7 +5,8 @@ void fillLamC3PMass()
 {
 
    TChain* tp = new TChain("LamC3P");
-   tp->Add("matchLamC3PTree_fullSample_reRECO.root");
+   //tp->Add("matchLamC3PTree_fullSample_reRECO.root");
+   tp->Add("matchLamC3PTree_fullSample_reRECO_all.root");
    LamC3P* t = new LamC3P(tp);
    std::cout << t->GetEntries() << std::endl;
 
@@ -63,6 +64,7 @@ void fillLamC3PMass()
       bool is1sigmaKaonDau3 = false;
       bool is1sigmaProtonDau3 = false;
 
+      /*
       if(t->isMtdDau1) is1sigmaPionDau1 = std::fabs(1./t->beta1_PV - ana::invBetaPion(pD1) - ana::meanPion(t, 1) ) < 1.4 * dInvBetaCut1;
       if(t->isMtdDau1) is1sigmaKaonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaKaon(pD1) - ana::meanKaon(t, 1) ) < 1.4 * dInvBetaCut1;
       if(t->isMtdDau1) is1sigmaProtonDau1 = std::fabs(1./t->beta1_PV - ana::invBetaProton(pD1)  ) < 1.4 * dInvBetaCut1;
@@ -72,18 +74,23 @@ void fillLamC3PMass()
       if(t->isMtdDau3) is1sigmaPionDau3 = std::fabs(1./t->beta3_PV - ana::invBetaPion(pD3) - ana::meanPion(t, 3) ) < 1.4 * dInvBetaCut3;
       if(t->isMtdDau3) is1sigmaKaonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaKaon(pD3) - ana::meanKaon(t, 3) ) < 1.4 * dInvBetaCut3;
       if(t->isMtdDau3) is1sigmaProtonDau3 = std::fabs(1./t->beta3_PV - ana::invBetaProton(pD3)  ) < 1.4 * dInvBetaCut3;
+      */
 
+      /*
       if((t->flavor == 1 && is1sigmaKaonDau2 && ((is1sigmaPionDau1 && is1sigmaProtonDau3) || (is1sigmaPionDau3 && is1sigmaProtonDau1))) ||
          (t->flavor == -1 && is1sigmaKaonDau1 && ((is1sigmaPionDau2 && is1sigmaProtonDau3) || (is1sigmaPionDau3 && is1sigmaProtonDau2)))
         )
       {
+      */
          hMassVsPtVsY->Fill(std::fabs(t->y), t->pT, t->mass);
          if( isFWHM ) {
             hVtxProbVsPtVsY->Fill(std::fabs(t->y), t->pT, t->VtxProb);
             hagl3DVsPtVsY->Fill(std::fabs(t->y), t->pT, t->m3DPointingAngle);
             hdlSig3DVsPtVsY->Fill(std::fabs(t->y), t->pT, t->m3DDecayLengthSignificance);
          }
+         /*
       }
+      */
 
       is1sigmaPionDau1 = false;
       is1sigmaKaonDau1 = false;
