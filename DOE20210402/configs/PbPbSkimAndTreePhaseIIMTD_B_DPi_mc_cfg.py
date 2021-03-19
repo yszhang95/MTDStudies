@@ -103,7 +103,7 @@ process.cent_seq = cms.Sequence(process.hiCentrality * process.centralityBin)
 
 # Event selection filter
 process.PAprimaryVertexFilter = cms.EDFilter("VertexSelector",
-    src = cms.InputTag("offlinePrimaryVertices4D"),
+    src = cms.InputTag("offlinePrimaryVertices4D::ANASKIM"),
     cut = cms.string("!isFake && abs(z) <= 50 && position.Rho <= 5 && tracksSize >= 2"),
     filter = cms.bool(True),   # otherwise it won't filter the events
 )
@@ -118,7 +118,7 @@ process.eventFilter = cms.Sequence(
 from VertexCompositeAnalysis.VertexCompositeProducer.generalParticles_cff import generalParticles
 process.load("VertexCompositeAnalysis.VertexCompositeProducer.generalParticles_cff")
 process.D0Candidate = process.generalParticles.clone(
-    primaryVertices = cms.InputTag('offlinePrimaryVertices4D:ANASKIM'),
+    primaryVertices = cms.InputTag('offlinePrimaryVertices4D::ANASKIM'),
 
     pdgId = cms.int32(421),
     doSwap = cms.bool(True),
@@ -175,7 +175,7 @@ process.D0Candidate = process.generalParticles.clone(
 )
 
 process.BChargedCandidate = process.generalParticles.clone(
-    primaryVertices = cms.InputTag('offlinePrimaryVertices4D:ANASKIM'),
+    primaryVertices = cms.InputTag('offlinePrimaryVertices4D::ANASKIM'),
 
     pdgId = cms.int32(521),
     doSwap = cms.bool(False),
@@ -225,7 +225,7 @@ process.rereco_step = cms.Path(process.eventFilter * process.D0Candidate * proce
 # Add the VertexComposite tree
 from VertexCompositeAnalysis.VertexCompositeAnalyzer.particle_tree_cff import particleAna_mc
 process.bcharged_ana = particleAna_mc.clone(
-    primaryVertices = cms.InputTag('offlinePrimaryVertices4D:ANASKIM'),
+    primaryVertices = cms.InputTag('offlinePrimaryVertices4D::ANASKIM'),
     recoParticles = cms.InputTag("BChargedCandidate"),
     selectEvents = cms.string("eventFilter_step"),
 )
@@ -236,8 +236,8 @@ process.p = cms.EndPath(process.bcharged_ana)
 
 # Define the process schedule
 process.schedule = cms.Schedule(
-    process.eventFilter_step,
     process.reconstruction_step,
+    process.eventFilter_step,
     process.pcentandep_step,
     process.rereco_step,
     process.p
