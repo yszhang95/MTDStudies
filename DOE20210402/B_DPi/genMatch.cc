@@ -384,15 +384,15 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
   hBMassMatch["dR0.03"]= std::move(std::unique_ptr<TH1D>(
         new TH1D("hBMassMatch0p03", "B^{#pm}, matching FS momenta, dR<0.03, dPt<0.5;Mass (GeV);Events", 200, 5.0, 5.6)));
 
-  Hist2DMaps hTrkBetaInv;
-  hTrkBetaInv["PionFromB"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPPionFromB", "Pion from B^{#pm};p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInv["PionFromD"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPPionFromD", "Pion from neutral D;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInv["KaonFromD"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPKaonFromD", "Kaon from neutral D;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInv["AllTracks"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsP", "Tracks;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  Hist2DMaps hTrkBetaInvVsP;
+  hTrkBetaInvVsP["PionFromB"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsPPionFromB", "Pion from B^{#pm};p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  hTrkBetaInvVsP["PionFromD"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsPPionFromD", "Pion from neutral D;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  hTrkBetaInvVsP["KaonFromD"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsPKaonFromD", "Kaon from neutral D;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  hTrkBetaInvVsP["AllTracks"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsP", "Tracks;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
 
   Long64_t nMultipleMatch = 0;
   for (Long64_t ientry=0; ientry<nentries; ientry++) {
@@ -408,7 +408,7 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
       if (abs(betaInv - 1./p.trk_beta().at(iTrk)) > 1e-2) cerr << "Wrong beta value" << endl;
       double pT = p.cand_pT().at(p.trk_candIdx().at(iTrk).at(0));
       double eta = p.cand_eta().at(p.trk_candIdx().at(iTrk).at(0));
-      hTrkBetaInv["AllTracks"]->Fill(pT * std::cosh(eta), betaInv);
+      hTrkBetaInvVsP["AllTracks"]->Fill(pT * std::cosh(eta), betaInv);
     }
     // reco-gen matching, if you do not want to do, set doRecoGenMatch to false, and it will make p4GenFS and p4RecoFS empty
     auto gensize = p.gen_mass().size();
@@ -488,14 +488,45 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
           //bool isSwap = true; // need to be done
         }
         if (!matchGEN) continue;
-        if (doRecoGenMatch) hBMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
+        if (doRecoGenMatch) {
+          hBMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
+          // track QA
+          {// pi from B
+            double mom = p.cand_pT().at(dauIdx.at(0)) * std::cosh(p.cand_eta().at(dauIdx.at(0)));
+            auto trkIdx = p.cand_trkIdx().at(dauIdx.at(0));
+            hTrkBetaInvVsP["PionFromB"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+          }
+          {// pi from D
+            if (Dflavor<0) {
+              double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(dauIdx.at(1)));
+              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
+              hTrkBetaInvVsP["PionFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            } else {
+              double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(dauIdx.at(0)));
+              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
+              hTrkBetaInvVsP["PionFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            }
+          }
+          {// K from D
+            if (Dflavor>0) {
+              double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(dauIdx.at(1)));
+              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
+              hTrkBetaInvVsP["KaonFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            } else {
+              double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(dauIdx.at(0)));
+              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
+              hTrkBetaInvVsP["KaonFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            }
+          }
+          // track QA end
+        }
       } // end B
     }
   }
   cout << nMultipleMatch << " events has more than one matched RECO B meson" << endl;
   ofile.cd();
   for (const auto& e : hBMassMatch) e.second->Write();
-  for (const auto& e : hTrkBetaInv) e.second->Write();
+  for (const auto& e : hTrkBetaInvVsP) e.second->Write();
 
   return 0;
 }

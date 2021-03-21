@@ -18,5 +18,5 @@ Bminus.addDaughter(D)
 
 #r.genMatchBMass('b.list', 'bcharged_ana', Bplus, -1)
 #r.genMatchBMass('b.list', 'bcharged_ana', Bplus, 249)
-#r.genMatchFSBMass('b.list', 'bcharged_ana', Bplus, -1)
-r.genMatchFSBMass('bkg.list', 'bcharged_ana', Bplus, -1)
+r.genMatchFSBMass('b.list', 'bcharged_ana', Bplus, -1)
+#r.genMatchFSBMass('bkg.list', 'bcharged_ana', Bplus, -1)
