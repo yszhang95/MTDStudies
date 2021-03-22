@@ -49,8 +49,8 @@ using MatchPairInfo =  tuple<size_t, size_t, double, double>;
 class Particle {
   public:
     using ParticlePtr = shared_ptr<Particle>;
-    Particle(int id): _id(id), _flip(0) ,_treeIdx(USHRT_MAX) {};
-    Particle(const Particle& p): _id(p._id), _flip(0), _treeIdx(USHRT_MAX) {
+    Particle(int id): _id(id), _selfConj(false), _flip(0) ,_treeIdx(USHRT_MAX) {};
+    Particle(const Particle& p): _id(p._id), _selfConj(p._selfConj), _flip(0), _treeIdx(USHRT_MAX) {
       for (const auto& d : p._daus) {
         _daus.push_back(std::make_shared<Particle>(*d));
       }
@@ -58,6 +58,8 @@ class Particle {
     //~Particle() { cout << "Deleted" << endl; }
 
     bool isStable() const { return _daus.size(); }
+    bool selfConj() const { return _selfConj;    }
+    void selfConj(bool conj) { _selfConj = conj; }
     int  id()       const { return _id;          }
     bool isNull() const   { return _id == 0;     }
     vector<ParticlePtr> daughters() const { return _daus; }
@@ -70,9 +72,10 @@ class Particle {
     void flipFlavor();
   protected:
     int _id;
+    bool _selfConj;
     int _flip;
-    vector<ParticlePtr> _daus;
     unsigned short _treeIdx;
+    vector<ParticlePtr> _daus;
 };
 
 
@@ -100,8 +103,10 @@ Particle::ParticlePtr Particle::daughter(size_t i) const
 
 void Particle::flipFlavor()
 {
-  _id = -_id;
-  for(auto& d : _daus) d->flipFlavor();
+  if(!_selfConj) {
+    _id = -_id;
+    for(auto& d : _daus) d->flipFlavor();
+  }
   _flip++;
 }
 
@@ -123,14 +128,8 @@ class MatchCriterion {
   template <typename T>
 bool MatchCriterion::match (const T& reco, const T& gen)
 {
-  //cout << "reco:gen" << endl;
-  //cout << reco.Pt() << ":" << gen.Pt() << endl;
-  //cout << reco.Eta() << ":" << gen.Eta() << endl;
-  //cout << reco.Phi() << ":" << gen.Phi() << endl;
   const auto dR = ROOT::Math::VectorUtil::DeltaR(reco, gen);
   const auto dRelPt = TMath::Abs(gen.Pt() - reco.Pt())/gen.Pt();
-  //cout << "dR: " << dR << endl;
-  //cout << "dpT: " << dRelPt << endl;
   return dR < _deltaR && dRelPt < _deltaRelPt;
 }
 
@@ -219,8 +218,8 @@ PtEtaPhiM_t getGenP4(size_t idx, const ParticleTreeMC& p)
             );
 }
 
-int genMatchBMass(const TString& inputList, const TString& treeDir,
-    Particle Bmeson,
+int genMatchDsMass(const TString& inputList, const TString& treeDir,
+    Particle Dsmeson,
     Long64_t nentries=-1, TString type="")
 {
   type.ToLower();
@@ -235,7 +234,7 @@ int genMatchBMass(const TString& inputList, const TString& treeDir,
 
   basename += sortByPt ? "sortBydPt_" : "";
   basename += sortByR  ? "sortBydR_"  : "";
-  basename += "B_DPi.root";
+  basename += "Ds_PhiPi.root";
   TFile ofile("output/"+basename, "recreate");
   cout << "Created " << ofile.GetName() << endl;
 
@@ -250,9 +249,9 @@ int genMatchBMass(const TString& inputList, const TString& treeDir,
 
   MatchCriterion matchCriterion(0.03, 0.5);
 
-  Hist1DMaps hBMassMatch;
-  hBMassMatch["dR0.03"]= std::move(std::unique_ptr<TH1D>(
-        new TH1D("hBMassMatch0p03", "B^{#pm}, matching FS momenta, dR<0.03, dPt<0.5;Mass (GeV);Events", 200, 5.0, 5.6)));
+  Hist1DMaps hDsMassMatch;
+  hDsMassMatch["dR0.03"]= std::move(std::unique_ptr<TH1D>(
+        new TH1D("hDsMassMatch0p03", "D^{#pm}_{S}, matching FS momenta, dR<0.03, dPt<0.5;Mass (GeV);Events", 200, 1.91, 2.04)));
 
   Long64_t nMultipleMatch = 0;
   for (Long64_t ientry=0; ientry<nentries; ientry++) {
@@ -268,43 +267,27 @@ int genMatchBMass(const TString& inputList, const TString& treeDir,
     auto recoCharge = p.cand_charge();
     int nmatch = 0;
     for (size_t ireco=0; ireco<recosize; ireco++) {
-      // begin B
-      if (pdgId[ireco] == 521) {
+      // begin Ds
+      if (pdgId[ireco] == 431) {
         //cout << "record matchGEN " << p.cand_matchGEN().at(ireco) << endl;
         //cout << "record cand_genIdx " << p.cand_genIdx().at(ireco) << endl;
         //cout << "record cand_idx " << ireco << endl;
         bool matchGEN = false;
-        PtEtaPhiM_t recoB (
-            p.cand_pT()[ireco],
-            p.cand_eta()[ireco],
-            p.cand_phi()[ireco],
-            p.cand_mass()[ireco]
-            );
         auto dauIdx = p.cand_dauIdx().at(ireco);
-        // 0 for pi, 1 for D0
+        // 0 for pi, 1 for phi
         auto gDauIdx = p.cand_dauIdx().at(dauIdx.at(1));
 
-        int Dflavor = -1;
-        if (p.cand_massDau()[dauIdx.at(1)].at(0) <
-            p.cand_massDau()[dauIdx.at(1)].at(1) ) Dflavor = 1;
-        if ( Dflavor *
-             recoCharge.at(dauIdx.at(0)) > 0) continue;
         std::vector<PtEtaPhiM_t> p4FS;
-        p4FS.push_back(getRecoDauP4(ireco, 0, p)); // pi from B
-        if (Dflavor<0) {
-          p4FS.push_back(getRecoDauP4(dauIdx.at(1), 1, p)); // pi from D
-          p4FS.push_back(getRecoDauP4(dauIdx.at(1), 0, p)); // k from D
-        } else {
-          p4FS.push_back(getRecoDauP4(dauIdx.at(1), 0, p)); // pi from D
-          p4FS.push_back(getRecoDauP4(dauIdx.at(1), 1, p)); // k from D
-        }
+        p4FS.push_back(getRecoDauP4(ireco, 0, p)); // pi from Ds
+        p4FS.push_back(getRecoDauP4(dauIdx.at(1), 0, p)); // K- from phi
+        p4FS.push_back(getRecoDauP4(dauIdx.at(1), 1, p)); // k+ from phi
 
         for (size_t igen=0; igen<gensize; igen++) {
-          if (abs(gen_pdgId[igen]) != 521) continue;
+          if (abs(gen_pdgId[igen]) != 431) continue;
           auto gen_dauIdx = p.gen_dauIdx().at(igen);
           /*
-          cout << "gen B idx: " << igen << endl;
-          cout << "gen B chain" << endl;
+          cout << "gen Ds idx: " << igen << endl;
+          cout << "gen Ds chain" << endl;
           for (auto& e : gen_dauIdx) {
             cout << p.gen_pdgId().at(e) << endl;
             if(abs(p.gen_pdgId().at(e)) == 421 ) {
@@ -313,19 +296,13 @@ int genMatchBMass(const TString& inputList, const TString& treeDir,
             }
           }
           */
-          PtEtaPhiM_t genB (
-              p.gen_pT()[igen],
-              p.gen_eta()[igen],
-              p.gen_phi()[igen],
-              p.gen_mass()[igen]
-              );
-          Particle Bmeson_copy(Bmeson);
-          bool sameChain = checkDecayChain(Bmeson_copy, igen, p);
+          Particle Dsmeson_copy(Dsmeson);
+          bool sameChain = checkDecayChain(Dsmeson_copy, igen, p);
           if (!sameChain) continue;
           std::vector<PtEtaPhiM_t> p4GenFS;
-          p4GenFS.push_back(getGenP4(Bmeson_copy.daughter(0)->treeIdx(), p)); // pi from B
-          p4GenFS.push_back(getGenP4(Bmeson_copy.daughter(1)->daughter(0)->treeIdx(), p)); // pi from D
-          p4GenFS.push_back(getGenP4(Bmeson_copy.daughter(1)->daughter(1)->treeIdx(), p)); // k from D
+          p4GenFS.push_back(getGenP4(Dsmeson_copy.daughter(0)->treeIdx(), p)); // pi from Ds
+          p4GenFS.push_back(getGenP4(Dsmeson_copy.daughter(1)->daughter(0)->treeIdx(), p)); // K- from Phi
+          p4GenFS.push_back(getGenP4(Dsmeson_copy.daughter(1)->daughter(1)->treeIdx(), p)); // K+ from Phi
           if (!matchGEN) {
             bool matchFS = true;
             for (size_t i=0; i<p4GenFS.size(); i++) {
@@ -336,21 +313,21 @@ int genMatchBMass(const TString& inputList, const TString& treeDir,
           }
           if(matchGEN) break;
         }
-        if (matchGEN) hBMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
+        if (matchGEN) hDsMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
         if (matchGEN) nmatch++;
       }
     }
     if (nmatch > 1) { ++nMultipleMatch; cout << "Find one multiple match event" << endl; }
   }
-  cout << nMultipleMatch << " events has more than one matched RECO B meson" << endl;
+  cout << nMultipleMatch << " events has more than one matched RECO Ds meson" << endl;
   ofile.cd();
-  for (const auto& e : hBMassMatch) e.second->Write();
+  for (const auto& e : hDsMassMatch) e.second->Write();
 
   return 0;
 }
 
-int genMatchFSBMass(const TString& inputList, const TString& treeDir,
-    Particle Bmeson, Long64_t nentries=-1, const bool doRecoGenMatch=true,
+int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
+    Particle Dsmeson, Long64_t nentries=-1, const bool doRecoGenMatch=true,
     const bool doTrkQA=true, TString type="")
 {
   type.ToLower();
@@ -365,7 +342,7 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
 
   basename += sortByPt ? "sortBydPt_" : "";
   basename += sortByR  ? "sortBydR_"  : "";
-  basename += "B_DPi_BottomToTop.root";
+  basename += "Ds_PhiPi_BottomToTop.root";
   TFile ofile("output/"+basename, "recreate");
   cout << "Created " << ofile.GetName() << endl;
 
@@ -378,19 +355,19 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
   cout << "Tree " << treeDir << "/ParticleTree in " << inputList
     << " has " << nentries << " entries." << endl;;
 
-  MatchCriterion  matchCriterion(0.05, 0.5);
+  MatchCriterion  matchCriterion(0.03, 0.5);
 
-  Hist1DMaps hBMassMatch;
-  hBMassMatch["dR0.03"]= std::move(std::unique_ptr<TH1D>(
-        new TH1D("hBMassMatch0p03", "B^{#pm}, matching FS momenta, dR<0.03, dPt<0.5;Mass (GeV);Events", 200, 5.0, 5.6)));
+  Hist1DMaps hDsMassMatch;
+  hDsMassMatch["dR0.03"]= std::move(std::unique_ptr<TH1D>(
+        new TH1D("hDsMassMatch0p03", "D^{#pm}_{S}, matching FS momenta, dR<0.03, dPt<0.5;M_{#phi#pi^{#pm}} (GeV);Events", 200, 1.91, 2.04)));
 
   Hist2DMaps hTrkBetaInvVsP;
-  hTrkBetaInvVsP["PionFromB"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPVsPPionFromB", "Pion from B^{#pm};p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInvVsP["PionFromD"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPVsPPionFromD", "Pion from neutral D;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInvVsP["KaonFromD"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPVsPKaonFromD", "Kaon from neutral D;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  hTrkBetaInvVsP["PionFromDs"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsPPion", "Pion;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  hTrkBetaInvVsP["KaonPosFromPhi"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsPPosK", "Positive Kaon;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  hTrkBetaInvVsP["KaonNegFromPhi"] = std::move(std::unique_ptr<TH2D>(
+        new TH2D("hTrkBetaInvVsPVsPNegK", "Negative Kaon;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
   hTrkBetaInvVsP["AllTracks"] = std::move(std::unique_ptr<TH2D>(
         new TH2D("hTrkBetaInvVsPVsP", "Tracks;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
 
@@ -422,20 +399,20 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
     map<size_t, PtEtaPhiM_t> p4GenFS;
     for (size_t igen=0; igen<gensize; igen++) {
       if (!doRecoGenMatch) break;
-      if (abs(gen_pdgId[igen]) != 521) continue;
+      if (abs(gen_pdgId[igen]) != 431) continue;
       auto gen_dauIdx = p.gen_dauIdx().at(igen);
-      Particle Bmeson_copy(Bmeson);
-      bool sameChain = checkDecayChain(Bmeson_copy, igen, p);
+      Particle Dsmeson_copy(Dsmeson);
+      bool sameChain = checkDecayChain(Dsmeson_copy, igen, p);
       if (!sameChain) continue;
-      p4GenFS[Bmeson_copy.daughter(0)->treeIdx()] = getGenP4(Bmeson_copy.daughter(0)->treeIdx(), p); // pi from B
-      p4GenFS[Bmeson_copy.daughter(1)->daughter(0)->treeIdx()] = getGenP4(Bmeson_copy.daughter(1)->daughter(0)->treeIdx(), p); // pi from D
-      p4GenFS[Bmeson_copy.daughter(1)->daughter(1)->treeIdx()] = getGenP4(Bmeson_copy.daughter(1)->daughter(1)->treeIdx(), p); // K from D
+      p4GenFS[Dsmeson_copy.daughter(0)->treeIdx()] = getGenP4(Dsmeson_copy.daughter(0)->treeIdx(), p); // pi from Ds
+      p4GenFS[Dsmeson_copy.daughter(1)->daughter(0)->treeIdx()] = getGenP4(Dsmeson_copy.daughter(1)->daughter(0)->treeIdx(), p); // K- from Phi
+      p4GenFS[Dsmeson_copy.daughter(1)->daughter(1)->treeIdx()] = getGenP4(Dsmeson_copy.daughter(1)->daughter(1)->treeIdx(), p); // K+ from Phi
     }
     map<size_t, PtEtaPhiM_t> p4RecoFS;
     for (size_t ireco=0; ireco<recosize; ireco++) {
       if (!doRecoGenMatch) break;
       if (p.cand_status().at(ireco) != 1) continue; // stable
-      p4RecoFS[ireco] = getRecoP4(ireco, p); // K from D
+      p4RecoFS[ireco] = getRecoP4(ireco, p);
     }
 
     vector<bool> recoLock(recosize, 0);
@@ -468,64 +445,53 @@ int genMatchFSBMass(const TString& inputList, const TString& treeDir,
 
     // loop over particles
     for (size_t ireco=0; ireco<recosize; ireco++) {
-      // begin B
-      if (pdgId[ireco] == 521) {
+      // begin Ds
+      if (pdgId[ireco] == 431) {
         auto dauIdx = p.cand_dauIdx().at(ireco);
-        // 0 for pi, 1 for D0
+        // 0 for pi, 1 for phi
         auto gDauIdx = p.cand_dauIdx().at(dauIdx.at(1));
 
-        int Dflavor = -1;
-        if (p.cand_massDau()[dauIdx.at(1)].at(0) <
-            p.cand_massDau()[dauIdx.at(1)].at(1) ) Dflavor = 1;
-        if ( Dflavor *
-             recoCharge.at(dauIdx.at(0)) > 0) continue;  // check flavor
         // check reco-gen match
         bool matchGEN = true;
+        bool isSwap = false;
         if (doRecoGenMatch) {
           matchGEN = matchGEN && ( matchPairs.find( dauIdx.at(0) ) != matchPairs.end() );
           matchGEN = matchGEN && ( matchPairs.find( gDauIdx.at(0) ) != matchPairs.end() );
           matchGEN = matchGEN && ( matchPairs.find( gDauIdx.at(1) ) != matchPairs.end() );
-          //bool isSwap = true; // need to be done
         }
+        if (doRecoGenMatch && matchGEN) {
+          isSwap = isSwap || abs(ana::massPion - p.gen_mass().at(matchPairs.at(dauIdx.at(0)))) > 0.05;
+          isSwap = isSwap || abs(ana::massKaon - p.gen_mass().at(matchPairs.at(gDauIdx.at(0)))) > 0.05;
+          isSwap = isSwap || abs(ana::massKaon - p.gen_mass().at(matchPairs.at(gDauIdx.at(1)))) > 0.05;
+        }
+        if (doRecoGenMatch && isSwap) continue;
         if (!matchGEN) continue;
         if (doRecoGenMatch) {
-          hBMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
+          hDsMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
           // track QA
-          {// pi from B
+          {// pi from Ds
             double mom = p.cand_pT().at(dauIdx.at(0)) * std::cosh(p.cand_eta().at(dauIdx.at(0)));
             auto trkIdx = p.cand_trkIdx().at(dauIdx.at(0));
-            hTrkBetaInvVsP["PionFromB"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            hTrkBetaInvVsP["PionFromDs"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
           }
-          {// pi from D
-            if (Dflavor<0) {
-              double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(gDauIdx.at(1)));
-              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
-              hTrkBetaInvVsP["PionFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
-            } else {
-              double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(gDauIdx.at(0)));
-              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
-              hTrkBetaInvVsP["PionFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
-            }
+          {// K+
+            double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(gDauIdx.at(1)));
+            auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
+            hTrkBetaInvVsP["KaonPosFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
           }
-          {// K from D
-            if (Dflavor>0) {
-              double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(gDauIdx.at(1)));
-              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
-              hTrkBetaInvVsP["KaonFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
-            } else {
-              double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(gDauIdx.at(0)));
-              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
-              hTrkBetaInvVsP["KaonFromD"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
-            }
+          {// K-
+            double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(gDauIdx.at(0)));
+            auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
+            hTrkBetaInvVsP["KaonNegFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
           }
           // track QA end
         }
       } // end B
     }
   }
-  cout << nMultipleMatch << " events has more than one matched RECO B meson" << endl;
+  cout << nMultipleMatch << " events has more than one matched RECO Ds meson" << endl;
   ofile.cd();
-  for (const auto& e : hBMassMatch) e.second->Write();
+  for (const auto& e : hDsMassMatch) e.second->Write();
   for (const auto& e : hTrkBetaInvVsP) e.second->Write();
 
   return 0;

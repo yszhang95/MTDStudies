@@ -6,3 +6,5 @@
 *.pdf
 *~
 *lib*
+*compiles*
+*log*
