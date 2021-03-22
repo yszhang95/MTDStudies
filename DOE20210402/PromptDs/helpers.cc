@@ -157,7 +157,7 @@ int genMatchDsMass(const TString& inputList, const TString& treeDir,
 int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
     Particle Dsmeson, ana::TopoCut topo, ana::KineCut kins,
     Long64_t nentries=-1, const bool doRecoGenMatch=true,
-    const bool doTrkQA=true, TString type="")
+    const bool doTrkQA=true, const bool saveGen=true, TString type="")
 {
   type.ToLower();
   bool sortByPt(false), sortByR(false);
@@ -192,13 +192,17 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
 
   std::unique_ptr<TH1D> hCent = std::unique_ptr<TH1D>(new TH1D("hCent", "Centrality:centrality", 200, 0, 100));
 
+  std::unique_ptr<TH2D> hGenYVsPt = std::unique_ptr<TH2D>(new TH2D("hGenYVsPt", ";p_{T} (GeV);y", 200, 0, 20, 60, -3, 3));
+
   Hist2DMaps hTrkBetaInvVsP;
-  hTrkBetaInvVsP["PionFromDs"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPVsPPion", "Pion;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInvVsP["KaonPosFromPhi"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPVsPPosK", "Positive Kaon;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
-  hTrkBetaInvVsP["KaonNegFromPhi"] = std::move(std::unique_ptr<TH2D>(
-        new TH2D("hTrkBetaInvVsPVsPNegK", "Negative Kaon;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  if (doRecoGenMatch) {
+    hTrkBetaInvVsP["PionFromDs"] = std::move(std::unique_ptr<TH2D>(
+          new TH2D("hTrkBetaInvVsPVsPPion", "Pion;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+    hTrkBetaInvVsP["KaonPosFromPhi"] = std::move(std::unique_ptr<TH2D>(
+          new TH2D("hTrkBetaInvVsPVsPPosK", "Positive Kaon;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+    hTrkBetaInvVsP["KaonNegFromPhi"] = std::move(std::unique_ptr<TH2D>(
+          new TH2D("hTrkBetaInvVsPVsPNegK", "Negative Kaon;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+  }
   hTrkBetaInvVsP["AllTracks"] = std::move(std::unique_ptr<TH2D>(
         new TH2D("hTrkBetaInvVsPVsP", "Tracks;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
 
@@ -366,6 +370,16 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
           hFSp[i]->Fill(std::get<0>(fsPars[i]).P());
         } // pT QT end
       } // end Ds
+      // begin saveGen
+      if (doRecoGenMatch && saveGen) {
+        for (size_t i=0; i<gensize; ++i) {
+          if (std::abs(p.gen_pdgId().at(i)) != std::abs(Dsmeson.id())) continue;
+          Particle Dsmeson_copy(Dsmeson);
+          bool sameChain = checkDecayChain(Dsmeson_copy, i, p);
+          if (!sameChain) continue;
+          hGenYVsPt->Fill(p.gen_pT().at(i), p.gen_y().at(i));
+        }
+      }
     }
   }
   cout << nMultipleMatch << " events has more than one matched RECO Ds meson" << endl;
@@ -378,6 +392,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
     hFSp[i]->Write();
   }
   hCent->Write();
+  if (saveGen) hGenYVsPt->Write();
 
   return 0;
 }
