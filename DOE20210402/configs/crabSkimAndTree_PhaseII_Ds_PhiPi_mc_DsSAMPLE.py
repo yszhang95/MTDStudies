@@ -12,9 +12,9 @@ config.General.transferOutputs = True
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'PbPbSkimAndTreePhaseIIMTD_B_DPi_mc_cfg.py'
+config.JobType.psetName = 'PbPbSkimAndTreePhaseIIMTD_Ds_PhiPi_mc_cfg.py'
 config.JobType.allowUndistributedCMSSW = True
-config.JobType.maxJobRuntimeMin = 60
+config.JobType.maxJobRuntimeMin = 80
 config.JobType.maxMemoryMB = 2500
 
 config.section_("Data")
@@ -37,13 +37,13 @@ def submit(config):
         print "Failed submitting task: %s" % (cle)
 
 dataMap = {
-    "BNoPU" : {"PD" : '/B_DPi_pt0_y4_5p5TeV_TuneCP5_Pythia8/PhaseIIMTDTDRAutumn18DR-NoPU_103X_upgrade2023_realistic_v2-v1/FEVT'},
+    "DsNoPU" : {"PD" : '/Ds_PhiPi_prompt_pt0_y4_5p5TeV_TuneCP5_Pythia8/PhaseIIMTDTDRAutumn18DR-NoPU_103X_upgrade2023_realistic_v2-v1/FEVT'},
     }
 
 for key, val in dataMap.items():
-    config.General.requestName = 'PbPb5p5TeV_'+key+'_B_DPi_BSAMPLE_20210321'
+    config.General.requestName = 'PbPb5p5TeV_'+key+'_Ds_PhiPi_DsSAMPLE_20210321'
     config.Data.inputDataset = val["PD"]
     config.Data.outputDatasetTag = config.General.requestName
-    config.Data.outLFNDirBase = '/store/group/phys_heavyions/MTD/yousen/B_DPi/BSAMPLE_NoPU/'
+    config.Data.outLFNDirBase = '/store/group/phys_heavyions/MTD/yousen/Ds_PhiPi/DsSAMPLE_NoPU/'
     print("Submitting CRAB job for: "+val["PD"])
     submit(config)

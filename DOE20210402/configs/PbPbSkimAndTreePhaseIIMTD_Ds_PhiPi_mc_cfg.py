@@ -18,9 +18,9 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 
 # Define the input source
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring('/store/mc/PhaseIIMTDTDRAutumn18DR/B_DPi_pt0_y4_5p5TeV_TuneCP5_Pythia8/FEVT/NoPU_103X_upgrade2023_realistic_v2-v1/80000/B79911C0-FA0C-134A-9B79-B7DF250E059A.root'),
+   fileNames = cms.untracked.vstring('/store/mc/PhaseIIMTDTDRAutumn18DR/Ds_PhiPi_prompt_pt0_y4_5p5TeV_TuneCP5_Pythia8/FEVT/NoPU_103X_upgrade2023_realistic_v2-v1/30000/0B592D41-AE1D-DF41-9260-8FF25604FED8.root'),
 )
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10))
 
 # Set the global tag
 from Configuration.AlCa.GlobalTag import GlobalTag
@@ -117,31 +117,18 @@ process.eventFilter = cms.Sequence(
 # Add the VertexComposite producer
 from VertexCompositeAnalysis.VertexCompositeProducer.generalParticles_cff import generalParticles
 process.load("VertexCompositeAnalysis.VertexCompositeProducer.generalParticles_cff")
-process.D0Candidate = process.generalParticles.clone(
+process.PhiCandidate = process.generalParticles.clone(
     primaryVertices = cms.InputTag('offlinePrimaryVertices4D::ANASKIM'),
 
-    pdgId = cms.int32(421),
-    doSwap = cms.bool(True),
-    width = cms.double(0.06),
+    pdgId = cms.int32(333),
+    doSwap = cms.bool(False),
+    width = cms.double(0.009),
+    mass = cms.double(1.0195),
 
-    preSelection = cms.string(""
-       "charge==0"
-       "&& userFloat('dauEtaDiff') <= 1.0"
-       ),
-    pocaSelection = cms.string(""
-       "userFloat('bestMass') >= 1.8 && userFloat('bestMass') <= 1.93 "
-       #"&& pt > 1.5"
-       #"&& userFloat('dca') >= 0 && userFloat('dca') <= 9999."
-       ),
-    postSelection = cms.string(""
-       "userFloat('vertexProb') >= 0.00"
-       "&& userFloat('normChi2') <= 9999.0"
-       ),
-    finalSelection = cms.string(""
-       "cos(userFloat('angle3D')) >= -2.0 && cos(userFloat('angle2D')) >= -2.0"
-       #"&& abs(userFloat('angle3D')) <= 0.2"
-       #"&& abs(userFloat('lVtxSig')) > 3.0"
-       ),
+    preSelection = cms.string("charge==0"),
+    pocaSelection = cms.string(""),
+    postSelection = cms.string(""),
+    finalSelection = cms.string(""),
     dedxInputs = cms.vstring('dedxPixelHarmonic2', 'dedxHarmonic2', 'dedxPixelHarmonic2T40', 'dedxPixelMeanT40'),
 
     mtdValueNames = cms.vstring(["tMTD", "tMTDErr", "pathLength"]),
@@ -160,7 +147,7 @@ process.D0Candidate = process.generalParticles.clone(
               'abs(userFloat("dzSig")) < 3.0 && abs(userFloat("dxySig")) < 3.0'
               )
            ),
-        cms.PSet(pdgId = cms.int32(211), charge = cms.int32(+1),
+        cms.PSet(pdgId = cms.int32(321), charge = cms.int32(+1),
            selection = cms.string(
               "pt>0.7 && abs(eta)<3"
               "&& normalizedChi2<7."
@@ -174,22 +161,17 @@ process.D0Candidate = process.generalParticles.clone(
     ])
 )
 
-process.BChargedCandidate = process.generalParticles.clone(
+process.DsCandidate = process.generalParticles.clone(
     primaryVertices = cms.InputTag('offlinePrimaryVertices4D::ANASKIM'),
 
-    pdgId = cms.int32(521),
+    pdgId = cms.int32(431),
     doSwap = cms.bool(False),
-    width = cms.double(0.32),
-    mass = cms.double(5.27929),
+    width = cms.double(0.06),
+    mass = cms.double(1.9683),
 
-    preSelection = cms.string(""
-       "abs(charge)==1"
-       ),
-    pocaSelection = cms.string("userFloat('bestMass') >= 4.95 && userFloat('bestMass') <= 5.6"),
-    postSelection = cms.string(""
-       "userFloat('vertexProb') >= 0.00"
-       "&& userFloat('normChi2') <= 9999.0"
-       ),
+    preSelection = cms.string("abs(charge)==1"),
+    pocaSelection = cms.string(""),
+    postSelection = cms.string(""),
     finalSelection = cms.string(""),
     dedxInputs = cms.vstring('dedxPixelHarmonic2', 'dedxHarmonic2', 'dedxPixelHarmonic2T40', 'dedxPixelMeanT40'),
 
@@ -197,8 +179,8 @@ process.BChargedCandidate = process.generalParticles.clone(
     mtdValueLabels = cms.vstring(["trackExtenderWithMTD:generalTracktmtd:ANASKIM", "trackExtenderWithMTD:generalTracksigmatmtd:ANASKIM", "trackExtenderWithMTD:generalTrackPathLength:ANASKIM"]),
     # daughter information
     daughterInfo = cms.VPSet([
-        cms.PSet(pdgId = cms.int32(421), charge = cms.int32(0),
-            source = cms.InputTag('D0Candidate'),
+        cms.PSet(pdgId = cms.int32(333), charge = cms.int32(0),
+            source = cms.InputTag('PhiCandidate'),
             selection = cms.string(""),
             finalSelection = cms.string('')
            ),
@@ -220,13 +202,13 @@ process.BChargedCandidate = process.generalParticles.clone(
 #process.reconstruction_step has been setup
 process.eventFilter_step = cms.Path( process.eventFilter )
 process.pcentandep_step = cms.Path(process.eventFilter * process.cent_seq)
-process.rereco_step = cms.Path(process.eventFilter * process.D0Candidate * process.BChargedCandidate)
+process.rereco_step = cms.Path(process.eventFilter * process.PhiCandidate * process.DsCandidate)
 
 # Add the VertexComposite tree
 from VertexCompositeAnalysis.VertexCompositeAnalyzer.particle_tree_cff import particleAna_mc
-process.bcharged_ana = particleAna_mc.clone(
+process.ds_ana_mc = particleAna_mc.clone(
     primaryVertices = cms.InputTag('offlinePrimaryVertices4D::ANASKIM'),
-    recoParticles = cms.InputTag("BChargedCandidate"),
+    recoParticles = cms.InputTag("DsCandidate"),
     selectEvents = cms.string("eventFilter_step"),
 )
 
@@ -235,7 +217,7 @@ process.output_AOD = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring('drop *',
       'keep *_TriggerResults_*_*',
       'keep *_offlineBeamSpot_*_*',
-      'keep *_BChargedCandidate_*_*',
+      'keep *_DsCandidate_*_*',
       'keep *_dedx*_*_ANASKIM',
       'keep *_hiCentrality_*_*', 'keep *_centralityBin_*_*',
       'keep reco*_genParticles_*_*',
@@ -249,8 +231,8 @@ process.output_AOD = cms.OutputModule("PoolOutputModule",
 )
 process.output_step = cms.EndPath(process.output_AOD)
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string('bcharged_ana.root'))
-process.p = cms.EndPath(process.bcharged_ana)
+process.TFileService = cms.Service("TFileService", fileName = cms.string('ds_ana_mc.root'))
+process.p = cms.EndPath(process.ds_ana_mc)
 
 # Define the process schedule
 process.schedule = cms.Schedule(
