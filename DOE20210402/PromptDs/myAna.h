@@ -1,62 +1,13 @@
 #include "TF1.h"
-#include "TH3.h"
 #include <array>
 #include <vector>
 
-#ifndef _ANA_h_
-#define _ANA_h_
+#ifndef _DsANA_h_
+#define _DsANA_h_
 namespace ana{
-   // generic use
-   const double c_cm_ns = 2.99792458e1; //[cm/ns]
-   template<typename T>
-   size_t whichBin(const T& vals, const double val) {
-     size_t n = vals.size() - 1;
-     for (size_t i=0; i<n; ++i) {
-         if( val < vals.at(i+1) && val > vals.at(i)) return i;
-     }
-      return size_t(-1);
-   }
-
-   // for tracks
-   const float massPion = 0.139570;
-   const float massKaon = 0.493677;
-
-   bool passTrackKinematicCuts(double eta, double pT) {
-      if (std::abs(eta) > 3) return false;
-      if (std::abs(eta) < 1.5 ? pT < 0.8 : pT * std::cosh(eta) < 0.7) return false;
-      return true;
-   }
-
-   inline float invBetaPion(const float& p){
-      return std::sqrt(1 + std::pow(massPion/p,2));
-   }
-   inline float invBetaKaon(const float& p){
-      return std::sqrt(1 + std::pow(massKaon/p,2));
-   }
-
-   TF1 fExpBTL("fExpBTL_dInvBetaRMS","0.005 + 0.016*exp(-x/4.4)");
-   TF1 fExpETL("fExpETL_dInvBetaRMS","0.003 + 0.006*exp(-x/7.6)");
-
-   TF1 fPionResBTL("fPionResBTL", "0.0012*(x-2)*(x-2) + 0.0004", 0.7, 2);
-   TF1 fPionResETL("fPionResETL", "0.00025*(x-2)*(x-2) + 0.0005", 0.7, 2);
-
-   TF1 fKaonResBTL("fKaonResBTL", "0.003*(x-2)*(x-2) + 0.0001", 0.7, 2);
-   TF1 fKaonResETL("fKaonResETL", "0.00025*(x-2)*(x-2) + 0.0003", 0.7, 2);
-
-   float meanPion(const float eta, const float pT){
-      const float p = std::cosh(eta) * pT;
-      const float res = std::abs(eta) < 1.5 ? fPionResBTL.Eval(p) : fPionResETL(p);
-      return p < 2 ? res : 0;
-   }
-   float meanKaon(const float eta, const float pT){
-      const float p = std::cosh(eta) * pT;
-      const float res = std::abs(eta) < 1.5 ? fKaonResBTL.Eval(p) : fKaonResETL(p);
-      return p < 2 ? res : 0;
-   }
-
-   // for B
-   const int nuOfY = 3; // for B meson
-   const std::array<double, nuOfY+1> ybin = {0, 1.0, 2.0, 3.0}; // for B meson
+   // for Ds
+   const int nuOfY = 3; // for Ds meson
+   const std::array<double, nuOfY+1> ybin = {0, 1.0, 2.0, 3.0}; // for Ds meson
 
    const int npt = 200;
    const double ptMin = 0;
@@ -66,19 +17,13 @@ namespace ana{
    const double yAbsMin = 0;
    const double yAbsMax = 3;
 
-   const int nmass = 100;
-   const double massMin = 5.06;
-   const double massMax = 5.56;
+   const int nmass = 110;
+   const double massMin = 1.91;
+   const double massMax = 2.02;
 
-   const float mass_lw[nuOfY] = {5.199, 5.199, 5.199}; // for B
-   const float mass_up[nuOfY] = {5.359, 5.359, 5.359}; // for B
+   const float mass_lw[nuOfY] = {1.95, 1.95, 1.95}; // for Ds
+   const float mass_up[nuOfY] = {1.986, 1.986, 1.986}; // for Ds
 
-   bool isFWHM(double mass, double y) {
-     size_t iy = whichBin(ybin, y);
-     if(iy == size_t(-1)) return false;
-     if( mass < mass_up[iy] && mass > mass_lw[iy]) return true;
-     return false;
-   }
 
    // for D
    const int nuOfDY = 3;
@@ -132,14 +77,8 @@ namespace ana{
 
    const double evts_data_MB = 500e6;
 
-   const double TAA0_100 = 5.61; // mb^-1
-   const double TAA0_10 = 23.2; // mb^-1
-   const double pbOvermb = 1e-12/1e-3;
-   const double GeV = 1;
    const double BR = 0.0393 * 1.1;
 
-   const double evts_sim_MB = 25e9;
    const double evts_sim_central = evts_sim_MB * evts_bkg_central / evts_bkg_MB;
-
 };
 #endif

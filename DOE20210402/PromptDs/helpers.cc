@@ -24,6 +24,8 @@
 #include "TSystem.h"
 
 #include "TreeReader/ParticleTreeMC2.hxx"
+#include "Ana/Common.h"
+#include "Ana/TreeHelpers.h"
 
 #include "myAna.h"
 
@@ -39,184 +41,11 @@ using std::tuple;
 
 using std::shared_ptr;
 
-using PtEtaPhiM_t = ROOT::Math::PtEtaPhiM4D<double>;
 using Hist1DMaps = std::map<std::string, std::unique_ptr<TH1D>>;
 using Hist2DMaps = std::map<std::string, std::unique_ptr<TH2D>>;
 using Hist3DMaps = std::map<std::string, std::unique_ptr<TH3D>>;
  
 using MatchPairInfo =  tuple<size_t, size_t, double, double>;
-
-class Particle {
-  public:
-    using ParticlePtr = shared_ptr<Particle>;
-    Particle(int id): _id(id), _selfConj(false), _flip(0) ,_treeIdx(USHRT_MAX) {};
-    Particle(const Particle& p): _id(p._id), _selfConj(p._selfConj), _flip(0), _treeIdx(USHRT_MAX) {
-      for (const auto& d : p._daus) {
-        _daus.push_back(std::make_shared<Particle>(*d));
-      }
-    };
-    //~Particle() { cout << "Deleted" << endl; }
-
-    bool isStable() const { return _daus.size(); }
-    bool selfConj() const { return _selfConj;    }
-    void selfConj(bool conj) { _selfConj = conj; }
-    int  id()       const { return _id;          }
-    bool isNull() const   { return _id == 0;     }
-    vector<ParticlePtr> daughters() const { return _daus; }
-    void addDaughter(Particle& dau) { _daus.push_back(std::make_shared<Particle>(dau)); }
-    ParticlePtr daughter(size_t i);
-    ParticlePtr daughter(size_t i) const;
-    void setTreeIdx(unsigned short treeIdx) { _treeIdx = treeIdx; }
-    int flip() { return _flip; }
-    unsigned short treeIdx() const { return _treeIdx; }
-    void flipFlavor();
-  protected:
-    int _id;
-    bool _selfConj;
-    int _flip;
-    unsigned short _treeIdx;
-    vector<ParticlePtr> _daus;
-};
-
-
-Particle::ParticlePtr Particle::daughter(size_t i)
-{ 
-  if (_daus.size()) {
-    return _daus[i];
-  }
-  else {
-    cerr << "No daughter found with pdgId " << _id << endl;
-    return nullptr;
-  }
-}
-
-Particle::ParticlePtr Particle::daughter(size_t i) const
-{ 
-  if (_daus.size()) {
-    return _daus.at(i);
-  }
-  else {
-    cerr << "No daughter found with pdgId " << _id << endl;
-    return nullptr;
-  }
-}
-
-void Particle::flipFlavor()
-{
-  if(!_selfConj) {
-    _id = -_id;
-    for(auto& d : _daus) d->flipFlavor();
-  }
-  _flip++;
-}
-
-class MatchCriterion {
-  public:
-    template <typename T>
-      bool match (const T& reco, const T& gen);
-
-    MatchCriterion (const float dR, const float dRelPt) :
-      _deltaR(dR), _deltaRelPt(dRelPt) { };
-    ~MatchCriterion() {}
-    void SetDeltaRelPt(const float dRelPt) { _deltaRelPt = dRelPt; }
-    void SetDeltaR(const float dR) { _deltaR = dR; }
-
-  private:
-    float _deltaR;
-    float _deltaRelPt;
-};
-  template <typename T>
-bool MatchCriterion::match (const T& reco, const T& gen)
-{
-  const auto dR = ROOT::Math::VectorUtil::DeltaR(reco, gen);
-  const auto dRelPt = TMath::Abs(gen.Pt() - reco.Pt())/gen.Pt();
-  return dR < _deltaR && dRelPt < _deltaRelPt;
-}
-
-bool checkDecayChain(Particle& par, unsigned short genIdx, const ParticleTreeMC& p, bool isFirstGen=true)
-{
-  // check pdg Id
-  if (par.id() * p.gen_pdgId().at(genIdx) < 0 && isFirstGen) par.flipFlavor();
-  if (par.id() != p.gen_pdgId().at(genIdx)) return false;
-
-  // get daughters out
-  const auto dauIdxs = p.gen_dauIdx().at(genIdx);
-
-  // check number of daughters
-  if (par.daughters().size() != dauIdxs.size()) return false;
-
-  // if no daughters, both of these two have the same decay chain
-  if (dauIdxs.size() == 0) {
-      par.setTreeIdx(genIdx);
-      return true;
-  }
-
-  // fill pdgIds and check them
-  std::multiset<int> genDauPdgId; // check dau ID
-  std::multiset<int> desiredPdgId; // check dau ID
-  std::vector<int> vec_desiredPdgId; // for later permutation
-  for (const auto idx : dauIdxs) {
-    genDauPdgId.insert(p.gen_pdgId().at(idx));
-  }
-  for (const auto dau : par.daughters()) {
-    desiredPdgId.insert(dau->id());
-    vec_desiredPdgId.push_back(dau->id());
-  }
-  bool sameIds = desiredPdgId == genDauPdgId;
-  if (!sameIds) return false; // they do not have the same set of decay products
-  
-  // if they have same daughter Ids
-  // check their id order
-  std::vector<unsigned int> idxs(vec_desiredPdgId.size());
-  std::iota(std::begin(idxs), std::end(idxs), 0);
-  do {
-    bool sameOrder = true;
-    for (size_t i=0;  i<idxs.size(); i++) {
-      auto dIdx = dauIdxs[idxs[i]];
-      sameOrder = sameOrder && (p.gen_pdgId().at(dIdx) == vec_desiredPdgId[i]);
-    }
-    if(sameOrder) {
-      break;
-    }
-  } while(std::next_permutation(idxs.begin(), idxs.end()));
-
-  // associated them if they are compatible
-  bool sameChain = true;
-  for (size_t i=0;  i<idxs.size(); i++) {
-    sameChain = sameChain && checkDecayChain(*par.daughter(i), dauIdxs[idxs[i]], p, false);
-    if (sameChain) par.daughter(i)->setTreeIdx( dauIdxs[idxs[i]] );
-  }
-
-  return sameChain;
-}
-
-PtEtaPhiM_t getRecoP4(size_t idx, const ParticleTreeMC& p)
-{
-  return PtEtaPhiM_t (
-            p.cand_pT()[idx],
-            p.cand_eta()[idx],
-            p.cand_phi()[idx],
-            p.cand_mass()[idx]
-            );
-}
-PtEtaPhiM_t getRecoDauP4(size_t idx, size_t idau, const ParticleTreeMC& p)
-{
-  return PtEtaPhiM_t (
-            p.cand_pTDau()[idx].at(idau),
-            p.cand_etaDau()[idx].at(idau),
-            p.cand_phiDau()[idx].at(idau),
-            p.cand_massDau()[idx].at(idau)
-            );
-}
-PtEtaPhiM_t getGenP4(size_t idx, const ParticleTreeMC& p)
-{
-  return PtEtaPhiM_t (
-            p.gen_pT()[idx],
-            p.gen_eta()[idx],
-            p.gen_phi()[idx],
-            p.gen_mass()[idx]
-            );
-}
 
 int genMatchDsMass(const TString& inputList, const TString& treeDir,
     Particle Dsmeson,
@@ -264,7 +93,6 @@ int genMatchDsMass(const TString& inputList, const TString& treeDir,
     auto pdgId = p.cand_pdgId();
     auto gen_pdgId = p.gen_pdgId();
 
-    auto recoCharge = p.cand_charge();
     int nmatch = 0;
     for (size_t ireco=0; ireco<recosize; ireco++) {
       // begin Ds
@@ -327,7 +155,8 @@ int genMatchDsMass(const TString& inputList, const TString& treeDir,
 }
 
 int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
-    Particle Dsmeson, Long64_t nentries=-1, const bool doRecoGenMatch=true,
+    Particle Dsmeson, ana::TopoCut topo, ana::KineCut kins,
+    Long64_t nentries=-1, const bool doRecoGenMatch=true,
     const bool doTrkQA=true, TString type="")
 {
   type.ToLower();
@@ -361,6 +190,8 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   hDsMassMatch["dR0.03"]= std::move(std::unique_ptr<TH1D>(
         new TH1D("hDsMassMatch0p03", "D^{#pm}_{S}, matching FS momenta, dR<0.03, dPt<0.5;M_{#phi#pi^{#pm}} (GeV);Events", 200, 1.91, 2.04)));
 
+  std::unique_ptr<TH1D> hCent = std::unique_ptr<TH1D>(new TH1D("hCent", "Centrality:centrality", 200, 0, 100));
+
   Hist2DMaps hTrkBetaInvVsP;
   hTrkBetaInvVsP["PionFromDs"] = std::move(std::unique_ptr<TH2D>(
         new TH2D("hTrkBetaInvVsPVsPPion", "Pion;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
@@ -371,10 +202,27 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   hTrkBetaInvVsP["AllTracks"] = std::move(std::unique_ptr<TH2D>(
         new TH2D("hTrkBetaInvVsPVsP", "Tracks;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
 
+  Hist3DMaps hMassVsPtVsY;
+  hMassVsPtVsY["WoMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsY", "hMassVsPtVsY", 
+      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
+  hMassVsPtVsY["WMTD" ] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
+      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
+
+  std::unique_ptr<TH1D> hFSpT[3];
+  hFSpT[0] = std::move(std::unique_ptr<TH1D>(new TH1D("hPi_pT", "Pi;pT;", 100, 0, 10)));
+  hFSpT[1] = std::move(std::unique_ptr<TH1D>(new TH1D("hNegK_pT", "Pi;pT;", 100, 0, 10)));
+  hFSpT[2] = std::move(std::unique_ptr<TH1D>(new TH1D("hPosK_pT", "Pi;pT;", 100, 0, 10)));
+  std::unique_ptr<TH1D> hFSp[3];
+  hFSp[0] = std::move(std::unique_ptr<TH1D>(new TH1D("hPi_p", "Pi;p;", 100, 0, 10)));
+  hFSp[1] = std::move(std::unique_ptr<TH1D>(new TH1D("hNegK_p", "Pi;p;", 100, 0, 10)));
+  hFSp[2] = std::move(std::unique_ptr<TH1D>(new TH1D("hPosK_p", "Pi;p;", 100, 0, 10)));
+
   Long64_t nMultipleMatch = 0;
   for (Long64_t ientry=0; ientry<nentries; ientry++) {
-    if (ientry % 5000 == 0) cout << "pass " << ientry << endl;
+    if (ientry % 20000 == 0) cout << "pass " << ientry << endl;
     p.GetEntry(ientry);
+    // centrality
+    hCent->Fill(p.centrality()/2.);
     // track QA, doTrkQA should be true
     size_t nTrk = p.trk_candIdx().size();
     if (!doTrkQA) nTrk = 0;
@@ -394,12 +242,10 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
     auto pdgId = p.cand_pdgId();
     auto gen_pdgId = p.gen_pdgId();
 
-    auto recoCharge = p.cand_charge();
-
     map<size_t, PtEtaPhiM_t> p4GenFS;
     for (size_t igen=0; igen<gensize; igen++) {
       if (!doRecoGenMatch) break;
-      if (abs(gen_pdgId[igen]) != 431) continue;
+      if (abs(gen_pdgId[igen]) != std::abs(Dsmeson.id())) continue;
       auto gen_dauIdx = p.gen_dauIdx().at(igen);
       Particle Dsmeson_copy(Dsmeson);
       bool sameChain = checkDecayChain(Dsmeson_copy, igen, p);
@@ -446,7 +292,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
     // loop over particles
     for (size_t ireco=0; ireco<recosize; ireco++) {
       // begin Ds
-      if (pdgId[ireco] == 431) {
+      if (pdgId[ireco] == std::abs(Dsmeson.id())) {
         auto dauIdx = p.cand_dauIdx().at(ireco);
         // 0 for pi, 1 for phi
         auto gDauIdx = p.cand_dauIdx().at(dauIdx.at(1));
@@ -468,31 +314,70 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         if (!matchGEN) continue;
         if (doRecoGenMatch) {
           hDsMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
-          // track QA
-          {// pi from Ds
-            double mom = p.cand_pT().at(dauIdx.at(0)) * std::cosh(p.cand_eta().at(dauIdx.at(0)));
-            auto trkIdx = p.cand_trkIdx().at(dauIdx.at(0));
-            hTrkBetaInvVsP["PionFromDs"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+          if (doTrkQA) {
+            // track QA
+            {// pi from Ds
+              double mom = p.cand_pT().at(dauIdx.at(0)) * std::cosh(p.cand_eta().at(dauIdx.at(0)));
+              auto trkIdx = p.cand_trkIdx().at(dauIdx.at(0));
+              hTrkBetaInvVsP["PionFromDs"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            }
+            {// K+
+              double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(gDauIdx.at(1)));
+              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
+              hTrkBetaInvVsP["KaonPosFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            }
+            {// K-
+              double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(gDauIdx.at(0)));
+              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
+              hTrkBetaInvVsP["KaonNegFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
+            }
+            // track QA end
           }
-          {// K+
-            double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(gDauIdx.at(1)));
-            auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
-            hTrkBetaInvVsP["KaonPosFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
-          }
-          {// K-
-            double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(gDauIdx.at(0)));
-            auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
-            hTrkBetaInvVsP["KaonNegFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
-          }
-          // track QA end
         }
-      } // end B
+        // prepare p4 and MTD info
+        std::vector<ParticleInfo> fsPars; fsPars.reserve(3); // pi from Ds, K- from Phi, K+ from Phi
+        unsigned short trkIdx[3] = {0};
+        unsigned int   fsIdx[3]  = {0};
+        int ids[3] = {211, -321, 321}; // optimize later
+        double masses[3] = {ana::massPion, ana::massKaon, ana::massKaon}; // optimize later
+        // pi from Ds
+        fsIdx [0] = dauIdx.at(0); // pi from Ds
+        fsIdx [1] = gDauIdx.at(0); // K- from  phi
+        fsIdx [2] = gDauIdx.at(1); // K+ from  phi
+        for (int i=0; i<3; i++) {
+          trkIdx[i] = p.cand_trkIdx().at(fsIdx[i]);
+          fsPars.push_back(std::make_tuple(PtEtaPhiM_t(p.cand_pT().at(fsIdx[i]), p.cand_eta().at(fsIdx[i]), p.cand_phi().at(fsIdx[i]), masses[i]), ids[i],
+              p.trk_beta().at(trkIdx[i]), p.trk_tMTD().at(trkIdx[i]), p.trk_tMTDErr().at(trkIdx[i]), p.trk_pathLength().at(trkIdx[i])));
+        }
+        // check PID
+        bool passMTD = true;
+        for (size_t i=0; i<3; i++) {
+          passMTD = passMTD && checkPassPID(fsPars[i], 1.0);
+        }
+        if (!ana::passKinematic(p.cand_pT().at(ireco), p.cand_eta().at(ireco), kins)) continue; // a sharp cut during background tree production
+        if (!ana::passTopoCuts(p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco),
+              p.cand_angle3D().at(ireco), p.cand_vtxProb().at(ireco), topo)) continue; // a sharp cut during background tree production
+
+        if (passMTD) hMassVsPtVsY["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+        hMassVsPtVsY["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+        // pT QR
+        for (size_t i=0; i<3; i++) {
+          hFSpT[i]->Fill(std::get<0>(fsPars[i]).Pt());
+          hFSp[i]->Fill(std::get<0>(fsPars[i]).P());
+        } // pT QT end
+      } // end Ds
     }
   }
   cout << nMultipleMatch << " events has more than one matched RECO Ds meson" << endl;
   ofile.cd();
   for (const auto& e : hDsMassMatch) e.second->Write();
   for (const auto& e : hTrkBetaInvVsP) e.second->Write();
+  for (const auto& e : hMassVsPtVsY) e.second->Write();
+  for (size_t i=0; i<3; i++) {
+    hFSpT[i]->Write();
+    hFSp[i]->Write();
+  }
+  hCent->Write();
 
   return 0;
 }
