@@ -33,5 +33,7 @@ voms-proxy-init --voms cms
 cd VertexCompositeAnalysis/VertexCompositeProducer/test
 ```
 ### Ds production for DOE review
+Copy the files under `configs/Ds_PhiPi` to proper directory.
 ### B production for DOE review
+Copy the files under `configs/B_DPi` to proper directory.
 
