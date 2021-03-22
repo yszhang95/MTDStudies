@@ -111,6 +111,7 @@ void ParticleTree::Init(TTree *tree)
   fCurrent = -1;
   fChain->SetMakeClass(1);
 
+  fChain->SetBranchAddress("centrality", &_centrality, &b_centrality);
   fChain->SetBranchAddress("nPV", &_nPV, &b_nPV);
   fChain->SetBranchAddress("BXNb", &_BXNb, &b_BXNb);
   fChain->SetBranchAddress("Ntrkoffline", &_Ntrkoffline, &b_Ntrkoffline);
@@ -125,7 +126,7 @@ void ParticleTree::Init(TTree *tree)
   fChain->SetBranchAddress("bestvtxX", &_bestvtxX, &b_bestvtxX);
   fChain->SetBranchAddress("bestvtxY", &_bestvtxY, &b_bestvtxY);
   fChain->SetBranchAddress("bestvtxZ", &_bestvtxZ, &b_bestvtxZ);
-  fChain->SetBranchAddress("evtSel", &_evtSel, &b_evtSel);
+  //fChain->SetBranchAddress("evtSel", &_evtSel, &b_evtSel);
   fChain->SetBranchAddress("cand_charge", &_cand_charge, &b_cand_charge);
   fChain->SetBranchAddress("cand_pdgId", &_cand_pdgId, &b_cand_pdgId);
   fChain->SetBranchAddress("cand_status", &_cand_status, &b_cand_status);
@@ -155,8 +156,8 @@ void ParticleTree::Init(TTree *tree)
   fChain->SetBranchAddress("cand_phiDau", &_cand_phiDau, &b_cand_phiDau);
   fChain->SetBranchAddress("trk_isHP", &_trk_isHP, &b_trk_isHP);
   fChain->SetBranchAddress("trk_nHit", &_trk_nHit, &b_trk_nHit);
-  fChain->SetBranchAddress("trk_dEdx_dedxHarmonic2", &_trk_dEdx_dedxHarmonic2, &b_trk_dEdx_dedxHarmonic2);
-  fChain->SetBranchAddress("trk_dEdx_dedxPixelHarmonic2", &_trk_dEdx_dedxPixelHarmonic2, &b_trk_dEdx_dedxPixelHarmonic2);
+  //fChain->SetBranchAddress("trk_dEdx_dedxHarmonic2", &_trk_dEdx_dedxHarmonic2, &b_trk_dEdx_dedxHarmonic2);
+  //fChain->SetBranchAddress("trk_dEdx_dedxPixelHarmonic2", &_trk_dEdx_dedxPixelHarmonic2, &b_trk_dEdx_dedxPixelHarmonic2);
   fChain->SetBranchAddress("trk_nChi2", &_trk_nChi2, &b_trk_nChi2);
   fChain->SetBranchAddress("trk_pTErr", &_trk_pTErr, &b_trk_pTErr);
   fChain->SetBranchAddress("trk_xyDCASignificance", &_trk_xyDCASignificance, &b_trk_xyDCASignificance);

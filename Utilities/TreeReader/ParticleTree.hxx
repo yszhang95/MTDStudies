@@ -28,6 +28,7 @@ class ParticleTree {
     virtual Bool_t   Notify();
     virtual void     Show(Long64_t entry = -1);
 
+    UChar_t        centrality() const { return _centrality; };
     UChar_t        nPV() const { return _nPV; }
     UShort_t       BXNb() const { return _BXNb; }
     UShort_t       Ntrkoffline() const { return _Ntrkoffline; }
@@ -92,6 +93,7 @@ class ParticleTree {
 
     // Declaration of leaf types
 
+    UChar_t         _centrality;
     UChar_t         _nPV;
     UShort_t        _BXNb;
     UShort_t        _Ntrkoffline;
@@ -145,6 +147,7 @@ class ParticleTree {
     std::vector<std::vector<unsigned int> > *_trk_candIdx;
 
     // List of branches
+    TBranch        *b_centrality;   //!
     TBranch        *b_nPV;   //!
     TBranch        *b_BXNb;   //!
     TBranch        *b_Ntrkoffline;   //!
