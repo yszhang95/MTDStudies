@@ -72,13 +72,22 @@ namespace ana{
    }
 
    // need to update
-   const double evts_bkg_MB = 4799;
-   const double evts_bkg_central = 673;
 
-   const double evts_data_MB = 500e6;
+   // const double evts_data_MB = 500e6; // not useful
 
-   const double BR = 0.045 * 1.1;
+   const double BR = 0.045 * 1.1; // for Ds
 
-   const double evts_sim_central = evts_sim_MB * evts_bkg_central / evts_bkg_MB;
+   bool reject = true;
+   Double_t f2ndpoly(Double_t *x, Double_t *par)
+   {
+     if ( reject && x[0] < 1.989 && x[0] > 1.947 ) {
+       TF1::RejectPoint();
+       return 0;
+     }
+     return (par[0] + par[1] * x[0] + par[2] * x[0] * x[0])*par[3];
+   }
+
+   const double fitRangeLw = 1.93;
+   const double fitRangeUp = 2.00;
 };
 #endif

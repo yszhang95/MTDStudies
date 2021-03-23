@@ -17,13 +17,15 @@ def calSig(yMin, yMax, pTMin, pTMax, massMin, massMax, useMTD=True):
   h3scale.Delete()
   hsignal.Delete()
   hbackground.Delete()
-  print sig, sigErr, s, serr, b, berr, s/serr, b/berr
+  ss = "wMTD" if useMTD else 'woMTD'
+  print ss, pTMin, pTMax, sig, sigErr, s, s/serr, b, b/berr
   return (s, serr, b, berr, sig, sigErr)
 
 yMinEdges = [0.]
 yMaxEdges = [1.]
-ptMinEdges = [0, 2, 3., 4., 5., 6., 8., 10.]
-ptMaxEdges = [0, 2, 3., 4., 5., 6., 8., 10.]
+ptMinEdges = [0, 2, 3., 4., 5., 6., 8.]
+ptMaxEdges = [2, 3., 4., 5., 6., 8., 10.]
+print "MTD", "pTMin", "pTMax", "sig", "sigErr", "s", "s/sErr", "b", "b/bErr"
 for yMin, yMax in zip(yMinEdges, yMaxEdges):
   for pTMin, pTMax in zip(ptMinEdges, ptMaxEdges):
     masslw = 1.95

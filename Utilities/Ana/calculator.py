@@ -10,12 +10,6 @@ import os
 import ctypes
 import ROOT as r
 
-def loaded():
-  '''
-  An indicator.
-  '''
-  print 'Loaded calculator'
-
 def setup(path=''):
   '''
   Include necessary files
@@ -104,26 +98,33 @@ def getMassVsPtVsY(fname, mtd):
   h3.SetDirectory(r.gROOT) # detach h3 from f
   return h3
 
-def getSignal(fname, mtd, h3scale):
+def getSignal(fname, mtd, h3scale, scale=True):
   h3signal = getMassVsPtVsY(fname, mtd)
-  if h3signal == None:
-    return None
+  h = None
+  if h3scale != None:
+    h = r.ana.multiply('TH3D')(h3signal, h3scale)
+    h.Scale(r.ana.evts_sim_MB)
 # do not know how to use * for TH3D in PyROOT
-  h = r.ana.multiply('TH3D')(h3signal, h3scale)
-  h.SetName(h3signal.GetName()+'_scaledsignal')
-  h3signal.Delete()
-  h.Scale(r.ana.evts_sim_MB)
+  else:
+    h = h3signal
+    if scale:
+      print 'You want to scale the histogram but the scaling is None'
+  postfix = '_scalesignal' if scale else '_signal'
+  h.SetName(h3signal.GetName()+postfix)
   return h
 
-def getBackground(fname, mtd):
+def getBackground(fname, mtd, scale=True):
   h = getMassVsPtVsY(fname, mtd)
-  h.SetName(h.GetName()+'_background')
-  f = r.TFile(fname, 'READ')
-  hCent = f.Get('hCent')
-  nEvts = hCent.GetEntries()
-  scale = r.ana.evts_sim_MB/nEvts
-  h.Scale(scale)
-  return h, scale
+  postfix = '_scalebackground' if scale else '_background'
+  h.SetName(h.GetName()+postfix)
+  scalefactor = 1
+  if scale:
+    f = r.TFile(fname, 'READ')
+    hCent = f.Get('hCent')
+    nEvts = hCent.GetEntries()
+    scalefactor = r.ana.evts_sim_MB/nEvts
+    h.Scale(scalefactor)
+  return h, scalefactor
 
 def getCounts(h3, yMin, yMax, pTMin, pTMax, massMin, massMax):
 
@@ -141,4 +142,4 @@ def getCounts(h3, yMin, yMax, pTMin, pTMax, massMin, massMax):
   return (yields, err.value)
 
 if __name__ == '__main__':
-  loaded()
+  print 'Loaded calculator'
