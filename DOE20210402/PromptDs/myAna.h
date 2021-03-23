@@ -77,7 +77,7 @@ namespace ana{
 
    const double evts_data_MB = 500e6;
 
-   const double BR = 0.0393 * 1.1;
+   const double BR = 0.045 * 1.1;
 
    const double evts_sim_central = evts_sim_MB * evts_bkg_central / evts_bkg_MB;
 };

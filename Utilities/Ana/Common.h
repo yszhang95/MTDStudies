@@ -109,6 +109,10 @@ namespace ana{
    const double GeV = 1;
 
    const double evts_sim_MB = 25e9;
+
+   // used in PyROOT
+   template<typename T>
+   T multiply(T& h1, T&h2) { return h1*h2; }
 };
 #endif
 
