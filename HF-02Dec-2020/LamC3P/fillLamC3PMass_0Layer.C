@@ -39,7 +39,7 @@ struct ST{
 };
 
 inline bool isETL (const float eta) {
-  return eta < 3.0 && eta > 1.6;
+  return std::abs(eta) < 3.0 && std::abs(eta) > 1.6;
 }
 
 const float etaTurnPoint = 1.94;
