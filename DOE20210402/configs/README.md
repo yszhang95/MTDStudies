@@ -30,6 +30,7 @@ git clone https://github.com/yszhang95/VertexCompositeAnalysis.git -b 10_4_X_mtd
 scram b
 cmsenv
 voms-proxy-init --voms cms
+source /cvmfs/cms.cern.ch/common/crab-setup.sh
 cd VertexCompositeAnalysis/VertexCompositeProducer/test
 ```
 ### Ds production for DOE review
