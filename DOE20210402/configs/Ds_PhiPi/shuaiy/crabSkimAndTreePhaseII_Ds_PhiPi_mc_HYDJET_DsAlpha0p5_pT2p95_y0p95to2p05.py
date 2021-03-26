@@ -6,7 +6,7 @@ from CRABAPI.RawCommand import crabCommand
 from CRABClient.ClientExceptions import ClientException
 from httplib import HTTPException
 
-from CRABClient import getUsername
+from CRABClient.UserUtilities import getUsername
 username = getUsername()
 
 config.section_("General")
@@ -18,7 +18,8 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'PbPbSkimAndTreePhaseIIMTD_Ds_PhiPi_mc_DsAlpha0p5_pT2p95_y0p95to2p05_cfg.py'
 config.JobType.allowUndistributedCMSSW = True
 config.JobType.maxJobRuntimeMin = 1200
-config.JobType.maxMemoryMB = 5000
+config.JobType.maxMemoryMB = 10000
+config.JobType.numCores = 4
 
 config.section_("Data")
 config.Data.inputDBS = 'global'
@@ -44,7 +45,7 @@ dataMap = {
     }
 
 for key, val in dataMap.items():
-    config.General.requestName = 'PbPb5p5TeV_'+key+'_Ds_PhiPi_DsAlpha0p5_pT2p95_y0p95to2p05_20210325'
+    config.General.requestName = 'PbPb5p5TeV_'+key+'_Ds_PhiPi_DsAlpha0p5_pT2p95_y0p95to2p05_20210326'
     config.Data.inputDataset = val["PD"]
     config.Data.outputDatasetTag = config.General.requestName
     config.Data.outLFNDirBase = '/store/group/phys_heavyions/MTD/%s/Ds_PhiPi/HYDJET_NoPU/' % username

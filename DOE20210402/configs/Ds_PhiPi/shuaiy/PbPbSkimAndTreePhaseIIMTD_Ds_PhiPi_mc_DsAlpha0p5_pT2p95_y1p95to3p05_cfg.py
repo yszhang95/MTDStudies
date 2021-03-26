@@ -15,6 +15,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.FwkReport.reportEvery = 200
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
+process.options.numberOfThreads = cms.untracked.uint32(4)
 
 # Define the input source
 process.source = cms.Source("PoolSource",
@@ -138,7 +139,7 @@ process.PhiCandidate = process.generalParticles.clone(
     daughterInfo = cms.VPSet([
         cms.PSet(pdgId = cms.int32(321), charge = cms.int32(-1),
            selection = cms.string(
-              "pt>0.3 && abs(eta)<3"
+              "pt>0.4 && abs(eta)<3"
               "&& normalizedChi2<7."
               "&& quality('highPurity') && ptError/pt<0.1"
               "&& numberOfValidHits >=11"
@@ -149,7 +150,7 @@ process.PhiCandidate = process.generalParticles.clone(
            ),
         cms.PSet(pdgId = cms.int32(321), charge = cms.int32(+1),
            selection = cms.string(
-              "pt>0.3 && abs(eta)<3"
+              "pt>0.4 && abs(eta)<3"
               "&& normalizedChi2<7."
               "&& quality('highPurity') && ptError/pt<0.1"
               "&& numberOfValidHits >=11"
@@ -166,13 +167,13 @@ process.DsCandidate = process.generalParticles.clone(
 
     pdgId = cms.int32(431),
     doSwap = cms.bool(False),
-    width = cms.double(0.09),
+    width = cms.double(0.065),
     mass = cms.double(1.9683),
 
-    preSelection = cms.string("abs(charge)==1 && abs(rapidity)< 3.05 && abs(rapidity)>1.95 && pt > 2.95"),
+    preSelection = cms.string("abs(charge)==1 && abs(rapidity)< 3.05 && abs(rapidity)>1.95 && pt > 2.95 && mass > 1.895 && mass < 2.035"),
     pocaSelection = cms.string("mass>1.895"),
     postSelection = cms.string("mass>1.905"),
-    finalSelection = cms.string("abs(userFloat('angle3D'))<0.5"),
+    finalSelection = cms.string("abs(userFloat('angle3D'))<0.45"),
     dedxInputs = cms.vstring('dedxPixelHarmonic2', 'dedxHarmonic2', 'dedxPixelHarmonic2T40', 'dedxPixelMeanT40'),
 
     mtdValueNames = cms.vstring(["tMTD", "tMTDErr", "pathLength"]),
@@ -186,7 +187,7 @@ process.DsCandidate = process.generalParticles.clone(
            ),
         cms.PSet(pdgId = cms.int32(211),
             selection = cms.string(
-              "pt>0.3 && abs(eta)<3"
+              "pt>0.4 && abs(eta)<3"
               "&& normalizedChi2<7."
               "&& quality('highPurity') && ptError/pt<0.1"
               "&& numberOfValidHits >=11"
