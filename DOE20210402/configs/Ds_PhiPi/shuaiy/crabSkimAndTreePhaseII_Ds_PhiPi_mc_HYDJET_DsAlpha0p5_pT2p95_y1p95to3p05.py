@@ -6,7 +6,7 @@ from CRABAPI.RawCommand import crabCommand
 from CRABClient.ClientExceptions import ClientException
 from httplib import HTTPException
 
-from CRABClient import getUsername
+from CRABClient.UserUtilities import getUsername
 username = getUsername()
 
 config.section_("General")
