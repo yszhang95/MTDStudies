@@ -194,6 +194,8 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
 
   std::unique_ptr<TH2D> hGenYVsPt = std::unique_ptr<TH2D>(new TH2D("hGenYVsPt", ";p_{T} (GeV);y", 200, 0, 20, 60, -3, 3));
 
+  std::string fsNames[3] = {"PionFromDs", "KaonNegFromPhi", "KaonPosFromPhi"};
+
   Hist2DMaps hTrkBetaInvVsP;
   if (doRecoGenMatch) {
     hTrkBetaInvVsP["PionFromDs"] = std::move(std::unique_ptr<TH2D>(
@@ -205,6 +207,22 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   }
   hTrkBetaInvVsP["AllTracks"] = std::move(std::unique_ptr<TH2D>(
         new TH2D("hTrkBetaInvVsPVsP", "Tracks;p (GeV);1/#beta", 200, 0., 8., 200, 0.9, 1.9)));
+
+  Hist3DMaps hDauPVsDauEtaVsDsPt[ana::nyAbs];
+  for (size_t iy=0; iy<ana::nyAbs; iy++) {
+    hDauPVsDauEtaVsDsPt[iy].insert( Hist3DMaps::value_type(
+        "PionFromDs", std::unique_ptr<TH3D>(
+          new TH3D(Form("hDauPVsDauEtaVsDsPtY%zuPion", iy), "Pion;D_{s} p_{T} (GeV);Pion #eta;Pion p (GeV)",
+            10, 0, 10, 300, -3, 3, 1000, 0, 10))));
+    hDauPVsDauEtaVsDsPt[iy].insert( Hist3DMaps::value_type(
+        "KaonPosFromPhi", std::unique_ptr<TH3D>(
+          new TH3D(Form("hDauPVsDauEtaVsDsPtY%zuPosK", iy), "K^+;D_{s} p_{T} (GeV);K^{+} #eta;K^{+} p (GeV)",
+            10, 0, 10, 300, -3, 3, 1000, 0, 10))));
+    hDauPVsDauEtaVsDsPt[iy].insert( Hist3DMaps::value_type(
+        "KaonNegFromPhi", std::unique_ptr<TH3D>(
+          new TH3D(Form("hDauPVsDauEtaVsDsPtY%zuNegK", iy), "K^-;D_{s} p_{T} (GeV);K^{-} #eta;K^{-} p (GeV)",
+            10, 0, 10, 300, -3, 3, 1000, 0, 10))));
+  }
 
   Hist3DMaps hMassVsPtVsY;
   hMassVsPtVsY["WoMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsY", "hMassVsPtVsY", 
@@ -297,6 +315,11 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
     for (size_t ireco=0; ireco<recosize; ireco++) {
       // begin Ds
       if (pdgId[ireco] == std::abs(Dsmeson.id())) {
+        auto iy = ana::whichBin(ana::ybin, std::abs(p.cand_y().at(ireco)));
+        if (iy == size_t(-1)) continue;
+        auto ipt = ana::whichBin(ana::ptbin, p.cand_pT().at(ireco));
+        if (ipt == size_t(-1)) continue;
+
         auto dauIdx = p.cand_dauIdx().at(ireco);
         // 0 for pi, 1 for phi
         auto gDauIdx = p.cand_dauIdx().at(dauIdx.at(1));
@@ -369,6 +392,11 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
           hFSpT[i]->Fill(std::get<0>(fsPars[i]).Pt());
           hFSp[i]->Fill(std::get<0>(fsPars[i]).P());
         } // pT QT end
+        // begin dau kinematic
+        for (size_t i=0; i<3; i++) {
+          (hDauPVsDauEtaVsDsPt[iy])[fsNames[i]]->Fill(p.cand_pT().at(ireco), std::get<0>(fsPars[i]).Eta(), std::get<0>(fsPars[i]).P());
+        }
+        // end dau kinematic
       } // end Ds
       // begin saveGen
       if (doRecoGenMatch && saveGen) {
@@ -390,6 +418,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   for (size_t i=0; i<3; i++) {
     hFSpT[i]->Write();
     hFSp[i]->Write();
+    for (const auto& e : hDauPVsDauEtaVsDsPt[i]) e.second->Write();
   }
   hCent->Write();
   if (saveGen) hGenYVsPt->Write();
