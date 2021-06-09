@@ -194,6 +194,8 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   std::unique_ptr<TH1D> hCent = std::unique_ptr<TH1D>(new TH1D("hCent", "Centrality:centrality", 200, 0, 100));
 
   std::unique_ptr<TH2D> hGenYVsPt = std::unique_ptr<TH2D>(new TH2D("hGenYVsPt", ";p_{T} (GeV);y", 200, 0, 20, 60, -3, 3));
+  std::unique_ptr<TH2D> hGenAbsYVsPt = std::unique_ptr<TH2D>(new TH2D("hGenAbsYVsPt", ";p_{T} (GeV);y", 20, 0, 20, 6, -3, 3));
+  std::unique_ptr<TH2D> hRecoAbsYVsPt = std::unique_ptr<TH2D>(new TH2D("hRecoAbsYVsPt", ";p_{T} (GeV);y", 20, 0, 20, 6, -3, 3));
 
   std::string fsNames[3] = {"PionFromDs", "KaonNegFromPhi", "KaonPosFromPhi"};
 
@@ -372,7 +374,6 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         topos[2] = p.cand_pT().at(dauIdx.at(0));
         topos[3] = p.cand_pT().at(gDauIdx.at(0));
         topos[4] = p.cand_pT().at(gDauIdx.at(1));
-        //if (!ana::DsCuts(ipt, iy, topos)) continue;
 
         // check reco-gen match
         bool matchGEN = true;
@@ -389,6 +390,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         }
         if (doRecoGenMatch && isSwap) continue;
         if (!matchGEN) continue;
+        hRecoAbsYVsPt->Fill(p.cand_pT().at(ireco), p.cand_y().at(ireco));
         if (doRecoGenMatch) {
           hDsMassMatch["dR0.03"]->Fill(p.cand_mass().at(ireco));
           if (doTrkQA) {
@@ -433,31 +435,48 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
           //passMTD = passMTD && checkPassPID(fsPars[i], 1.0) && i !=0 ? std::get<0>(fsPars[i]).Pt() > 0.8 : true;
           //passMTD = passMTD && checkPassPID(fsPars[i], 1.0) && std::get<0>(fsPars[i]).Pt() > 0.7;
         }
-        if (!ana::passKinematic(p.cand_pT().at(ireco), p.cand_eta().at(ireco), kins)) continue; // a sharp cut during background tree production
+        if (!ana::passKinematic(p.cand_pT().at(ireco), p.cand_y().at(ireco), kins)) continue; // a sharp cut during background tree production
         if (!ana::passTopoCuts(p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco),
               p.cand_angle3D().at(ireco), p.cand_vtxProb().at(ireco), topo)) continue; // a sharp cut during background tree production
         // check phi mass
-        ROOT::Math::PtEtaPhiMVector pNegK(std::get<0>(fsPars[1]));
-        ROOT::Math::PtEtaPhiMVector pPosK(std::get<0>(fsPars[2]));
+        //ROOT::Math::PtEtaPhiMVector pNegK(std::get<0>(fsPars[1]));
+        //ROOT::Math::PtEtaPhiMVector pPosK(std::get<0>(fsPars[2]));
         //if (std::abs((pNegK+pPosK).M()-1.0195) > 0.005) continue;
+        
+        if (std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.005) continue;
+        //if ( p.cand_pT().at(ireco) < 6 &&
+            //std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.005) continue;
+        if ( p.cand_pT().at(ireco) < 4 &&
+            std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.004) continue;
+        if ( p.cand_pT().at(ireco) < 3 &&
+            std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.003) continue;
+        // track pT cut
+        if (p.cand_pT().at(ireco)<3 && std::abs(p.cand_y().at(ireco))<1) {
+          if (p.cand_pT().at(dauIdx.at(0)) < 0.7) continue;
+          if (p.cand_pT().at(gDauIdx.at(0)) < 0.7) continue;
+          if (p.cand_pT().at(gDauIdx.at(1)) < 0.7) continue;
+        }
 
-        if (passMTD) hMassVsPtVsY["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-        hMassVsPtVsY["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+        // topo cuts
+        if (!ana::DsCuts(ipt, iy, topos)) continue;
+
+        if (passMTD) hMassVsPtVsY["WMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+        hMassVsPtVsY["WoMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
 
         // 0-10
         if (p.centrality() < 20) {
-          if (passMTD) hMassVsPtVsY_0_10["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-          hMassVsPtVsY_0_10["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+          if (passMTD) hMassVsPtVsY_0_10["WMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+          hMassVsPtVsY_0_10["WoMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
         }
         // 0-20
         if (p.centrality() < 40) {
-          if (passMTD) hMassVsPtVsY_0_20["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-          hMassVsPtVsY_0_20["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+          if (passMTD) hMassVsPtVsY_0_20["WMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+          hMassVsPtVsY_0_20["WoMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
         }
         // 30-50
         if (p.centrality() < 100 && p.centrality() >= 60) {
-          if (passMTD) hMassVsPtVsY_30_50["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-          hMassVsPtVsY_30_50["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+          if (passMTD) hMassVsPtVsY_30_50["WMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
+          hMassVsPtVsY_30_50["WoMTD"]->Fill(std::abs(p.cand_y().at(ireco)), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
         }
 
         // topo cuts studies begin
@@ -498,6 +517,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         bool sameChain = checkDecayChain(Dsmeson_copy, i, p);
         if (!sameChain) continue;
         hGenYVsPt->Fill(p.gen_pT().at(i), p.gen_y().at(i));
+        hGenAbsYVsPt->Fill(p.gen_pT().at(i), (p.gen_y().at(i)));
       }
     } // end saveGen
   } // end
@@ -517,6 +537,8 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   for (const auto& e : hTopoVsDsPtVsDsY) e.second->Write();
   hCent->Write();
   if (saveGen) hGenYVsPt->Write();
+  if (saveGen) hGenAbsYVsPt->Write();
+  hRecoAbsYVsPt->Write();
 
   return 0;
 }

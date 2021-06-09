@@ -156,7 +156,7 @@ namespace ana{
 
    // const double evts_data_MB = 500e6; // not useful
 
-   const double BR = 0.045 * 1.1; // for Ds
+   const double BR = 0.0225 * 1.1; // for Ds
 
    bool reject = true;
    Double_t f2ndpoly(Double_t *x, Double_t *par)

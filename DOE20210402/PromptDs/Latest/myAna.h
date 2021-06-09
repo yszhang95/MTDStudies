@@ -15,7 +15,7 @@ namespace ana{
    const double ptMin = 0;
    const double ptMax = 20;
 
-   const int nyAbs = 30;
+   const int nyAbs = 60;
    const double yAbsMin = 0;
    const double yAbsMax = 3;
 
@@ -30,14 +30,17 @@ namespace ana{
      return mass > mass_lw[iy] && mass < mass_up[iy];
    }
 
+   // made a mistake here but OK
    const double DsDL[npt][nyAbs] {
         {0., 0., 0.}, // 0-0.5
         {0., 0., 0.}, // 0.5-1
         {0., 0., 0.}, // 1-2
         {2., 1., 0.}, // 2-3
-        {2.4, 1., 1}, // 3-4
-        {2.8, 2.4, 2.4}, // 4-5
-        {2.8, 2.6, 2.4}, // 5-6
+        //{2.4, 1., 1}, // 3-4 // mark here
+        {3.3714, 0.29714, 0.}, // 2-3, actually is 3-4
+        {3.0971, 2.43429, 0.617142857143}, // 3-4
+        {2.8, 2.29714285714, 2.96}, // 4-5
+        {2.8, 1.89714285714, 0.96}, // 5-6
         {1.0, 2.6, 2.}, // 6-8
         {0., 1., 1.6}, // 8-10
         {0., 0., 0.}  // >10
@@ -46,10 +49,11 @@ namespace ana{
         {4., 4., 4.}, // 0-0.5
         {4., 4., 4.}, // 0.5-1
         {4., 4., 4.}, // 1-2
+        //{0.1629, 0.4395, 0.173}, // 2-3
         {4., 4., 0.18}, // 2-3
-        {0.42, 0.24, 0.1}, // 3-4
-        {0.28, 0.16, 0.1}, // 4-5
-        {0.28, 0.16, 0.08}, // 5-6
+        {0.439512195122, 0.173170731707, 0.0707317073171}, // 3-4
+        {0.28, 0.121951219512, 0.04}, // 4-5
+        {0.28, 0.14243902439, 0.0809756097561}, // 5-6
         {0.24, 0.16, 0.22}, // 6-8 // lack of statistics in forward
         {0.24, 0.12, 0.26}, // 8-10
         {4., 4., 4.}  // >10
@@ -156,7 +160,7 @@ namespace ana{
 
    // const double evts_data_MB = 500e6; // not useful
 
-   const double BR = 0.045 * 1.1; // for Ds
+   const double BR = 0.0225 * 1.1; // for Ds
 
    bool reject = true;
    Double_t f2ndpoly(Double_t *x, Double_t *par)
@@ -169,7 +173,7 @@ namespace ana{
    }
 
    const double fitRangeLw = 1.93;
-   const double fitRangeUp = 2.00;
+   const double fitRangeUp = 2.02;
 
 };
 #endif

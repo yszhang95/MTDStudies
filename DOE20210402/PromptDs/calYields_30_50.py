@@ -10,12 +10,11 @@ from array import array
 
 def calSig(yMin, yMax, pTMin, pTMax, massMin, massMax, useMTD, sFile, bFile):
   calculator.setup()
-  hsignal = calculator.getSignal(sFile, useMTD, h3scale)
+  hsignal = calculator.getSignal(sFile, useMTD, h3scale, True, 60, 100)
   #hsignal.Scale(0.35) # Ds to D0 ratio
-  (hbackground, scale) = calculator.getBackground(bFile, useMTD, True)
+  (hbackground, scale) = calculator.getBackground(bFile, useMTD, True, 60, 100, '_30_50')
   (s, serr) = calculator.getCounts(hsignal, yMin, yMax, pTMin, pTMax, massMin, massMax)
   (b, berr) = calculator.getCounts(hbackground, yMin, yMax, pTMin, pTMax, massMin, massMax)
-  print s, b
   sig = s/math.sqrt(s+b)
   sigErr = sig* math.sqrt( (serr/s - 0.5 * serr/(s+b)) **2 + ( 0.5*berr/(s+b) )**2 )
   hsignal.Delete()
@@ -26,14 +25,14 @@ def calSig(yMin, yMax, pTMin, pTMax, massMin, massMax, useMTD, sFile, bFile):
 
 calculator.setup()
 sfile = 'output/Ds_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'
-h3scale = calculator.scaleHist(5.6, 'CMS-D0.root', 'Table 3/Hist1D_y1', sfile, 'hGenYVsPt', -1., 1.)
+h3scale = calculator.scaleHistByYields('Alice-D0.root', 'Table 5/Hist1D_y1', sfile, 'hGenYVsPt', -0.5, 0.5)
 
 bfiles = { 'pT2p95'  : [ 'output/DsHydJets_pT2p95_y0to1p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT2p95_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT2p95_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'],
-  'pT0to3p05' : ['output_9MeV/DsHydJets_pT0to3p05_y0to1p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT0to3p05_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT0to3p05_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root']
+  'output/DsHydJets_pT2p95_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
+  'output/DsHydJets_pT2p95_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'],
+  'pT0to3p05' : ['output/DsHydJets_pT0to3p05_y0to1p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
+  'output/DsHydJets_pT0to3p05_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
+  'output/DsHydJets_pT0to3p05_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root']
   }
 
 yRanges = ['0to1', '1to2', '2to3']
@@ -115,7 +114,7 @@ for kf, vf in bfiles.items():
       bValue['noMTD'][kf][yrange].append(bNoMTD)
       bErr['noMTD'][kf][yrange].append(berrNoMTD)
 
-ofile = r.TFile('sig_MB.root', "recreate")
+ofile = r.TFile('sig_30_50.root', "recreate")
 for yrange in yRanges:
   x = pTValue["pT0to3p05"][yrange] + pTValue["pT2p95"][yrange]
   xerr = pTErr["pT0to3p05"][yrange] + pTErr["pT2p95"][yrange]

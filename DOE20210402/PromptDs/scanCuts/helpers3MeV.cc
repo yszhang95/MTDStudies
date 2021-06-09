@@ -439,7 +439,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         // check phi mass
         ROOT::Math::PtEtaPhiMVector pNegK(std::get<0>(fsPars[1]));
         ROOT::Math::PtEtaPhiMVector pPosK(std::get<0>(fsPars[2]));
-        //if (std::abs((pNegK+pPosK).M()-1.0195) > 0.005) continue;
+        if (std::abs((pNegK+pPosK).M()-1.0195) > 0.003) continue;
 
         if (passMTD) hMassVsPtVsY["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
         hMassVsPtVsY["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));

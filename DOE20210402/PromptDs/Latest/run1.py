@@ -11,17 +11,9 @@ Ds.addDaughter(Phi)
 
 #topoCut = r.ana.TopoCut(0.0, 99999., 0.6, 0.0) # old
 topoCut = r.ana.TopoCut(0.0, 99999., 0.45, 0.0)
-kinsCut = r.ana.KineCut(0., 1000., 0., 3.)
+kinsCut = r.ana.KineCut(2., 1000., 0., 3.)
 
 ts = r.TStopwatch()
-ts.Start()
-r.genMatchFSDsMass('Ds.list', 'ds_ana_mc', Ds, topoCut, kinsCut, -1, True, True, True)
-ts.Stop()
-ts.Print()
-ts.Start()
-r.genMatchFSDsMass('DsHydJets_pT2p95_y0to1p05.list', 'ds_ana_mc', Ds, topoCut, kinsCut, -1, False, False, False)
-ts.Stop()
-ts.Print()
 ts.Start()
 r.genMatchFSDsMass('DsHydJets_pT0to3p05_y0to1p05.list', 'ds_ana_mc', Ds, topoCut, kinsCut, -1, False, False, False)
 ts.Stop()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-sys.path.append('../../Utilities/Ana/')
+sys.path.append('../../../Utilities/Ana/')
 
 import math
 import calculator
@@ -10,18 +10,20 @@ from array import array
 
 def calSig(yMin, yMax, pTMin, pTMax, massMin, massMax, useMTD, sFile, bFile):
   calculator.setup()
-  hsignal = calculator.getSignal(sFile, useMTD, h3scale)
+  hsignal = calculator.getSignal(sFile, useMTD, h3scale, True, 0, 200)
   #hsignal.Scale(0.35) # Ds to D0 ratio
-  (hbackground, scale) = calculator.getBackground(bFile, useMTD, True)
+  (hbackground, scale) = calculator.getBackground(bFile, useMTD, True, 0, 200, '')
+  #print "s"
   (s, serr) = calculator.getCounts(hsignal, yMin, yMax, pTMin, pTMax, massMin, massMax)
+  #print "b"
   (b, berr) = calculator.getCounts(hbackground, yMin, yMax, pTMin, pTMax, massMin, massMax)
-  print s, b
   sig = s/math.sqrt(s+b)
   sigErr = sig* math.sqrt( (serr/s - 0.5 * serr/(s+b)) **2 + ( 0.5*berr/(s+b) )**2 )
   hsignal.Delete()
   hbackground.Delete()
   ss = "wMTD" if useMTD else 'woMTD'
   #print ss, pTMin, pTMax, sig, sigErr, s, s/serr, b, b/berr
+  #print ss, scale
   return (sig, sigErr, s, serr, b, berr)
 
 calculator.setup()
@@ -29,18 +31,20 @@ sfile = 'output/Ds_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'
 h3scale = calculator.scaleHist(5.6, 'CMS-D0.root', 'Table 3/Hist1D_y1', sfile, 'hGenYVsPt', -1., 1.)
 
 bfiles = { 'pT2p95'  : [ 'output/DsHydJets_pT2p95_y0to1p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT2p95_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT2p95_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'],
-  'pT0to3p05' : ['output_9MeV/DsHydJets_pT0to3p05_y0to1p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT0to3p05_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
-  'output_9MeV/DsHydJets_pT0to3p05_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root']
+  'output/DsHydJets_pT2p95_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
+  'output/DsHydJets_pT2p95_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'],
+  'pT0to3p05' : ['output/DsHydJets_pT0to3p05_y0to1p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
+  'output/DsHydJets_pT0to3p05_y0p95to2p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root',
+  'output/DsHydJets_pT0to3p05_y1p95to3p05_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root']
   }
 
 yRanges = ['0to1', '1to2', '2to3']
 yMinEdges = [0., 1, 2]
 yMaxEdges = [1., 2, 3]
-ptMinEdges = { 'pT2p95' : [3., 4., 5., 6., 7., 8.], 'pT0to3p05' : [1, 2.]}
-ptMaxEdges = { 'pT2p95' : [4., 5., 6., 7., 8., 10.], 'pT0to3p05' : [2, 3.]}
+#ptMinEdges = { 'pT2p95' : [3., 4., 5., 6., 7., 8.], 'pT0to3p05' : [2.]}
+#ptMaxEdges = { 'pT2p95' : [4., 5., 6., 7., 8., 10.], 'pT0to3p05' : [3.]}
+ptMinEdges = { 'pT2p95' : [3., 4., 5., 6., 8.], 'pT0to3p05' : [2.]}
+ptMaxEdges = { 'pT2p95' : [4., 5., 6., 8., 10.], 'pT0to3p05' : [3.]}
 
 sfile = 'output/Ds_ds_ana_mc_AllEntries_Ds_PhiPi_BottomToTop.root'
 
@@ -94,7 +98,8 @@ for kf, vf in bfiles.items():
 
     for pTMin, pTMax in zip(ptMinEdges[kf], ptMaxEdges[kf]):
       masslw = 1.96
-      massup = 1.978
+      massup = 1.979
+      #print pTMin, pTMax
       (sig, err, s, serr, b, berr) = calSig(yMin, yMax, pTMin, pTMax, masslw, massup, True, sfile, f)
       (sigNoMTD, errNoMTD, sNoMTD, serrNoMTD, bNoMTD, berrNoMTD) = calSig(yMin, yMax, pTMin, pTMax, masslw, massup, False, sfile, f)
       pTValue[kf][yrange].append((pTMax+pTMin)/2.)

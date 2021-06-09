@@ -13,7 +13,6 @@
 #include "Math/GenVector/LorentzVector.h"
 #include "Math/GenVector/PtEtaPhiM4D.h"
 #include "Math/GenVector/VectorUtil.h"
-#include "Math/Vector4Dfwd.h"
 #include "TMath.h"
 #include "TChain.h"
 #include "TFileCollection.h"
@@ -26,7 +25,7 @@
 
 #include "TreeReader/ParticleTreeMC2.hxx"
 #include "Ana/Common.h"
-#include "Ana/TreeHelpers.h"
+#include "TreeHelpers.h"
 
 #include "myAna.h"
 
@@ -104,7 +103,6 @@ int genMatchDsMass(const TString& inputList, const TString& treeDir,
         bool matchGEN = false;
         auto dauIdx = p.cand_dauIdx().at(ireco);
         // 0 for pi, 1 for phi
-        auto gDauIdx = p.cand_dauIdx().at(dauIdx.at(1));
 
         std::vector<PtEtaPhiM_t> p4FS;
         p4FS.push_back(getRecoDauP4(ireco, 0, p)); // pi from Ds
@@ -226,11 +224,13 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   }
   Hist3DMaps hTopoVsDsPtVsDsY;
   hTopoVsDsPtVsDsY["angleDs"] = std::make_unique<TH3D>("hAngleDsVsDsPtVsDsY", "3D angle;Ds y;Ds pT;Ds angle3D",
-      6, 0, 3, 20, 0, 20, 50, 0, 0.5);
-  hTopoVsDsPtVsDsY["anglePhi"] = std::make_unique<TH3D>("hAnglePhiVsDsPtVsDsY", "3D angle;Ds y;Ds pT;Phi angle3D",
       6, 0, 3, 20, 0, 20, 80, 0, 4);
+  hTopoVsDsPtVsDsY["anglePhi"] = std::make_unique<TH3D>("hAnglePhiVsDsPtVsDsY", "3D angle;Ds y;Ds pT;Phi angle3D",
+      6, 0, 3, 20, 0, 20, 50, 0, 1);
   hTopoVsDsPtVsDsY["DsDL"] = std::make_unique<TH3D>("hDLDsVsDsPtVsDsY", "3D DL;Ds y;Ds pT;Ds DL sig.",
       6, 0, 3, 20, 0, 20, 80, 0, 4);
+  hTopoVsDsPtVsDsY["VtxProb"] = std::make_unique<TH3D>("hVtxProbVsDsPtVsDsY", "VtxProb;Ds y;Ds pT;Ds VtxProb.",
+      6, 0, 3, 20, 0, 20, 100, 0, 1);
   hTopoVsDsPtVsDsY["PhiDL"] = std::make_unique<TH3D>("hDLPhiVsDsPtVsDsY", "3D DL;Ds y;Ds pT;Phi DL sig.",
       6, 0, 3, 20, 0, 20, 80, 0, 4);
   hTopoVsDsPtVsDsY["PionPt"] = std::make_unique<TH3D>("hPionPtVsDsPtVsDsY", "Pion Pt;Ds y;Ds pT;Pion Pt",
@@ -239,30 +239,11 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
       6, 0, 3, 20, 0, 20, 6, 0.4, 1.0);
   hTopoVsDsPtVsDsY["NegKPt"] = std::make_unique<TH3D>("hNegKPtVsDsPtVsDsY", "NegK Pt;Ds y;Ds pT;NegK Pt",
       6, 0, 3, 20, 0, 20, 6, 0.4, 1.0);
-  hTopoVsDsPtVsDsY["PhiMass"] = std::make_unique<TH3D>("hPhiMassVsDsPtVsDsY", "Phi mass;Ds y;Ds pT;Phi mass",
-      6, 0, 3, 20, 0, 20, 20, 0, 0.01);
-  hTopoVsDsPtVsDsY["VtxProb"] = std::make_unique<TH3D>("hVtxProbVsDsPtVsDsY", "Vtx Prob;Ds y;Ds pT;Vtx Prob",
-      6, 0, 3, 20, 0, 20, 20, 0, 1);
-  hTopoVsDsPtVsDsY["VtxProbPhi"] = std::make_unique<TH3D>("hVtxProbPhiVsDsPtVsDsY", "Vtx Prob;Ds y;Ds pT;Phi Vtx Prob",
-      6, 0, 3, 20, 0, 20, 20, 0, 1);
 
-  Hist3DMaps hMassVsPtVsY, hMassVsPtVsY_0_10, hMassVsPtVsY_0_20, hMassVsPtVsY_30_50;
+  Hist3DMaps hMassVsPtVsY;
   hMassVsPtVsY["WoMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsY", "hMassVsPtVsY", 
       ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-  hMassVsPtVsY_0_10["WoMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsY_0_10", "hMassVsPtVsY_0_10", 
-      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-  hMassVsPtVsY_0_20["WoMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsY_0_20", "hMassVsPtVsY_0_20", 
-      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-  hMassVsPtVsY_30_50["WoMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsY_30_50", "hMassVsPtVsY_30_50", 
-      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-
-  hMassVsPtVsY["WMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
-      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-  hMassVsPtVsY_0_10["WMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsYMtd_0_10", "hMassVsPtVsYMtd_0_10", 
-      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-  hMassVsPtVsY_0_20["WMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsYMtd_0_20", "hMassVsPtVsYMtd_0_20", 
-      ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
-  hMassVsPtVsY_30_50["WMTD"] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsYMtd_30_50", "hMassVsPtVsYMtd_30_50", 
+  hMassVsPtVsY["WMTD" ] = std::move(std::unique_ptr<TH3D>(new TH3D("hMassVsPtVsYMtd", "hMassVsPtVsYMtd", 
       ana::nyAbs, ana::yAbsMin, ana::yAbsMax, ana::npt, ana::ptMin, ana::ptMax, ana::nmass, ana::massMin, ana::massMax)));
 
   std::unique_ptr<TH1D> hFSpT[3];
@@ -273,6 +254,8 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   hFSp[0] = std::move(std::unique_ptr<TH1D>(new TH1D("hPi_p", "Pi;p;", 100, 0, 10)));
   hFSp[1] = std::move(std::unique_ptr<TH1D>(new TH1D("hNegK_p", "Pi;p;", 100, 0, 10)));
   hFSp[2] = std::move(std::unique_ptr<TH1D>(new TH1D("hPosK_p", "Pi;p;", 100, 0, 10)));
+
+  std::unique_ptr<TH1D> hPhiMass(new TH1D("hPhiMass", "PhiMass;Mass;", 100, 1.0195-0.01, 1.0195+0.01));
 
   Long64_t nMultipleMatch = 0;
   for (Long64_t ientry=0; ientry<nentries; ientry++) {
@@ -302,6 +285,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
     map<size_t, PtEtaPhiM_t> p4GenFS;
     for (size_t igen=0; igen<gensize; igen++) {
       if (!doRecoGenMatch) break;
+      if (abs(gen_pdgId[igen]) == 211) p4GenFS[igen] = getGenP4(igen, p);
       if (abs(gen_pdgId[igen]) != std::abs(Dsmeson.id())) continue;
       auto gen_dauIdx = p.gen_dauIdx().at(igen);
       Particle Dsmeson_copy(Dsmeson);
@@ -316,6 +300,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
       if (!doRecoGenMatch) break;
       if (p.cand_status().at(ireco) != 1) continue; // stable
       p4RecoFS[ireco] = getRecoP4(ireco, p);
+          //cout << "A stable" << p.cand_pdgId().at(ireco) << endl;
     }
 
     vector<bool> recoLock(recosize, 0);
@@ -357,35 +342,19 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
 
         auto dauIdx = p.cand_dauIdx().at(ireco);
         // 0 for pi, 1 for phi
-        auto gDauIdx = p.cand_dauIdx().at(dauIdx.at(1));
-
-        // check tracks
-        bool passTrack = ana::passTrackKinematicCuts(p.cand_eta().at(dauIdx.at(0)), p.cand_pT().at(dauIdx.at(0)))
-                        && ana::passTrackKinematicCuts(p.cand_eta().at(gDauIdx.at(0)), p.cand_pT().at(gDauIdx.at(0)))
-                        && ana::passTrackKinematicCuts(p.cand_eta().at(gDauIdx.at(1)), p.cand_pT().at(gDauIdx.at(1)));
-        if (!passTrack) continue;
-
-        // check topo variable
-        double topos[5];
-        topos[0] = p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco);
-        topos[1] = p.cand_angle3D().at(ireco);
-        topos[2] = p.cand_pT().at(dauIdx.at(0));
-        topos[3] = p.cand_pT().at(gDauIdx.at(0));
-        topos[4] = p.cand_pT().at(gDauIdx.at(1));
-        //if (!ana::DsCuts(ipt, iy, topos)) continue;
 
         // check reco-gen match
         bool matchGEN = true;
         bool isSwap = false;
         if (doRecoGenMatch) {
           matchGEN = matchGEN && ( matchPairs.find( dauIdx.at(0) ) != matchPairs.end() );
-          matchGEN = matchGEN && ( matchPairs.find( gDauIdx.at(0) ) != matchPairs.end() );
-          matchGEN = matchGEN && ( matchPairs.find( gDauIdx.at(1) ) != matchPairs.end() );
+          matchGEN = matchGEN && ( matchPairs.find( dauIdx.at(1) ) != matchPairs.end() );
+          matchGEN = matchGEN && ( matchPairs.find( dauIdx.at(2) ) != matchPairs.end() );
         }
         if (doRecoGenMatch && matchGEN) {
           isSwap = isSwap || abs(ana::massPion - p.gen_mass().at(matchPairs.at(dauIdx.at(0)))) > 0.05;
-          isSwap = isSwap || abs(ana::massKaon - p.gen_mass().at(matchPairs.at(gDauIdx.at(0)))) > 0.05;
-          isSwap = isSwap || abs(ana::massKaon - p.gen_mass().at(matchPairs.at(gDauIdx.at(1)))) > 0.05;
+          isSwap = isSwap || abs(ana::massKaon - p.gen_mass().at(matchPairs.at(dauIdx.at(1)))) > 0.05;
+          isSwap = isSwap || abs(ana::massKaon - p.gen_mass().at(matchPairs.at(dauIdx.at(2)))) > 0.05;
         }
         if (doRecoGenMatch && isSwap) continue;
         if (!matchGEN) continue;
@@ -399,13 +368,13 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
               hTrkBetaInvVsP["PionFromDs"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
             }
             {// K+
-              double mom = p.cand_pT().at(gDauIdx.at(1)) * std::cosh(p.cand_eta().at(gDauIdx.at(1)));
-              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(1));
+              double mom = p.cand_pT().at(dauIdx.at(2)) * std::cosh(p.cand_eta().at(dauIdx.at(2)));
+              auto trkIdx = p.cand_trkIdx().at(dauIdx.at(2));
               hTrkBetaInvVsP["KaonPosFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
             }
             {// K-
-              double mom = p.cand_pT().at(gDauIdx.at(0)) * std::cosh(p.cand_eta().at(gDauIdx.at(0)));
-              auto trkIdx = p.cand_trkIdx().at(gDauIdx.at(0));
+              double mom = p.cand_pT().at(dauIdx.at(1)) * std::cosh(p.cand_eta().at(dauIdx.at(1)));
+              auto trkIdx = p.cand_trkIdx().at(dauIdx.at(1));
               hTrkBetaInvVsP["KaonNegFromPhi"]->Fill(mom, 1./p.trk_beta().at(trkIdx));
             }
             // track QA end
@@ -419,8 +388,8 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         double masses[3] = {ana::massPion, ana::massKaon, ana::massKaon}; // optimize later
         // pi from Ds
         fsIdx [0] = dauIdx.at(0); // pi from Ds
-        fsIdx [1] = gDauIdx.at(0); // K- from  phi
-        fsIdx [2] = gDauIdx.at(1); // K+ from  phi
+        fsIdx [1] = dauIdx.at(1); // K- from  phi
+        fsIdx [2] = dauIdx.at(2); // K+ from  phi
         for (int i=0; i<3; i++) {
           trkIdx[i] = p.cand_trkIdx().at(fsIdx[i]);
           fsPars.push_back(std::make_tuple(PtEtaPhiM_t(p.cand_pT().at(fsIdx[i]), p.cand_eta().at(fsIdx[i]), p.cand_phi().at(fsIdx[i]), masses[i]), ids[i],
@@ -430,52 +399,27 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         bool passMTD = true;
         for (size_t i=0; i<3; i++) {
           passMTD = passMTD && checkPassPID(fsPars[i], 1.0);
-          //passMTD = passMTD && checkPassPID(fsPars[i], 1.0) && i !=0 ? std::get<0>(fsPars[i]).Pt() > 0.8 : true;
-          //passMTD = passMTD && checkPassPID(fsPars[i], 1.0) && std::get<0>(fsPars[i]).Pt() > 0.7;
+          //passMTD = passMTD && checkPassPID(fsPars[i], 1.0) && std::get<0>(fsPars[i]).Pt() > 0.5;
         }
         if (!ana::passKinematic(p.cand_pT().at(ireco), p.cand_eta().at(ireco), kins)) continue; // a sharp cut during background tree production
         if (!ana::passTopoCuts(p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco),
               p.cand_angle3D().at(ireco), p.cand_vtxProb().at(ireco), topo)) continue; // a sharp cut during background tree production
-        // check phi mass
-        ROOT::Math::PtEtaPhiMVector pNegK(std::get<0>(fsPars[1]));
-        ROOT::Math::PtEtaPhiMVector pPosK(std::get<0>(fsPars[2]));
-        //if (std::abs((pNegK+pPosK).M()-1.0195) > 0.005) continue;
 
         if (passMTD) hMassVsPtVsY["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
         hMassVsPtVsY["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-
-        // 0-10
-        if (p.centrality() < 20) {
-          if (passMTD) hMassVsPtVsY_0_10["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-          hMassVsPtVsY_0_10["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-        }
-        // 0-20
-        if (p.centrality() < 40) {
-          if (passMTD) hMassVsPtVsY_0_20["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-          hMassVsPtVsY_0_20["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-        }
-        // 30-50
-        if (p.centrality() < 100 && p.centrality() >= 60) {
-          if (passMTD) hMassVsPtVsY_30_50["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-          hMassVsPtVsY_30_50["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
-        }
-
         // topo cuts studies begin
         if (passMTD && ana::isFWHM(p.cand_mass().at(ireco), iy)) {
-          if (doRecoGenMatch || p.centrality() < 20) {
-            hTopoVsDsPtVsDsY["angleDs"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_angle3D().at(ireco));
-            hTopoVsDsPtVsDsY["anglePhi"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_angle3D().at(dauIdx.at(1)));
-            hTopoVsDsPtVsDsY["DsDL"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco),
-                p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco));
-            hTopoVsDsPtVsDsY["PhiDL"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco),
-                p.cand_decayLength3D().at(dauIdx.at(1))/p.cand_decayLengthError3D().at(dauIdx.at(1)));
-            hTopoVsDsPtVsDsY["PionPt"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_pT().at(dauIdx.at(0)));
-            hTopoVsDsPtVsDsY["NegKPt"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_pT().at(gDauIdx.at(0)));
-            hTopoVsDsPtVsDsY["PosKPt"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_pT().at(gDauIdx.at(1)));
-            hTopoVsDsPtVsDsY["PhiMass"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195));
-            hTopoVsDsPtVsDsY["VtxProb"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_vtxProb().at(ireco));
-            hTopoVsDsPtVsDsY["VtxProbPhi"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_vtxProb().at(dauIdx.at(1)));
-          }
+          hTopoVsDsPtVsDsY["angleDs"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_angle3D().at(ireco));
+          hTopoVsDsPtVsDsY["anglePhi"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), std::abs(std::cos(p.cand_angle3D().at(dauIdx.at(1)))));
+          hTopoVsDsPtVsDsY["DsDL"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco),
+              p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco));
+          hTopoVsDsPtVsDsY["VtxProb"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco),
+              p.cand_vtxProb().at(ireco));
+          hTopoVsDsPtVsDsY["PhiDL"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco),
+              p.cand_decayLength3D().at(dauIdx.at(1))/p.cand_decayLengthError3D().at(dauIdx.at(1)));
+          hTopoVsDsPtVsDsY["PionPt"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_pT().at(dauIdx.at(0)));
+          hTopoVsDsPtVsDsY["NegKPt"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_pT().at(dauIdx.at(1)));
+          hTopoVsDsPtVsDsY["PosKPt"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_pT().at(dauIdx.at(2)));
         }
         // topo cuts studies end
         // pT QR
@@ -488,6 +432,16 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
           (hDauPVsDauEtaVsDsPt[iy])[fsNames[i]]->Fill(p.cand_pT().at(ireco), std::get<0>(fsPars[i]).Eta(), std::get<0>(fsPars[i]).P());
         }
         // end dau kinematic
+        // phi mass
+        auto temp1 = std::get<0>(fsPars[1]);
+        auto temp2 = std::get<0>(fsPars[2]);
+        auto tempE = temp1.E()+temp2.E();
+        auto tempPx = temp1.Px()+temp2.Px();
+        auto tempPy = temp1.Py()+temp2.Py();
+        auto tempPz = temp1.Pz()+temp2.Pz();
+        auto tempM = std::sqrt(tempE*tempE - tempPx*tempPx - tempPy*tempPy - tempPz*tempPz);
+        hPhiMass->Fill(tempM);
+        // end phi mass
       } // end Ds
     }
     // begin saveGen
@@ -506,9 +460,6 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   for (const auto& e : hDsMassMatch) e.second->Write();
   for (const auto& e : hTrkBetaInvVsP) e.second->Write();
   for (const auto& e : hMassVsPtVsY) e.second->Write();
-  for (const auto& e : hMassVsPtVsY_0_10) e.second->Write();
-  for (const auto& e : hMassVsPtVsY_0_20) e.second->Write();
-  for (const auto& e : hMassVsPtVsY_30_50) e.second->Write();
   for (size_t i=0; i<3; i++) {
     hFSpT[i]->Write();
     hFSp[i]->Write();
@@ -517,6 +468,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   for (const auto& e : hTopoVsDsPtVsDsY) e.second->Write();
   hCent->Write();
   if (saveGen) hGenYVsPt->Write();
+  hPhiMass->Write();
 
   return 0;
 }

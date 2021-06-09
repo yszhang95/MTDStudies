@@ -65,7 +65,7 @@ int genMatchDsMass(const TString& inputList, const TString& treeDir,
   basename += sortByPt ? "sortBydPt_" : "";
   basename += sortByR  ? "sortBydR_"  : "";
   basename += "Ds_PhiPi.root";
-  TFile ofile("output/"+basename, "recreate");
+  TFile ofile("output_new/"+basename, "recreate");
   cout << "Created " << ofile.GetName() << endl;
 
   TFileCollection tf("tf", "", inputList);
@@ -173,7 +173,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
   basename += sortByPt ? "sortBydPt_" : "";
   basename += sortByR  ? "sortBydR_"  : "";
   basename += "Ds_PhiPi_BottomToTop.root";
-  TFile ofile("output/"+basename, "recreate");
+  TFile ofile("output_new/"+basename, "recreate");
   cout << "Created " << ofile.GetName() << endl;
 
   TFileCollection tf("tf", "", inputList);
@@ -363,7 +363,7 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         bool passTrack = ana::passTrackKinematicCuts(p.cand_eta().at(dauIdx.at(0)), p.cand_pT().at(dauIdx.at(0)))
                         && ana::passTrackKinematicCuts(p.cand_eta().at(gDauIdx.at(0)), p.cand_pT().at(gDauIdx.at(0)))
                         && ana::passTrackKinematicCuts(p.cand_eta().at(gDauIdx.at(1)), p.cand_pT().at(gDauIdx.at(1)));
-        if (!passTrack) continue;
+        //if (!passTrack) continue;
 
         // check topo variable
         double topos[5];
@@ -372,7 +372,6 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         topos[2] = p.cand_pT().at(dauIdx.at(0));
         topos[3] = p.cand_pT().at(gDauIdx.at(0));
         topos[4] = p.cand_pT().at(gDauIdx.at(1));
-        //if (!ana::DsCuts(ipt, iy, topos)) continue;
 
         // check reco-gen match
         bool matchGEN = true;
@@ -437,9 +436,23 @@ int genMatchFSDsMass(const TString& inputList, const TString& treeDir,
         if (!ana::passTopoCuts(p.cand_decayLength3D().at(ireco)/p.cand_decayLengthError3D().at(ireco),
               p.cand_angle3D().at(ireco), p.cand_vtxProb().at(ireco), topo)) continue; // a sharp cut during background tree production
         // check phi mass
-        ROOT::Math::PtEtaPhiMVector pNegK(std::get<0>(fsPars[1]));
-        ROOT::Math::PtEtaPhiMVector pPosK(std::get<0>(fsPars[2]));
+        //ROOT::Math::PtEtaPhiMVector pNegK(std::get<0>(fsPars[1]));
+        //ROOT::Math::PtEtaPhiMVector pPosK(std::get<0>(fsPars[2]));
         //if (std::abs((pNegK+pPosK).M()-1.0195) > 0.005) continue;
+        if (std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.005) continue;
+        if ( p.cand_pT().at(ireco) < 4 &&
+            std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.004) continue;
+        if ( p.cand_pT().at(ireco) < 3 &&
+            std::abs(p.cand_mass().at(dauIdx.at(1))-1.0195) > 0.003) continue;
+        // track pT cut
+        if (p.cand_pT().at(ireco)<3 && std::abs(p.cand_y().at(ireco))<1) {
+          if (p.cand_pT().at(dauIdx.at(0)) < 0.7) continue;
+          if (p.cand_pT().at(gDauIdx.at(0)) < 0.7) continue;
+          if (p.cand_pT().at(gDauIdx.at(1)) < 0.7) continue;
+        }
+
+        // topo cuts
+        if (!ana::DsCuts(ipt, iy, topos)) continue;
 
         if (passMTD) hMassVsPtVsY["WMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
         hMassVsPtVsY["WoMTD"]->Fill(p.cand_y().at(ireco), p.cand_pT().at(ireco), p.cand_mass().at(ireco));
