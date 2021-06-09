@@ -16,7 +16,9 @@ def getMassDistri(h3, yMin, yMax, pTMin, pTMax, postfix=''):
   pTBinMin = h3.GetYaxis().FindBin(pTMin)
   pTBinMax = h3.GetYaxis().FindBin(pTMax) - 1
 
-  h = h3.ProjectionZ("hMass_pT%.1f_%.1f_y%.1f_%.1f_%s" % (pTMin, pTMax, yMin, yMax, postfix))
+  h = h3.ProjectionZ("hMass_pT%.1f_%.1f_y%.1f_%.1f_%s" %\
+      (pTMin, pTMax, yMin, yMax, postfix),\
+      yBinMin, yBinMax, pTBinMin, pTBinMax)
   return h
 
 def fitRawSignal(h, *pars):

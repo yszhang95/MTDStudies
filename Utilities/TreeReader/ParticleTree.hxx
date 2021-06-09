@@ -73,8 +73,6 @@ class ParticleTree {
     std::vector<std::vector<float>>& cand_phiDau() const {return *_cand_phiDau; }
     std::vector<bool>&    trk_isHP() const { return *_trk_isHP; }
     std::vector<unsigned short>& trk_nHit() const { return *_trk_nHit; }
-    std::vector<float>&   trk_dEdx_dedxHarmonic2() const { return *_trk_dEdx_dedxHarmonic2; }
-    std::vector<float>&   trk_dEdx_dedxPixelHarmonic2() const { return *_trk_dEdx_dedxPixelHarmonic2; }
     std::vector<float>&   trk_nChi2() const { return *_trk_nChi2; }
     std::vector<float>&   trk_pTErr() const { return *_trk_pTErr; }
     std::vector<float>&   trk_xyDCASignificance() const { return *_trk_xyDCASignificance; }
@@ -138,8 +136,6 @@ class ParticleTree {
     std::vector<std::vector<float> > *_cand_phiDau;
     std::vector<bool>    *_trk_isHP;
     std::vector<unsigned short> *_trk_nHit;
-    std::vector<float>   *_trk_dEdx_dedxHarmonic2;
-    std::vector<float>   *_trk_dEdx_dedxPixelHarmonic2;
     std::vector<float>   *_trk_nChi2;
     std::vector<float>   *_trk_pTErr;
     std::vector<float>   *_trk_xyDCASignificance;
@@ -193,8 +189,6 @@ class ParticleTree {
     TBranch        *b_cand_phiDau;   //!
     TBranch        *b_trk_isHP;   //!
     TBranch        *b_trk_nHit;   //!
-    TBranch        *b_trk_dEdx_dedxHarmonic2;   //!
-    TBranch        *b_trk_dEdx_dedxPixelHarmonic2;   //!
     TBranch        *b_trk_nChi2;   //!
     TBranch        *b_trk_pTErr;   //!
     TBranch        *b_trk_xyDCASignificance;   //!

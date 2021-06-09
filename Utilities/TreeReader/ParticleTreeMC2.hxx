@@ -32,6 +32,11 @@ class ParticleTreeMC2 : public ParticleTreeMC {
     std::vector<float>&   trk_tMTD()       const { return *_trk_tMTD;       }
     std::vector<float>&   trk_tMTDErr()    const { return *_trk_tMTDErr;    }
 
+    std::vector<float>&   trk_dEdx_dedxHarmonic2() const { return *_trk_dEdx_dedxHarmonic2; }
+    std::vector<float>&   trk_dEdx_dedxPixelHarmonic2() const { return *_trk_dEdx_dedxPixelHarmonic2; }
+    std::vector<float>&   trk_dEdx_dedxPixelHarmonic2T40() const { return *_trk_dEdx_dedxPixelHarmonic2T40; }
+    std::vector<float>&   trk_dEdx_dedxPixelMeanT40() const { return *_trk_dEdx_dedxPixelMeanT40; }
+
   private:
     TTree          *fChain;   //!pointer to the analyzed TTree or TChain
     Int_t           fCurrent; //!current Tree number in a TChain
@@ -49,6 +54,11 @@ class ParticleTreeMC2 : public ParticleTreeMC {
     std::vector<float>   *_trk_tMTD;
     std::vector<float>   *_trk_tMTDErr;
 
+    std::vector<float>   *_trk_dEdx_dedxHarmonic2;
+    std::vector<float>   *_trk_dEdx_dedxPixelHarmonic2;
+    std::vector<float>   *_trk_dEdx_dedxPixelHarmonic2T40;
+    std::vector<float>   *_trk_dEdx_dedxPixelMeanT40;
+
     // List of branches
     TBranch        *b_bestvtxT;   //!
     TBranch        *b_bestvtxTerr;   //!
@@ -59,6 +69,11 @@ class ParticleTreeMC2 : public ParticleTreeMC {
     TBranch        *b_trk_pathLength;   //!
     TBranch        *b_trk_tMTD;   //!
     TBranch        *b_trk_tMTDErr;   //!
+
+    TBranch        *b_trk_dEdx_dedxHarmonic2;   //!
+    TBranch        *b_trk_dEdx_dedxPixelHarmonic2;   //!
+    TBranch        *b_trk_dEdx_dedxPixelHarmonic2T40;   //!
+    TBranch        *b_trk_dEdx_dedxPixelMeanT40;   //!
 
     virtual void     Init(TTree *tree);
 };

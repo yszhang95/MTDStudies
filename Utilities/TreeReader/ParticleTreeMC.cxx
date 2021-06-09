@@ -64,8 +64,12 @@ void ParticleTreeMC::Init(TTree *tree)
   fChain->SetMakeClass(1);
 
   fChain->SetBranchAddress("Ntrkgen", &_Ntrkgen, &b_Ntrkgen);
-  fChain->SetBranchAddress("genWeight", &_genWeight, &b_genWeight);
-  fChain->SetBranchAddress("pTHat", &_pTHat, &b_pTHat);
+  if (!fChain->GetBranch("genWeight")) {
+    //fChain->SetBranchAddress("genWeight", &_genWeight, &b_genWeight);
+  }
+  if (!fChain->GetBranch("pTHat")) {
+    //fChain->SetBranchAddress("pTHat", &_pTHat, &b_pTHat);
+  }
   fChain->SetBranchAddress("cand_matchGEN", &_cand_matchGEN, &b_cand_matchGEN);
   fChain->SetBranchAddress("cand_momMatchGEN", &_cand_momMatchGEN, &b_cand_momMatchGEN);
   fChain->SetBranchAddress("cand_genPdgId", &_cand_genPdgId, &b_cand_genPdgId);

@@ -14,6 +14,8 @@ $(LIB)/libMyTreeReader.so: \
 	$(TreeReaderDir)/ParticleTreeMC2.cxx \
 	$(TreeReaderDir)/ParticleTreeMC.cxx \
 	$(TreeReaderDir)/ParticleTree.cxx \
+	Ana/TreeHelpers.cc \
+	Ana/Common.cc \
 	$(LIB)/MyTreeReaderDict.cxx
 	$(CXX) -shared -o $@ $(CXXFLAGS) $(LDFLAGS) $^
 
@@ -21,6 +23,8 @@ $(LIB)/MyTreeReaderDict.cxx: \
 	$(TreeReaderDir)/ParticleTreeMC2.hxx \
 	$(TreeReaderDir)/ParticleTreeMC.hxx \
 	$(TreeReaderDir)/ParticleTree.hxx \
+	Ana/TreeHelpers.h \
+	Ana/Common.h \
 	Linkdef.h
 	rootcling -f $@ -rmf $(LIB)/MyTreeReaderDict.rootmap -rml $(LIB)/libMyTreeReader.so $^
 

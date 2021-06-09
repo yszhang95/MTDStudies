@@ -41,6 +41,11 @@ void ParticleTreeMC2::Init(TTree *tree)
   _trk_tMTD = 0;
   _trk_tMTDErr = 0;
 
+  _trk_dEdx_dedxHarmonic2 = 0;
+  _trk_dEdx_dedxPixelHarmonic2 = 0;
+  _trk_dEdx_dedxPixelHarmonic2T40 = 0;
+  _trk_dEdx_dedxPixelMeanT40 = 0;
+
   // Set branch addresses and branch pointers
   if (!tree) return;
   fChain = tree;
@@ -56,5 +61,10 @@ void ParticleTreeMC2::Init(TTree *tree)
   fChain->SetBranchAddress("trk_pathLength", &_trk_pathLength, &b_trk_pathLength);
   fChain->SetBranchAddress("trk_tMTD", &_trk_tMTD, &b_trk_tMTD);
   fChain->SetBranchAddress("trk_tMTDErr", &_trk_tMTDErr, &b_trk_tMTDErr);
+
+  fChain->SetBranchAddress("trk_dEdx_dedxHarmonic2", &_trk_dEdx_dedxHarmonic2, &b_trk_dEdx_dedxHarmonic2);
+  fChain->SetBranchAddress("trk_dEdx_dedxPixelHarmonic2", &_trk_dEdx_dedxPixelHarmonic2, &b_trk_dEdx_dedxPixelHarmonic2);
+  fChain->SetBranchAddress("trk_dEdx_dedxPixelHarmonic2T40", &_trk_dEdx_dedxPixelHarmonic2T40, &b_trk_dEdx_dedxPixelHarmonic2T40);
+  fChain->SetBranchAddress("trk_dEdx_dedxPixelMeanT40", &_trk_dEdx_dedxPixelMeanT40, &b_trk_dEdx_dedxPixelMeanT40);
 }
 #endif
