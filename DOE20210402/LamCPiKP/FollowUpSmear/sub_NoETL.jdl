@@ -1,0 +1,41 @@
+
+Universe   = vanilla
+Executable = runNoETL.sh
+Log        = log/$(Process).log
+Output     = log/$(Process).out
+Error      = log/$(Process).err
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+initialdir = ./batchNoETL
+transfer_input_files = tarball.tar.gz
++JobFlavour = "microcentury"
+# 0
+Arguments = hyjets_woPID1.list
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_NoETL.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_NoETL.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_NoETL.root"
+Queue
+
+# 1
+Arguments = hyjets_woPID2.list
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_NoETL.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_NoETL.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_NoETL.root"
+Queue
+
+# 2
+Arguments = hyjets_woPID3.list
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_NoETL.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_NoETL.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_NoETL.root"
+Queue
+
+# 3
+Arguments = hyjets_woPID4.list
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_NoETL.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_NoETL.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_NoETL.root"
+Queue
+
+# 4
+Arguments = hyjets_woPID5.list
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_NoETL.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_NoETL.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_NoETL.root"
+Queue
+

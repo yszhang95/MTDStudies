@@ -1,0 +1,35 @@
+Universe   = vanilla
+Executable = run.sh
+Log        = log/$(Process).log
+Output     = log/$(Process).out
+Error      = log/$(Process).err
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+initialdir = ./batchResub
+transfer_input_files = tarball.tar.gz
+#+JobFlavour = "microcentury"
+
+
+# 78
+Arguments = hyjets_sample_wPID_nevts4950_part1.list true 0.065 1.1 false
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part1.list_65ps_1Layer_1p1RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part1.list_65ps_1Layer_1p1RMS.root=out/HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part1.list_65ps_1Layer_1p1RMS.root"
+Queue
+# 2
+Arguments = hyjets_sample_wPID_nevts4950_part3.list false 0.045 1.0 false
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part3.list_45ps_2Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part3.list_45ps_2Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part3.list_45ps_2Layer_1p0RMS.root"
+Queue
+
+# 10
+Arguments = hyjets_sample_wPID_nevts4950_part5.list false 0.045 1.1 false
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part5.list_45ps_2Layer_1p1RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part5.list_45ps_2Layer_1p1RMS.root=out/HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part5.list_45ps_2Layer_1p1RMS.root"
+Queue
+
+# 12
+Arguments = hyjets_sample_wPID_nevts4950_part1.list false 0.045 1.2 false
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part1.list_45ps_2Layer_1p2RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part1.list_45ps_2Layer_1p2RMS.root=out/HyJetsMassHists_reRECO_hyjets_sample_wPID_nevts4950_part1.list_45ps_2Layer_1p2RMS.root"
+Queue
+

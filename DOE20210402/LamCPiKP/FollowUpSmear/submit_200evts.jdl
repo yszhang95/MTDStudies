@@ -1,0 +1,281 @@
+
+Universe   = vanilla
+Executable = run_200evts.sh
+Log        = log/$(Process).log
+Output     = log/$(Process).out
+Error      = log/$(Process).err
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+initialdir = ./batch200evts
+transfer_input_files = tarball.tar.gz
++JobFlavour = "microcentury"
+# 0
+Arguments = hyjets_woPID1.list false 0.045 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p0RMS.root"
+Queue
+
+# 1
+Arguments = hyjets_woPID2.list false 0.045 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p0RMS.root"
+Queue
+
+# 2
+Arguments = hyjets_woPID3.list false 0.045 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p0RMS.root"
+Queue
+
+# 3
+Arguments = hyjets_woPID4.list false 0.045 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p0RMS.root"
+Queue
+
+# 4
+Arguments = hyjets_woPID5.list false 0.045 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p0RMS.root"
+Queue
+
+# 5
+Arguments = hyjets_woPID1.list false 0.045 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p3RMS.root"
+Queue
+
+# 6
+Arguments = hyjets_woPID2.list false 0.045 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p3RMS.root"
+Queue
+
+# 7
+Arguments = hyjets_woPID3.list false 0.045 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p3RMS.root"
+Queue
+
+# 8
+Arguments = hyjets_woPID4.list false 0.045 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p3RMS.root"
+Queue
+
+# 9
+Arguments = hyjets_woPID5.list false 0.045 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p3RMS.root"
+Queue
+
+# 10
+Arguments = hyjets_woPID1.list false 0.045 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_45ps_2Layer_1p5RMS.root"
+Queue
+
+# 11
+Arguments = hyjets_woPID2.list false 0.045 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_45ps_2Layer_1p5RMS.root"
+Queue
+
+# 12
+Arguments = hyjets_woPID3.list false 0.045 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_45ps_2Layer_1p5RMS.root"
+Queue
+
+# 13
+Arguments = hyjets_woPID4.list false 0.045 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_45ps_2Layer_1p5RMS.root"
+Queue
+
+# 14
+Arguments = hyjets_woPID5.list false 0.045 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_45ps_2Layer_1p5RMS.root"
+Queue
+
+# 15
+Arguments = hyjets_woPID1.list true 0.050 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p0RMS.root"
+Queue
+
+# 16
+Arguments = hyjets_woPID2.list true 0.050 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p0RMS.root"
+Queue
+
+# 17
+Arguments = hyjets_woPID3.list true 0.050 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p0RMS.root"
+Queue
+
+# 18
+Arguments = hyjets_woPID4.list true 0.050 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p0RMS.root"
+Queue
+
+# 19
+Arguments = hyjets_woPID5.list true 0.050 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p0RMS.root"
+Queue
+
+# 20
+Arguments = hyjets_woPID1.list true 0.050 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p3RMS.root"
+Queue
+
+# 21
+Arguments = hyjets_woPID2.list true 0.050 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p3RMS.root"
+Queue
+
+# 22
+Arguments = hyjets_woPID3.list true 0.050 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p3RMS.root"
+Queue
+
+# 23
+Arguments = hyjets_woPID4.list true 0.050 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p3RMS.root"
+Queue
+
+# 24
+Arguments = hyjets_woPID5.list true 0.050 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p3RMS.root"
+Queue
+
+# 25
+Arguments = hyjets_woPID1.list true 0.050 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_50ps_1Layer_1p5RMS.root"
+Queue
+
+# 26
+Arguments = hyjets_woPID2.list true 0.050 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_50ps_1Layer_1p5RMS.root"
+Queue
+
+# 27
+Arguments = hyjets_woPID3.list true 0.050 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_50ps_1Layer_1p5RMS.root"
+Queue
+
+# 28
+Arguments = hyjets_woPID4.list true 0.050 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_50ps_1Layer_1p5RMS.root"
+Queue
+
+# 29
+Arguments = hyjets_woPID5.list true 0.050 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_50ps_1Layer_1p5RMS.root"
+Queue
+
+# 30
+Arguments = hyjets_woPID1.list true 0.065 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p0RMS.root"
+Queue
+
+# 31
+Arguments = hyjets_woPID2.list true 0.065 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p0RMS.root"
+Queue
+
+# 32
+Arguments = hyjets_woPID3.list true 0.065 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p0RMS.root"
+Queue
+
+# 33
+Arguments = hyjets_woPID4.list true 0.065 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p0RMS.root"
+Queue
+
+# 34
+Arguments = hyjets_woPID5.list true 0.065 1.0 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p0RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p0RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p0RMS.root"
+Queue
+
+# 35
+Arguments = hyjets_woPID1.list true 0.065 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p3RMS.root"
+Queue
+
+# 36
+Arguments = hyjets_woPID2.list true 0.065 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p3RMS.root"
+Queue
+
+# 37
+Arguments = hyjets_woPID3.list true 0.065 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p3RMS.root"
+Queue
+
+# 38
+Arguments = hyjets_woPID4.list true 0.065 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p3RMS.root"
+Queue
+
+# 39
+Arguments = hyjets_woPID5.list true 0.065 1.3 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p3RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p3RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p3RMS.root"
+Queue
+
+# 40
+Arguments = hyjets_woPID1.list true 0.065 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID1.list_65ps_1Layer_1p5RMS.root"
+Queue
+
+# 41
+Arguments = hyjets_woPID2.list true 0.065 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID2.list_65ps_1Layer_1p5RMS.root"
+Queue
+
+# 42
+Arguments = hyjets_woPID3.list true 0.065 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID3.list_65ps_1Layer_1p5RMS.root"
+Queue
+
+# 43
+Arguments = hyjets_woPID4.list true 0.065 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID4.list_65ps_1Layer_1p5RMS.root"
+Queue
+
+# 44
+Arguments = hyjets_woPID5.list true 0.065 1.5 false true
+transfer_output_files = HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p5RMS.root
+transfer_output_remaps = "HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p5RMS.root=out/HyJetsMassHists_reRECO_hyjets_woPID5.list_65ps_1Layer_1p5RMS.root"
+Queue
+
